@@ -31,6 +31,8 @@ import { getToken } from "firebase/messaging"
 import { useEffect } from "react";
 import axios from "axios";
 import { Baseurl } from "./main.jsx";
+import Event from "./component/Event.jsx";
+import EventPage from "./component/EventPage.jsx";
 
 
 const router=createBrowserRouter([
@@ -97,6 +99,12 @@ const router=createBrowserRouter([
   },{
       path:"/questionview/:contestId",
       element:<Questionview/>
+  },{
+    path:"/event",
+    element:<Event/>
+  },{
+    path:"/event/:eventId",
+    element:<EventPage/>
   }
 ]);
 

@@ -27,10 +27,7 @@ const userModel = mongoose.Schema(
       default: 0,
     },
     poll: { type: Number, default: 0 },
-    firebaseToken:{
-      type: String,
-      default: null,
-    },
+   
   },
    
   

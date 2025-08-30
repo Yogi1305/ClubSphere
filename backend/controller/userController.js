@@ -49,7 +49,7 @@ export const register=async(req,res)=>{
       poll: 0,
     })
     await admin.messaging().subscribeToTopic([firebaseToken], "all_users");
-    await newuser.save();
+    await newuser.save;
     return res.status(201).json({
         message: "Account created successfully",
         success: true,
