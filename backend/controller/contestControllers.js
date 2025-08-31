@@ -1,7 +1,7 @@
 import { Contest } from "../model/Contest.js";
 import { QuestionModel } from "../model/Question.js";
 import { User } from "../model/User.js";
-import admin from "firebase-admin";
+
 
 
 // Create a new contest

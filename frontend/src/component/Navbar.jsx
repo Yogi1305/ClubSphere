@@ -120,6 +120,10 @@ const Navbar = () => {
                 <span className="relative z-10">Pricing</span>
                 <div className="absolute inset-0 bg-white/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
+              <Link to="/event" className="relative px-4 py-2 text-white/80 hover:text-white font-medium transition-all duration-300 group rounded-xl">
+                <span className="relative z-10">Events</span>
+                <div className="absolute inset-0 bg-white/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </Link>
                <Link 
                 to="/about" 
                 className="relative px-4 py-2 text-white/80 hover:text-white font-medium transition-all duration-300 group rounded-xl"

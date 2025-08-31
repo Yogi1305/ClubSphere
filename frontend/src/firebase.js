@@ -8,13 +8,13 @@ import { getMessaging } from "firebase/messaging";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBTcev9r-WJi0Sewjrr0BIeZ7arC-tI_uU",
-  authDomain: "quizzy13-8dd90.firebaseapp.com",
-  projectId: "quizzy13-8dd90",
-  storageBucket: "quizzy13-8dd90.firebasestorage.app",
-  messagingSenderId: "750818737403",
-  appId: "1:750818737403:web:ff77c9dbb0f37c5ecb045e",
-  measurementId: "G-8QF6M373R3"
+  apiKey: "AIzaSyAW4vJbcj_b8BB0qjy1Ep1JXauNHdkXyWA",
+  authDomain: "clubsphere-81633.firebaseapp.com",
+  projectId: "clubsphere-81633",
+  storageBucket: "clubsphere-81633.firebasestorage.app",
+  messagingSenderId: "797423489933",
+  appId: "1:797423489933:web:38ddd14c0109463432a3c4",
+  measurementId: "G-Q36V24NRCM"
 };
 
 // Initialize Firebase

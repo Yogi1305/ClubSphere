@@ -36,6 +36,7 @@ const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: '',
     passWord: '',
+    firebaseToken: localStorage.getItem("firebasetoken") || null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [redirect, setRedirect] = useState(false);

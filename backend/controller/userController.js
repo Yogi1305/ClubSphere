@@ -2,35 +2,21 @@
 import { User } from "../model/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import admin from "firebase-admin";
-// import {serviceAccount} from "./../serviceAccountKey.js" ;
+
 import dotenv from "dotenv";
+import PushNotification from "../model/pushnotification.js";
 dotenv.config();
 
-admin.initializeApp({
-  credential: admin.credential.cert({
-    // type: process.env.FIREBASE_TYPE,
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    // privateKeyId: process.env.FIREBASE_PRIVATE_KEY_ID,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    // clientId: process.env.FIREBASE_CLIENT_ID,
-    // authUri: process.env.FIREBASE_AUTH_URI,
-    // tokenUri: process.env.FIREBASE_TOKEN_URI,
-    // authProviderX509CertUrl: process.env.FIREBASE_AUTH_PROVIDER_CERT_URL,
-    // clientC509CertUrl: process.env.FIREBASE_CLIENT_CERT_URL,
-    // universeDomain: process.env.FIREBASE_UNIVERSE_DOMAIN
-  })
-});
+
 
 
 
 // register
 export const register=async(req,res)=>{
 
-    const {fullName,email,contact,passWord,firebaseToken}=req.body;
+    const {fullName,email,contact,passWord}=req.body;
 
-    if(!fullName || !email ||!contact || !passWord || !firebaseToken)
+    if(!fullName || !email ||!contact || !passWord)
         return res.status(400).json({message :"all field are required"});
     const finduser= await User.findOne({email});
     if(finduser)
@@ -43,13 +29,12 @@ export const register=async(req,res)=>{
         contact,
         passWord:hashpassword,
         isAdmin:false,
-        firebaseToken:firebaseToken, // Store the Firebase token
       contestgiven: [],
       count: 0,
       poll: 0,
     })
-    await admin.messaging().subscribeToTopic([firebaseToken], "all_users");
-    await newuser.save;
+
+    await newuser.save();
     return res.status(201).json({
         message: "Account created successfully",
         success: true,
@@ -59,7 +44,8 @@ export const register=async(req,res)=>{
 // login
 
 export const login=async(req,res)=>{
-    const{email,passWord}=req.body
+    // fet userid
+    const{email,passWord,firebaseToken}=req.body
     if(!passWord || !email)
         return res.status(400).json({message:"all fields are required"});
    
@@ -77,8 +63,12 @@ export const login=async(req,res)=>{
         expiresIn: "1d",
       });
       // console.log("token is ",token);
-      
-    
+      // firebasetoken
+      const newfire= await PushNotification.create({
+        userId: user._id,
+        fcmToken: firebaseToken
+      });
+      console.log("Firebase token saved:", newfire);
       return res
         .cookie("token", token, {
           maxAge: 1 * 24 * 60 * 60 * 1000,
