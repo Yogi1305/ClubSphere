@@ -26,7 +26,7 @@ const RegistrationForm = () => {
     fullName: '',
     email: '',
     contact: null, 
-    isAdmin: false,
+    role:"USER",
     passWord: '',
     contestgiven:[],
     confirmPassword: '',

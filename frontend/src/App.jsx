@@ -26,8 +26,7 @@ import QuizzySEO from "./QuizzySEO";
 import Mycontest from "./component/Mycontest";
 import Resetpassword from "./component/Resetpassword";
 import Questionview from "./component/Questionview";
-import { messaging } from "./firebase.js";
-import { getToken } from "firebase/messaging"
+
 import { useEffect } from "react";
 import axios from "axios";
 import { Baseurl } from "./main.jsx";
@@ -108,31 +107,9 @@ const router=createBrowserRouter([
   }
 ]);
 
-function App() {
-  async function requestPermission() {
-    const permission = await Notification.requestPermission();
-    if (permission === "granted") {
-      // Generate Token
-      const token = await getToken(messaging, {
-        vapidKey:
-          "BIj8Bju8fW2Ei6vqnwiDIEtRcCJ8is55UydX479DdZFXlNlKleMBBwvDd47fySWMYniH6EDDlbDqz3tQdiWTXWc",
-      });
-      // console.log("Token Gen", token);
-      if (token) {
-        localStorage.setItem("firebasetoken", token);
-        // console.log("Token generated successfully", token);
-        
-      }
-      // Send this token  to server ( db)
-    } else if (permission === "denied") {
-      alert("You denied for the notification");
-    }
-  }
 
-  useEffect(() => {
-    // Req user for notification permission
-    requestPermission();
-  }, []);
+function App() {
+  //  this to convert url
 
 
   return (

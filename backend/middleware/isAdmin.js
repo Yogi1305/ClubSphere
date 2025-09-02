@@ -1,5 +1,6 @@
 
 import { User } from "../model/User.js";
+import { ROLES } from "../utils/constant.js";
 
 export const isAdmin = async (req, res, next) => {
   try {
@@ -15,10 +16,10 @@ export const isAdmin = async (req, res, next) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (!user.isAdmin) {
-      return res.status(403).json({ message: "You are not an admin" });
+    if (!ROLES.includes(user.role)) {
+      return res.status(403).json({ message: "You are not allowed to access this resource" });
     }
-
+   req.role=user.role;
     next();
   } catch (error) {
     console.error("Error in isAdmin middleware:", error);

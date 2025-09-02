@@ -21,7 +21,7 @@ export const createpoll = async (req, res) => {
     finduser.poll = finduser.poll - 1;
     if(finduser.poll<0){
       finduser.poll = 0;
-      finduser.isAdmin = false; 
+      finduser.role = "USER"; 
       return res.status(200).json({success:false,message:"You have no poll left to create, please contact admin to increase your poll limit."});
 
     } 

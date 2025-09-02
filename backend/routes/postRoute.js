@@ -1,10 +1,10 @@
 import express from "express";
-import { addQuestion, createContest, getallcontest, getallcontestofuser, getContestById, makePublic, removeQuestionFromContest, updatequestion} from "../controller/contestControllers.js";
+import { addQuestion, createContest, getallcontest, getallcontestofuser, getContestById,  makePublic,  removeQuestionFromContest, updatequestion} from "../controller/contestControllers.js";
 import { isloggedin } from "../middleware/isLoggedin.js";
 import {isAdmin} from "../middleware/isAdmin.js"
 import { saveAnswer } from "../controller/quizController.js";
 import { getQuizResult } from "../controller/winner.js";
-import { get } from "mongoose";
+// import { get } from "mongoose";
 
 
 const router=express.Router();

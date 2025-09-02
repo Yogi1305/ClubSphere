@@ -38,7 +38,7 @@ const Contest = () => {
   const [contests, setContests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState("USER");
   const [reditores, setreditores] = useState(false);
   const navigate = useNavigate();
 
@@ -56,11 +56,11 @@ const Contest = () => {
       });
 
       if (response.data.success) {
-        setIsAdmin(true);
+        setIsAdmin("USER");
       }
     } catch (error) {
       console.log("Error checking admin status:", error);
-      setIsAdmin(false);
+      // setIsAdmin("USER");
     }
   };
 

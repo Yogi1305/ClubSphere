@@ -16,4 +16,5 @@ router.route("/getuser/:userId").get(userdata)
 router.route("/contest/my-contests").get(isloggedin,userinfo); 
 router.route("/resetpassword").post(resetpassword)
 
+
 export default router;

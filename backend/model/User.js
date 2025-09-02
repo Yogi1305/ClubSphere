@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ROLES } from "../utils/constant.js";
 
 const userModel = mongoose.Schema(
   {
@@ -14,9 +15,7 @@ const userModel = mongoose.Schema(
     contact: {
       type: Number,
     },
-    isAdmin: {
-      type: Boolean,
-    },
+    
     passWord: {
       type: String,
       required: true,
@@ -25,6 +24,11 @@ const userModel = mongoose.Schema(
     count: {
       type: Number,
       default: 0,
+    },
+    role:{
+      type:String,
+      enum:ROLES,
+      default:"USER"
     },
     poll: { type: Number, default: 0 },
    

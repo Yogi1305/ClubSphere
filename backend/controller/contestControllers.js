@@ -1,6 +1,10 @@
 import { Contest } from "../model/Contest.js";
+import PushNotification from "../model/pushnotification.js";
 import { QuestionModel } from "../model/Question.js";
 import { User } from "../model/User.js";
+import { sendNotification } from "../utils/pushnotication.js";
+
+
 
 
 
@@ -17,7 +21,7 @@ export const createContest = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found" });
     }
     // Check if the user is an admin
-    if (!findUser.isAdmin) {
+    if (findUser.role === "USER") {
       return res.status(403).json({
         success: false,
         message: "Access denied"
@@ -26,7 +30,8 @@ export const createContest = async (req, res) => {
    findUser.count -= 1; // Increment the count
     await findUser.save(); // Save the updated user document
     if (findUser.count < 0) {
-       findUser.isAdmin = false; // Set isAdmin to false if count is less than 0
+       findUser.count = 0;
+       findUser.role = "USER"; // Set role to USER if count is less than 0
       await findUser.save(); // Save the updated user document
       return res.status(400).json({ 
         success: false, 
@@ -355,58 +360,63 @@ export const removeQuestionFromContest = async (req, res) => {
 //         });
 //     }
 // };
-export const makePublic = async (req, res) => {
-    try {
-        const { contestId, isPublic } = req.body;
+// export const makePublic = async (req, res) => {
+//     try {
+//         const { contestId, isPublic } = req.body;
 
-        const contest = await Contest.findById(contestId);
+//         const contest = await Contest.findById(contestId);
 
-        if (!contest) {
-            return res.status(404).json({
-                success: false,
-                message: "Contest not found"
-            });
-        }
+//         if (!contest) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "Contest not found"
+//             });
+//         }
 
-        contest.isPublic = isPublic;
-        await contest.save();
+//         contest.isPublic = isPublic;
+//         await contest.save();
 
-        // Send FCM notification if contest becomes public
-        if (isPublic) {
-            const message = {
-                notification: {
-                    title: "New Contest Available 🎉",
-                    body: `${contest.title} starts at ${contest.startTime} and ends at ${contest.endTime}`
-                },
-                topic: "all_users" // All subscribed devices
-            };
+//         // web push
+//        if (isPublic) {
+//   const message = JSON.stringify({
+//     title: "New Contest Available 🎉",
+//     body: `${contest.title} starts at ${contest.startTime} and ends at ${contest.endTime}`
+//   });
 
-            try {
-                 const result = await admin.messaging().send(message);
-                console.log("Notification sent to all_users :: ", result);
-            } catch (fcmError) {
-                console.error("Error sending FCM notification:", fcmError);
-            }
-        }
+//   try {
+//     const subscriptions = await PushNotification.find({}, "subscription");
 
-        return res.status(200).json({
-            success: true,
-            message: "Contest visibility updated successfully",
-            contest: {
-                id: contest._id,
-                title: contest.title,
-                isPublic: contest.isPublic
-            }
-        });
+//     setupwebpush();
+//     for (const sub of subscriptions) {
+//       await webpush.sendNotification(sub.subscription, message);
+//     }
 
-    } catch (error) {
-        console.log("error in makePublic", error);
-        return res.status(500).json({
-            success: false,
-            message: "Internal server error"
-        });
-    }
-};
+//     console.log("Web push notification sent to all subscribers.");
+//   } catch (fcmError) {
+//     console.error("Error sending web push notification:", fcmError);
+//   }
+// }
+
+        
+
+//         return res.status(200).json({
+//             success: true,
+//             message: "Contest visibility updated successfully",
+//             contest: {
+//                 id: contest._id,
+//                 title: contest.title,
+//                 isPublic: contest.isPublic
+//             }
+//         });
+
+//     } catch (error) {
+//         console.log("error in makePublic", error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "Internal server error"
+//         });
+//     }
+// };
 
 
 // update the contest question
@@ -468,3 +478,48 @@ export const updatequestion = async (req, res) => {
     
   }
 }
+
+
+export const makePublic = async (req, res) => {
+  try {
+    const { contestId, isPublic } = req.body;
+
+    const contest = await Contest.findById(contestId);
+    if (!contest) {
+      return res.status(404).json({ success: false, message: "Contest not found" });
+    }
+
+    contest.isPublic = isPublic;
+    await contest.save();
+
+    if (isPublic) {
+      const message = JSON.stringify({
+        title: "New Contest Available 🎉",
+        body: `${contest.title} starts at ${contest.startTime} and ends at ${contest.endTime}`
+      });
+
+      try {
+        const subscriptions = await PushNotification.find({}, "subscription");
+        
+         sendNotification(subscriptions,message)
+
+        // console.log("Web push notification sent to all subscribers.");
+      } catch (fcmError) {
+        console.error("Error sending web push notification:", fcmError);
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Contest visibility updated successfully",
+      contest: {
+        id: contest._id,
+        title: contest.title,
+        isPublic: contest.isPublic
+      }
+    });
+  } catch (error) {
+    console.error("error in makePublic", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};

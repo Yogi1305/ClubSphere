@@ -49,8 +49,8 @@ const Profile = () => {
           </p>
           <p>
             <span className="font-semibold">Status:</span>{' '}
-            <span className={`font-semibold ${userdata.isAdmin ? 'text-green-600' : 'text-blue-600'}`}>
-              {userdata.isAdmin ? 'Admin' : 'User'}
+            <span className={`font-semibold ${userdata.role === "ADMIN" ? 'text-green-600' : 'text-blue-600'}`}>
+              {userdata.role}
             </span>
             <br />
             <span className=" font-semibold"> Count: {userdata.count>0?userdata.count:0}</span>

@@ -1,57 +1,25 @@
-import admin from "firebase-admin";
-// import {serviceAccount} from "./../serviceAccountKey.js" ;
+import webpush from "web-push";
 import dotenv from "dotenv";
-import PushNotification from "../model/pushnotification.js";
+import PushNotification from "../model/pushnotification.js"; // adjust path
+import { Contest } from "../model/Contest.js";
+import { addNotificationJob } from "../redis/queue.js";
+
 dotenv.config();
 
-admin.initializeApp({
-  credential: admin.credential.cert({
-    type: process.env.FIREBASE_TYPE,
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    privateKeyId: process.env.FIREBASE_PRIVATE_KEY_ID,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    clientId: process.env.FIREBASE_CLIENT_ID,
-    authUri: process.env.FIREBASE_AUTH_URI,
-    tokenUri: process.env.FIREBASE_TOKEN_URI,
-    authProviderX509CertUrl: process.env.FIREBASE_AUTH_PROVIDER_CERT_URL,
-    clientC509CertUrl: process.env.FIREBASE_CLIENT_CERT_URL,
-    universeDomain: process.env.FIREBASE_UNIVERSE_DOMAIN
-  })
-});
-
-export const subscribetofirebase = async(userId,fcmToken) => {
-
-   const newid= await PushNotification.create({
-        userId,
-        fcmToken
-    });
-    await newid.save();
-    console.log("Token saved:", newid);
-
-};
-
-export const sendnotification = async (userId, message) => {
-    const user = await PushNotification.find({ userId });
-    if (!user) {
-        console.log("User not found");
-        return;
+// setup once
+webpush.setVapidDetails(
+  "mailto:yogesh.22273@knit.ac.in",
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+);
+export const sendNotification = async (subscriptions, message) => {
+  try {
+    for(const {subscription} of subscriptions){
+      addNotificationJob({subscription, message});
     }
-
-    const token = user.map(u => u.fcmToken);
-    const payload = {
-        notification: {
-            title: "New Notification",
-            body: message,
-        },
-        token: token,
-    };
-
-    admin.messaging().send(payload)
-        .then((response) => {
-            console.log("Successfully sent message:", response);
-        })
-        .catch((error) => {
-            console.log("Error sending message:", error);
-        });
+    
+  } catch (error) {
+    console.error("Error sending web push notification:", error);
+  }
 };
+

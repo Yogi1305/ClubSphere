@@ -6,8 +6,8 @@ const pushNotificationSchema = new mongoose.Schema({
       ref: 'User',
       required: true
    },
-   fcmToken:{
-      type: String,
+   subscription:{
+      type: Object,
       required: true
    }
 });

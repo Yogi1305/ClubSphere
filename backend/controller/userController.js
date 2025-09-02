@@ -28,13 +28,13 @@ export const register=async(req,res)=>{
         email,
         contact,
         passWord:hashpassword,
-        isAdmin:false,
+        role:"USER",
       contestgiven: [],
       count: 0,
       poll: 0,
     })
 
-    await newuser.save();
+    await newuser.save;
     return res.status(201).json({
         message: "Account created successfully",
         success: true,
@@ -45,8 +45,9 @@ export const register=async(req,res)=>{
 
 export const login=async(req,res)=>{
     // fet userid
-    const{email,passWord,firebaseToken}=req.body
-    if(!passWord || !email)
+    // console.log("User ID:", req.body);
+    const{email,passWord,pushsubscription}=req.body
+    if(!passWord || !email || !pushsubscription)
         return res.status(400).json({message:"all fields are required"});
    
     const user=await User.findOne({email});
@@ -59,15 +60,16 @@ export const login=async(req,res)=>{
     
      //  generate jwt token
       const tokenData = { userId: user._id };
-      const token = await jwt.sign(tokenData, process.env.JWT_SECRET_KEY, {
+      const token =  jwt.sign(tokenData, process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",
       });
-      // console.log("token is ",token);
+      console.log("token is ",token);
       // firebasetoken
       const newfire= await PushNotification.create({
         userId: user._id,
-        fcmToken: firebaseToken
+        subscription: JSON.parse(pushsubscription)
       });
+     
       console.log("Firebase token saved:", newfire);
       return res
         .cookie("token", token, {
@@ -107,7 +109,7 @@ export const login=async(req,res)=>{
 // admin
 
 export const Admin= (req,res)=>{
-      return res.status(200).json({message:"admin",success:true})
+      return res.status(200).json({message:"admin",success:true,role:req.role})
 }
 export const completecontest = async (req, res) => {
   try {
@@ -185,3 +187,5 @@ export const resetpassword = async (req, res) => {
 
   return res.status(200).json({ message: "Password reset successfully" });
 };
+
+
