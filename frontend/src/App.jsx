@@ -32,6 +32,7 @@ import axios from "axios";
 import { Baseurl } from "./main.jsx";
 import Event from "./component/Event.jsx";
 import EventPage from "./component/EventPage.jsx";
+import Club from "./component/club/Club.jsx";
 
 
 const router=createBrowserRouter([
@@ -104,6 +105,9 @@ const router=createBrowserRouter([
   },{
     path:"/event/:eventId",
     element:<EventPage/>
+  },{
+    path:"/club",
+    element:<Club/>
   }
 ]);
 

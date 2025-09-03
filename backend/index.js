@@ -7,10 +7,12 @@ import paymentRoute from "../backend/routes/paymentRoute.js"
 import votingRoute from "../backend/routes/votingRoute.js"
 import otpRoute from "../backend/routes/optRoute.js"
 import eventRoute from "../backend/routes/eventRoute.js"
+import fileRoute from "../backend/routes/fileRoute.js"
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import razorpay from "razorpay"
 import  "./redis/worker.js" ;
+import multer from "multer";
 dotenv.config();
 
 const app =express();
@@ -34,6 +36,7 @@ app.use("/payment",paymentRoute);
 app.use("/voting",votingRoute)
 app.use("/otp",otpRoute);
 app.use("/event",eventRoute);
+app.use("/upload",fileRoute)
 
 app.listen(8000 ,()=>{
     

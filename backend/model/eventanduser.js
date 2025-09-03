@@ -8,6 +8,10 @@ const event = mongoose.Schema({
     EventId:{
             type:mongoose.Schema.Types.ObjectId,
             ref :"Event",
+    },
+    club:{
+        type:String,
+        required:true
     }
 
 })

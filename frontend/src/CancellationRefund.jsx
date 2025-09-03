@@ -7,7 +7,7 @@ const CancellationRefund = () => {
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Cancellation & Refund Policy</h1>
         
         <p className="text-gray-700 mb-4">
-          At <span className="font-semibold text-indigo-600">Quizzy</span>, we strive to provide a seamless and satisfying experience while conducting online quizzes. However, we understand that sometimes cancellations may be necessary.
+          At <span className="font-semibold text-indigo-600">ClubSphere</span>, we strive to provide a seamless and satisfying experience while conducting online quizzes. However, we understand that sometimes cancellations may be necessary.
         </p>
 
         <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-2">🧾 General Refund Policy</h2>
