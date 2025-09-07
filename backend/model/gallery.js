@@ -1,5 +1,5 @@
 import mongoose  from "mongoose";
-
+// this schema is to store gallery images and eventid ,club
 const gallerySchema = new mongoose.Schema({
     imageUrl: [{
         type: String,
@@ -10,7 +10,8 @@ const gallerySchema = new mongoose.Schema({
         ref: "Event"
     },
     club: {
-        enum: ["PFAC", "HOBBY", "LIT", "MEF", "PTSC", "DRAMATIC","IISF"],
+        type:String,
+        enum: ["PFAC", "HOBBY", "LIT", "MEF", "PTSC", "DRAMATIC","IISF","ADMIN"],
         required: true
     }
 });

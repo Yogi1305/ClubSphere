@@ -14,9 +14,9 @@ dotenv.config();
 // register
 export const register=async(req,res)=>{
 
-    const {fullName,email,contact,passWord}=req.body;
+    const {fullName,email,contact,passWord,Batch}=req.body;
 
-    if(!fullName || !email ||!contact || !passWord)
+    if(!fullName || !email ||!contact || !passWord || !Batch)
         return res.status(400).json({message :"all field are required"});
     const finduser= await User.findOne({email});
     if(finduser)
@@ -32,6 +32,7 @@ export const register=async(req,res)=>{
       contestgiven: [],
       count: 0,
       poll: 0,
+      Batch
     })
 
     await newuser.save;
@@ -59,11 +60,11 @@ export const login=async(req,res)=>{
         return res.status(400).json({message:"incorrect password"});
     
      //  generate jwt token
-      const tokenData = { userId: user._id };
+      const tokenData = { userId: user._id , role: user.role};
       const token =  jwt.sign(tokenData, process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",
       });
-      console.log("token is ",token);
+      // console.log("token is ",token);
       // firebasetoken
       const newfire= await PushNotification.create({
         userId: user._id,

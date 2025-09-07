@@ -160,7 +160,7 @@ const Member = ({ club }) => {
     const normalizedStatus = status?.toLowerCase()
     const statusConfig = {
       admin: { icon: Crown, color: 'bg-purple-100 text-purple-800', label: 'Admin' },
-      moderator: { icon: Shield, color: 'bg-blue-100 text-blue-800', label: 'Moderator' },
+      president: { icon: Crown, color: 'bg-blue-100 text-blue-800', label: 'President' },
       member: { icon: User, color: 'bg-green-100 text-green-800', label: 'Member' },
       pending: { icon: Clock, color: 'bg-yellow-100 text-yellow-800', label: 'Pending' }
     }
@@ -399,7 +399,7 @@ const Member = ({ club }) => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {getStatusBadge(member.Status)}
+                        {getStatusBadge(member.Role)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">

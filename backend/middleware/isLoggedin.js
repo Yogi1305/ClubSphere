@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 export const isloggedin = async (req, res, next) => {
   try {
     const token = req.cookies.token;
-
+    
     if (!token) {
       return res.status(400).json({ message: "Token not found" });
     }
@@ -14,8 +14,9 @@ export const isloggedin = async (req, res, next) => {
     if (!verifyToken || !verifyToken.userId) {
       return res.status(401).json({ message: "Invalid token" });
     }
-
+  // console.log("token user role",verifyToken.role);
     req.id = verifyToken.userId; // attach user ID to request
+    req.role = verifyToken.role; // attach user role to request
     next();
   } catch (error) {
     console.log("Error in isLoggedIn middleware:", error);

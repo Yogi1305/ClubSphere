@@ -10,7 +10,7 @@ const notificationWorker = new Worker(
     console.log(`Processing job: ${job.id} with data:`, job.data);
 
     try {
-       webpush.sendNotification(job.data.subscription, job.data.message)
+       await webpush.sendNotification(job.data.subscription, job.data.message)
       console.log(`Job ${job.id} completed successfully`);
     } catch (error) {
       console.error(`Job ${job.id} failed:`, error);
@@ -19,6 +19,8 @@ const notificationWorker = new Worker(
   },
   {
     connection: client, // redis connection
+     concurrency: 5,          // allow multiple jobs at once
+    lockDuration: 60000,     // increase if jobs take longer than 30s
   }
 );
 
