@@ -80,3 +80,51 @@ export const ClubsData = [
     quote: "Music is the universal language of mankind.",
   },
 ];
+export const MEMBER_ROLES = ["President", "Secretary", "Joint Secretary", "Treasurer", "Member"];
+
+
+import { Crown, Shield, Users, User, Clock, CheckCircle } from "lucide-react";
+
+
+export const MEMBER_STATUS = ["Pending", "Accepted","Rejected"];
+
+export const roleConfig = {
+  President: { 
+    icon: Crown, 
+    color: "bg-yellow-100 text-yellow-800", 
+    label: "President" 
+  },
+  Secretary: { 
+    icon: Shield, 
+    color: "bg-blue-100 text-blue-800", 
+    label: "Secretary" 
+  },
+  "Joint Secretary": { 
+    icon: Shield, 
+    color: "bg-indigo-100 text-indigo-800", 
+    label: "Joint Secretary" 
+  },
+  Treasurer: { 
+    icon: Users, 
+    color: "bg-green-100 text-green-800", 
+    label: "Treasurer" 
+  },
+  Member: { 
+    icon: User, 
+    color: "bg-gray-100 text-gray-800", 
+    label: "Member" 
+  },
+};
+
+export const statusConfig = {
+  Pending: { 
+    icon: Clock, 
+    color: "bg-yellow-100 text-yellow-800", 
+    label: "Pending" 
+  },
+  Accepted: { 
+    icon: CheckCircle, 
+    color: "bg-green-100 text-green-800", 
+    label: "Accepted" 
+  },
+};

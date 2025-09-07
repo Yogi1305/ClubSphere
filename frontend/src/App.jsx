@@ -28,11 +28,12 @@ import Resetpassword from "./component/Resetpassword";
 import Questionview from "./component/Questionview";
 
 import { useEffect } from "react";
-import axios from "axios";
-import { Baseurl } from "./main.jsx";
+
 import Event from "./component/Event.jsx";
 import EventPage from "./component/EventPage.jsx";
 import Club from "./component/club/Club.jsx";
+import Createevent from "./component/club/Createevent.jsx";
+import Member from "./component/club/Member.jsx"
 
 
 const router=createBrowserRouter([
@@ -108,6 +109,12 @@ const router=createBrowserRouter([
   },{
     path:"/club",
     element:<Club/>
+  },{
+    path:"/createevent",
+    element:<Createevent/>
+  },{
+     path:"/member",
+     element:<Member/>
   }
 ]);
 

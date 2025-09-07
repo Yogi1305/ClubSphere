@@ -8,6 +8,7 @@ import votingRoute from "../backend/routes/votingRoute.js"
 import otpRoute from "../backend/routes/optRoute.js"
 import eventRoute from "../backend/routes/eventRoute.js"
 import fileRoute from "../backend/routes/fileRoute.js"
+import memberRoute from "../backend/routes/memberRoute.js"
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import razorpay from "razorpay"
@@ -17,9 +18,9 @@ dotenv.config();
 
 const app =express();
 app.use(cors({
-    origin: 'https://theclubsphere.vercel.app',
+    // origin: 'https://theclubsphere.vercel.app',
    
-    // origin:'http://localhost:5173',
+    origin:'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept','X-User-Id'], 
     credentials:true}));
@@ -37,6 +38,7 @@ app.use("/voting",votingRoute)
 app.use("/otp",otpRoute);
 app.use("/event",eventRoute);
 app.use("/upload",fileRoute)
+app.use("/member",memberRoute)
 
 app.listen(8000 ,()=>{
     

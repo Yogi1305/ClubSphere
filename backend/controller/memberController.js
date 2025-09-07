@@ -1,5 +1,6 @@
 import ClubMember from "../model/clubmember.js";
 import PushNotification from "../model/pushnotification.js";
+import { MEMBER_ROLES } from "../utils/constant.js";
 import { sendNotification } from "../utils/pushnotication.js";
 // to join a club
 export const joinToClub = async (req, res) => {
@@ -170,3 +171,38 @@ export const toUpgrade=async(req,res)=>{
         });
     }
 }
+
+// get only post holders
+export const getPostHolders = async (req, res) => {
+  try {
+    const { club } = req.params;
+
+   
+
+   
+    let postHolders = await ClubMember.find({
+      Club: club,
+      Role: { $ne: "Member" },   // Exclude normal members
+      Status: "Accepted"         // Only accepted ones
+    }).populate({
+      path: "UserId",
+      select: "fullName email contact Batch"
+    });
+
+    // Apply custom sorting
+    postHolders = postHolders.sort(
+      (a, b) => MEMBER_ROLES.indexOf(a.Role) - MEMBER_ROLES.indexOf(b.Role)
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: postHolders,
+    });
+  } catch (error) {
+    console.log("error in getPostHolders route", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server failure",
+    });
+  }
+};

@@ -9,7 +9,10 @@ const EventModel = mongoose.Schema({
   location: String,
   imageurl: String, // url  of image which come cloudinary
   formjson: {},
-  attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] // Array of user IDs
+  // attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Array of user IDs
+  club:{
+     type:String
+  }
 },{timestamps: true});
 
 export default mongoose.model("Event", EventModel);

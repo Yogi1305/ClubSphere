@@ -31,6 +31,10 @@ const userModel = mongoose.Schema(
       default:"USER"
     },
     poll: { type: Number, default: 0 },
+    Batch:{
+       type:Number,
+       required:true
+    }
    
   },
    

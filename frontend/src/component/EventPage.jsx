@@ -3,40 +3,78 @@ import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { Baseurl } from "../main";
 import { toast } from "react-toastify";
+import BasicPopup from "./Popup";
+import CreateEventPage from "./Event";
 
-export default function EventPage() {
-  const eventId = "68b2db6978a823445d593dda";
-  const [event, setEvent] = useState(null);
+export default function EventPage({club}) {
+  
+  const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const { register, handleSubmit, control, formState: { errors } } = useForm();
+  const[popup,setPopup]=useState(false);
 
-  // Fetch event details
+  const { register, handleSubmit, control, formState: { errors }, reset } = useForm();
+
+  // Fetch events
   useEffect(() => {
-    const fetchEvent = async () => {
+    const fetchEvents = async () => {
       try {
-        const res = await axios.get(`${Baseurl}/event/${eventId}`);
+        const res = await axios.get(`${Baseurl}/event/allevent/${club}`);
         console.log(res.data);
-        setEvent(res.data.event);
+        setEvents(res.data.events);
       } catch (err) {
-        console.error("Error fetching event:", err);
+        console.error("Error fetching events:", err);
       }
     };
-    fetchEvent();
-  }, [eventId]);
+    fetchEvents();
+  }, [club]);
 
-  // Submit registration
-  const onSubmit = async (data) => {
-    try {
-      await axios.post(`${Baseurl}/event/${eventId}/register`, data);
-      toast.success("✅ Registered successfully!");
-      setShowForm(false);
-    } catch (err) {
-      console.error("Error submitting form:", err);
-      toast.error("❌ Something went wrong!");
-    }
+  // Handle event click
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+    setShowForm(true);
+    reset(); // Reset form when opening new event
   };
 
-  if (!event) {
+  // Submit registration
+const onSubmit = async (data) => {
+
+  try {
+    
+    // console.log(data,typeof data);
+    const response = await axios.post(`${Baseurl}/event/registerto/${selectedEvent._id}`, data,
+      {
+        headers:{
+          "Content-Type":"application/json"
+        },
+        withCredentials:true
+      }
+    );
+    toast.success(response.data?.message || "✅ Registered successfully!");
+    setShowForm(false);
+    setSelectedEvent(null);
+  } catch (error) {
+    console.error("Error submitting form:", error);
+
+    // Extract backend error message if available
+    const errMsg =
+      error.response?.data?.message ||
+      error.message ||
+      "❌ Something went wrong!";
+
+    toast.error(errMsg);
+  }
+};
+
+
+  // Close popup
+  const closePopup = () => {
+    setShowForm(false);
+    setSelectedEvent(null);
+    reset();
+  };
+
+  if (!events || events.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
@@ -48,7 +86,7 @@ export default function EventPage() {
             </div>
             <div className="h-32 bg-gray-200 rounded-lg"></div>
           </div>
-          <p className="text-center text-gray-600 mt-4 font-medium">Loading your event...</p>
+          <p className="text-center text-gray-600 mt-4 font-medium">Loading events...</p>
         </div>
       </div>
     );
@@ -56,108 +94,137 @@ export default function EventPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Event Card */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden backdrop-blur-lg bg-opacity-95">
-          {/* Hero Section with Image */}
-          {event.imageurl && (
-            <div className="relative h-80 overflow-hidden">
-              <img 
-                src={event.imageurl} 
-                alt="event" 
-                className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-              <div className="absolute bottom-6 left-6 right-6">
-                <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-2xl">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+            Club Events
+          </h1>
+          <p className="text-gray-600 text-lg">Discover and register for upcoming events</p>
+        </div>
+         {/* create a event */}
+         <div className="text-center mb-10">
+           <button onClick={() => setPopup(true)} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
+             Create Event
+           </button>
+           <BasicPopup isOpen={popup} onClose={() => setPopup(false)}>
+             <CreateEventPage clubId={club} />
+           </BasicPopup>
+         </div>
+        {/* Events Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {events.map((event, index) => (
+            <div 
+              key={event._id || index} 
+              className="bg-white rounded-3xl shadow-xl overflow-hidden backdrop-blur-lg bg-opacity-95 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
+              onClick={() => handleEventClick(event)}
+            >
+              {/* Event Image */}
+              {event.imageurl && (
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={event.imageurl} 
+                    alt={event.title} 
+                    className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                </div>
+              )}
+              
+              {/* Event Content */}
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-3 line-clamp-2">
                   {event.title}
-                </h1>
-              </div>
-            </div>
-          )}
-          
-          {/* Content Section */}
-          <div className="p-8 md:p-12">
-            {/* Title (if no image) */}
-            {!event.imageurl && (
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-6">
-                {event.title}
-              </h1>
-            )}
-            
-            {/* Description */}
-            <div className="prose prose-lg max-w-none mb-8">
-              <p className="text-gray-700 leading-relaxed text-lg">
-                {event.description}
-              </p>
-            </div>
-            
-            {/* Event Details Grid */}
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              {/* Location Card */}
-              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-100">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-blue-500 rounded-full p-3">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                </h3>
+                
+                <p className="text-gray-600 mb-4 line-clamp-3">
+                  {event.description}
+                </p>
+                
+                {/* Event Details */}
+                <div className="space-y-3">
+                  {/* Location */}
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
+                    <span className="truncate">{event.location}</span>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-800 text-lg">Location</h3>
-                    <p className="text-gray-600">{event.location}</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Time Card */}
-              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-purple-500 rounded-full p-3">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  
+                  {/* Date */}
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
+                    <span>{new Date(event.start).toLocaleDateString()}</span>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-800 text-lg">Schedule</h3>
-                    <p className="text-gray-600 text-sm">
-                      <span className="block">{new Date(event.start).toLocaleString()}</span>
-                      <span className="text-gray-500">to</span>
-                      <span className="block">{new Date(event.end).toLocaleString()}</span>
-                    </p>
-                  </div>
+                </div>
+                
+                {/* Register Button */}
+                <div className="mt-6">
+                  <button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-4 rounded-xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    Register Now
+                  </button>
                 </div>
               </div>
             </div>
+          ))}
+        </div>
 
-            {/* Register Button */}
-            {!showForm && (
-              <div className="text-center">
+        {/* Registration Popup */}
+        {showForm && selectedEvent && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+            <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              {/* Popup Header */}
+              <div className="sticky top-0 bg-white rounded-t-3xl border-b border-gray-200 p-6 flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-800">Register for Event</h2>
+                  <p className="text-gray-600 mt-1">{selectedEvent.title}</p>
+                </div>
                 <button
-                  onClick={() => setShowForm(true)}
-                  className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white transition-all duration-300 ease-out bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl hover:from-blue-700 hover:to-purple-700 hover:scale-105 hover:shadow-2xl transform active:scale-95"
+                  onClick={closePopup}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 >
-                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-400 to-purple-400 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity"></span>
-                  <span className="relative flex items-center space-x-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    <span>Register Now</span>
-                  </span>
+                  <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
-            )}
 
-            {/* Registration Form */}
-            {showForm && (
-              <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-3xl p-8 border border-gray-200 backdrop-blur-sm">
-                <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-gray-800 mb-2">Complete Your Registration</h2>
-                  <p className="text-gray-600">Please fill out the form below to secure your spot</p>
+              {/* Event Details in Popup */}
+              <div className="p-6 border-b border-gray-200">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-blue-100 rounded-full p-2">
+                      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-800">Location</p>
+                      <p className="text-sm text-gray-600">{selectedEvent.location}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-purple-100 rounded-full p-2">
+                      <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-800">Date & Time</p>
+                      <p className="text-sm text-gray-600">{new Date(selectedEvent.start).toLocaleString()}</p>
+                    </div>
+                  </div>
                 </div>
-                
+              </div>
+
+              {/* Registration Form */}
+              <div className="p-6">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  {event.formjson?.fields?.map((field, idx) => (
+                  {selectedEvent.formjson?.fields?.map((field, idx) => (
                     <div key={idx} className="space-y-2">
                       <label className="block text-sm font-semibold text-gray-700">
                         {field.label}
@@ -203,6 +270,7 @@ export default function EventPage() {
                     </div>
                   ))}
 
+                  {/* Form Actions */}
                   <div className="flex flex-col sm:flex-row gap-4 pt-6">
                     <button
                       type="submit"
@@ -217,7 +285,7 @@ export default function EventPage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setShowForm(false)}
+                      onClick={closePopup}
                       className="flex-1 sm:flex-none bg-gradient-to-r from-gray-400 to-gray-500 text-white font-semibold py-3 px-6 rounded-xl hover:from-gray-500 hover:to-gray-600 transform hover:scale-105 transition-all duration-200"
                     >
                       <span className="flex items-center justify-center space-x-2">
@@ -230,9 +298,9 @@ export default function EventPage() {
                   </div>
                 </form>
               </div>
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

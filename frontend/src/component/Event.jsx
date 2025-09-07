@@ -3,7 +3,7 @@ import { Baseurl } from "../main";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-export default function CreateEventPage() {
+export default function CreateEventPage({club}) {
   const [formFields, setFormFields] = useState([]);
   const [eventData, setEventData] = useState({
     title: '',
@@ -95,9 +95,12 @@ export default function CreateEventPage() {
         }
       };
 
-      // Replace with your actual API call
-      console.log('Creating event:', finalEventData);
-      const response = await axios.post(`${Baseurl}/event`, finalEventData);
+      if(club) finalEventData.club = club;
+      // console.log('Creating event:', finalEventData);
+      const response = await axios.post(`${Baseurl}/event`, finalEventData,{
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true
+      });
 
       toast.success(response.data.message || "✅ Event created successfully");
       
