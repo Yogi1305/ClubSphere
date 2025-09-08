@@ -9,8 +9,15 @@ const Navbar = () => {
   const [loading, setLoading] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showClubDropdown, setShowClubDropdown] = useState(false); // New state for club dropdown
   
   const navigate = useNavigate();
+
+  // Club data
+  const clubs = [
+    { id: 'hobby', name: 'Hobby Club', icon: '🎨' },
+    { id: 'dramatic', name: 'Dramatic Club', icon: '🎭' }
+  ];
 
   useEffect(() => {
     checkLoginStatus();
@@ -64,6 +71,16 @@ const Navbar = () => {
     setShowMobileMenu(!showMobileMenu);
   };
 
+  const toggleClubDropdown = () => {
+    setShowClubDropdown(!showClubDropdown);
+  };
+
+  const handleClubClick = (clubId) => {
+    navigate(`/club/${clubId}`);
+    setShowClubDropdown(false);
+    setShowMobileMenu(false);
+  };
+
   return (
     <>
       {/* Main Navbar - White background, normal positioning */}
@@ -92,6 +109,42 @@ const Navbar = () => {
                 <span className="relative z-10">Home</span>
                 <div className="absolute inset-0 bg-purple-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
+
+              {/* Club Dropdown */}
+              <div className="relative">
+                <button 
+                  onClick={toggleClubDropdown}
+                  className="relative px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 group rounded-xl flex items-center space-x-1"
+                >
+                  <span className="relative z-10">Clubs</span>
+                  <svg className={`w-4 h-4 transition-transform duration-300 ${showClubDropdown ? 'rotate-180' : ''} relative z-10`} fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"></path>
+                  </svg>
+                  <div className="absolute inset-0 bg-purple-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </button>
+                
+                {showClubDropdown && (
+                  <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-2xl shadow-xl py-2 z-50 border border-gray-200 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-pink-50/50"></div>
+                    <div className="relative z-10">
+                      <div className="px-4 py-2 border-b border-gray-100">
+                        <p className="text-sm font-medium text-gray-900">Choose a Club</p>
+                      </div>
+                      {clubs.map((club) => (
+                        <button
+                          key={club.id}
+                          onClick={() => handleClubClick(club.id)}
+                          className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:text-gray-900 hover:bg-purple-50 transition-all duration-200 group"
+                        >
+                          <span className="text-lg mr-3">{club.icon}</span>
+                          <span className="font-medium">{club.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <Link 
                 to="/contest" 
                 className="relative px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 group rounded-xl"
@@ -113,13 +166,6 @@ const Navbar = () => {
                 <span className="relative z-10">Pricing</span>
                 <div className="absolute inset-0 bg-purple-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
-              {/* <Link 
-                to="/event" 
-                className="relative px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 group rounded-xl"
-              >
-                <span className="relative z-10">Create Events</span>
-                <div className="absolute inset-0 bg-purple-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </Link> */}
               <Link 
                 to="/about" 
                 className="relative px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 group rounded-xl"
@@ -247,6 +293,24 @@ const Navbar = () => {
               >
                 Home
               </Link>
+
+              {/* Mobile Club Section */}
+              <div className="space-y-2">
+                <div className="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-50 rounded-xl">
+                  Clubs
+                </div>
+                {clubs.map((club) => (
+                  <button
+                    key={club.id}
+                    onClick={() => handleClubClick(club.id)}
+                    className="flex items-center w-full px-6 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-xl transition-all duration-200 font-medium"
+                  >
+                    <span className="text-lg mr-3">{club.icon}</span>
+                    <span>{club.name}</span>
+                  </button>
+                ))}
+              </div>
+
               <Link 
                 to="/contest" 
                 className="block px-4 py-3 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-xl transition-all duration-200 font-medium"

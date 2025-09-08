@@ -107,7 +107,8 @@ const router=createBrowserRouter([
     path:"/event/:eventId",
     element:<EventPage/>
   },{
-    path:"/club",
+    // to render diffrent club ihave to diffrent route
+    path:"/club/:clubId",
     element:<Club/>
   },{
     path:"/createevent",

@@ -7,7 +7,7 @@ const router=express.Router();
 
 router.route("/").post(isloggedin,eventRegister);
 router.route("/:eventId").get(eventdetails);
-router.route("/allevent/:club").get(isloggedin,getAllEventsForClub)
+router.route("/allevent/:club").get(getAllEventsForClub)
 router.route("/notifications/send/all").post(isloggedin,sendtoall);
 router.route("/notifications/send/members").post(isloggedin,sendtomembers);
 router.route("/registerto/:eventId").post(isloggedin,registerToevent)

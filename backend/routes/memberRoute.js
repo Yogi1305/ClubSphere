@@ -11,5 +11,5 @@ router.route("/allmembers/:club").get(isloggedin,isAdmin,getAllMembers);
 router.route("/approve/:memberId").post(isloggedin,isAdmin,approvalToClub);
 router.route("/reject/:memberId").post(isloggedin,isAdmin,rejectToClub);
 router.route("/upgrade").post(isloggedin,isAdmin,toUpgrade);
-router.route("/postholders/:club").get(isloggedin,isAdmin,getPostHolders);
+router.route("/postholders/:club").get(getPostHolders);
 export default router;
