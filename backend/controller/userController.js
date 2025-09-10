@@ -44,51 +44,88 @@ export const register=async(req,res)=>{
 
 // login
 
-export const login=async(req,res)=>{
-    // fet userid
-    // console.log("User ID:", req.body);
-    const{email,passWord,pushsubscription}=req.body
-    if(!passWord || !email || !pushsubscription)
-        return res.status(400).json({message:"all fields are required"});
-   
-    const user=await User.findOne({email});
-    if(!user)
-        return res.status(400).json({message:"user is not register"});
+export const login = async (req, res) => {
+  try {
+    const { email, passWord, pushsubscription } = req.body;
     
-    const ispassword= await bcrypt.compare(passWord,user.passWord);
-    if(!ispassword)
-        return res.status(400).json({message:"incorrect password"});
-    
-     //  generate jwt token
-      const tokenData = { userId: user._id , role: user.role};
-      const token =  jwt.sign(tokenData, process.env.JWT_SECRET_KEY, {
-        expiresIn: "1d",
+    // Make pushsubscription optional
+    if (!passWord || !email) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User is not registered" });
+    }
+
+    const ispassword = await bcrypt.compare(passWord, user.passWord);
+    if (!ispassword) {
+      return res.status(400).json({ message: "Incorrect password" });
+    }
+
+    // Generate JWT token
+    const tokenData = { userId: user._id, role: user.role };
+    const token = jwt.sign(tokenData, process.env.JWT_SECRET_KEY, {
+      expiresIn: "1d",
+    });
+
+    // Handle push notification subscription (optional)
+    if (pushsubscription && pushsubscription.trim() !== '') {
+      try {
+        // Parse subscription safely
+        let parsedSubscription;
+        if (typeof pushsubscription === 'string') {
+          parsedSubscription = JSON.parse(pushsubscription);
+        } else {
+          parsedSubscription = pushsubscription;
+        }
+
+        const existingfire = await PushNotification.findOne({ userId: user._id });
+        
+        if (existingfire) {
+          existingfire.subscription = parsedSubscription;
+          await existingfire.save();
+          console.log("Push subscription updated for user:", user._id);
+        } else {
+          const newfire = await PushNotification.create({
+            userId: user._id,
+            subscription: parsedSubscription
+          });
+          console.log("New push subscription created for user:", user._id);
+        }
+      } catch (parseError) {
+        console.error("Error parsing push subscription:", parseError);
+        // Don't fail the login, just log the error
+        console.log("Login proceeding without push notification setup");
+      }
+    }
+
+    // Return success response
+    return res
+      .cookie("token", token, {
+        maxAge: 1 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      })
+      .status(200)
+      .json({
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        contact: user.contact,
+        success: true,
+        message: `Welcome back ${user?.fullName?.toUpperCase()}`,
       });
-      // console.log("token is ",token);
-      // firebasetoken
-      const newfire= await PushNotification.create({
-        userId: user._id,
-        subscription: JSON.parse(pushsubscription)
-      });
-     
-      console.log("Firebase token saved:", newfire);
-      return res
-        .cookie("token", token, {
-          maxAge: 1 * 24 * 60 * 60 * 1000,
-          httpOnly: true,
-          sameSite: "none",
-          secure: true,
-        })
-        .status(200)
-        .json({
-          _id: user._id,
-          fullName: user.fullName,
-          email: user.email,
-          contact: user.contact,
-          success: true,
-          message: `Welcome back ${user?.fullName?.toUpperCase()}`,
-        });
-    };
+
+  } catch (error) {
+    console.error("Login error:", error);
+    return res.status(500).json({ 
+      message: "Internal server error during login",
+      success: false 
+    });
+  }
+};
     // logout
     export const logout = async(req, res) => {
       try {
@@ -144,7 +181,39 @@ export const completecontest = async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+// this is to check the given user have joined the contest or not
+export const checkcompletecontest = async (req, res) => {
+  try {
+    const { contestId, userId } = req.body;
+    // console.log(contestId, userId);
 
+    const user = await User.findById({ _id: userId }); // Correct way to fetch a user
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // const alreadyGiven = user.contestgiven.some(id => id=== contestId);
+   const alreadyGiven = user.contestgiven.some(
+  id => id.toString() === contestId.toString()
+);
+
+
+
+
+    if (alreadyGiven) {
+      return res.status(200).json({ success: true });
+    }
+
+    // user.contestgiven.push(contestId);
+    // await user.save();
+
+    return res.status(200).json({ success: false });
+  } catch (error) {
+    console.error("Error in checkcompletecontest:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 export const userinfo=async(req,res)=>{
    const userId=req.id;
    console.log(userId);

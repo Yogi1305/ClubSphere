@@ -6,7 +6,7 @@ export const getQuizResult = async (req, res) => {
     const { ContestId } = req.body;
 
     // Validate ContestId
-    console.log(ContestId)
+    // console.log(ContestId)
     if (!ContestId) {
       return res.status(400).json({ message: "ContestId is required" });
     }
@@ -20,42 +20,49 @@ export const getQuizResult = async (req, res) => {
 
     // Aggregate to get results with user details, sorted by score
     const results = await Quiz.aggregate([
-      {
-        $match: { ContestId: contestObjectId },
-      },
-      {
-        $lookup: {
-          from: 'users', // The collection name is usually lowercase and plural
-          localField: 'UserId',
-          foreignField: '_id',
-          as: 'userData',
-        },
-      },
-      {
-        $unwind: '$userData',
-      },
-      {
-        $project: {
-          userId: '$UserId',
-          fullName: '$userData.fullName',
-          email: '$userData.email',
-          correctAnswerCount: 1,
-          wrongAnswerCount: { $size: '$wrongAnswer' },
-          totalAnswered: { 
-            $add: [
-              '$correctAnswerCount', 
-              { $size: '$wrongAnswer' }
-            ] 
-          }
-        },
-      },
-      {
-        $sort: { 
-          correctAnswerCount: -1,  // Primary sort by correct answers (desc)
-          wrongAnswerCount: 1      // Secondary sort by wrong answers (asc)
-        },
-      },
-    ]);
+  {
+    $match: { ContestId: contestObjectId },
+  },
+  {
+    $lookup: {
+      from: 'users',
+      localField: 'UserId',
+      foreignField: '_id',
+      as: 'userData',
+    },
+  },
+  { $unwind: '$userData' },
+
+  // 🔹 Join with Contest to get QuestionSet length
+  {
+    $lookup: {
+      from: 'contests',
+      localField: 'ContestId',
+      foreignField: '_id',
+      as: 'contestData',
+    },
+  },
+  { $unwind: '$contestData' },
+
+  {
+    $project: {
+      userId: '$UserId',
+      fullName: '$userData.fullName',
+      email: '$userData.email',
+      correctAnswerCount: 1,
+      wrongAnswerCount: { $size: '$wrongAnswer' },
+
+      // totalAnswered = contestData.QuestionSet.length
+      totalAnswered: { $size: '$contestData.QuestionSet' }
+    },
+  },
+  {
+    $sort: {
+      correctAnswerCount: -1,
+      wrongAnswerCount: 1
+    },
+  },
+]);
 
     // If no results found
     if (results.length === 0) {

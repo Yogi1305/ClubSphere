@@ -51,7 +51,7 @@ const RegistrationForm = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(true);
-  const [formStep, setFormStep] = useState(2);
+  const [formStep, setFormStep] = useState(1);
   const [otp, setOtp] = useState(null);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);

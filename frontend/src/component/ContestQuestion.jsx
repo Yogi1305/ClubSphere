@@ -5,22 +5,94 @@ import { Baseurl } from "../main";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 
 const ContestQuestion = () => {
   const location = useLocation();
-  const [contest, setContest] = useState(null); // Use state instead of let variable
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [contest, setContest] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [disabledQuestions, setDisabledQuestions] = useState({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(0);
+  const [timerActive, setTimerActive] = useState(false);
   const Navigate = useNavigate();
+
+  // Timer effect
+  useEffect(() => {
+    let interval = null;
+    
+    if (timerActive && timeRemaining > 0) {
+      interval = setInterval(() => {
+        setTimeRemaining(prev => {
+          if (prev <= 1) {
+            // Time's up - automatically submit
+            setTimerActive(false);
+            if (contest && contest._id) {
+              handlesubmit(contest._id, localStorage.getItem("userId1"));
+              toast.warning("Time's up! Contest submitted automatically.");
+            }
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else if (!timerActive) {
+      clearInterval(interval);
+    }
+
+    return () => clearInterval(interval);
+  }, [timerActive, timeRemaining, contest]);
+
+  // Calculate initial timer when contest data loads
+  useEffect(() => {
+    if (contest && contest.startDate && contest.endDate) {
+      const now = new Date().getTime();
+      const endTime = new Date(contest.endDate).getTime();
+      const startTime = new Date(contest.startDate).getTime();
+      
+      // Check if contest has started and not ended
+      if (now >= startTime && now < endTime) {
+        const remainingMs = endTime - now;
+        const remainingSeconds = Math.floor(remainingMs / 1000);
+        setTimeRemaining(remainingSeconds);
+        setTimerActive(true);
+      } else if (now >= endTime) {
+        // Contest has already ended
+        setTimeRemaining(0);
+        setTimerActive(false);
+        toast.error("Contest has already ended!");
+        Navigate("/contest");
+      } else {
+        // Contest hasn't started yet
+        toast.info("Contest hasn't started yet!");
+        Navigate("/contest");
+      }
+    }
+  }, [contest, Navigate]);
+
+  // Format time display
+  const formatTime = (seconds) => {
+    if (seconds <= 0) return "00:00:00";
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  // Get timer color based on remaining time
+  const getTimerColor = () => {
+    if (timeRemaining <= 300) return "text-red-500"; // Last 5 minutes
+    if (timeRemaining <= 900) return "text-yellow-500"; // Last 15 minutes
+    return "text-green-500";
+  };
 
   const getContestById = async () => {
     try {
       setLoading(true);
       const contestId = localStorage.getItem("contestid");
-      
+
       if (!contestId) {
         toast.error("No contest ID found");
         setLoading(false);
@@ -37,16 +109,16 @@ const ContestQuestion = () => {
           withCredentials: true,
         }
       );
-      
+
       const contestData = response?.data?.contest;
       console.log(contestData);
-      
+
       if (contestData) {
         setContest(contestData);
       } else {
         toast.error("Contest data not found");
       }
-      
+
       localStorage.removeItem("contestid");
     } catch (error) {
       console.log("Error in contestQuestion page frontend", error);
@@ -66,7 +138,9 @@ const ContestQuestion = () => {
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-indigo-600 to-purple-700">
         <div className="p-8 bg-white rounded-xl shadow-2xl">
           <h2 className="text-2xl font-bold text-indigo-600">Loading...</h2>
-          <p className="mt-4 text-gray-700">Please wait while we load the contest.</p>
+          <p className="mt-4 text-gray-700">
+            Please wait while we load the contest.
+          </p>
         </div>
       </div>
     );
@@ -129,9 +203,6 @@ const ContestQuestion = () => {
         }
       );
 
-      // console.log("Answer submitted successfully:", response.data);
-
-      // Show success toast
       toast.success("Answer submitted successfully!");
 
       // Disable the question after answering
@@ -162,6 +233,31 @@ const ContestQuestion = () => {
   };
 
   const currentQuestion = contest.QuestionSet[currentQuestionIndex];
+  
+  const handlesubmit = async (contestId, userId) => {
+    try {
+      // Stop the timer when submitting
+      setTimerActive(false);
+      setTimeRemaining(0);
+      
+      const response = await axios.post(
+        `${Baseurl}/complete`,
+        { contestId, userId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      
+      toast.success("Contest submitted successfully!");
+      Navigate("/contest");
+    } catch (error) {
+      console.log("Error in contestQuestion page frontend", error);
+      toast.error("Failed to submit contest. Please try again.");
+    }
+  };
 
   // Additional safety check for current question
   if (!currentQuestion) {
@@ -192,8 +288,25 @@ const ContestQuestion = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-700 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-700 p-6 relative">
       <ToastContainer />
+
+      {/* Fixed Timer in Top Right Corner */}
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="fixed top-6 right-6 z-50 bg-white/10 backdrop-blur-lg rounded-xl p-4 shadow-xl border border-white/20"
+      >
+        <div className="text-center">
+          <h2 className="text-sm font-medium text-white/80 mb-1">Time Left</h2>
+          <div className={`text-2xl font-bold ${getTimerColor()} font-mono bg-black/20 px-4 py-2 rounded-lg`}>
+            {formatTime(timeRemaining)}
+          </div>
+          {timeRemaining <= 300 && timeRemaining > 0 && (
+            <p className="text-red-300 text-xs mt-1 animate-pulse">⚠️ Hurry!</p>
+          )}
+        </div>
+      </motion.div>
 
       <div className="max-w-4xl mx-auto">
         {/* Contest Header */}
@@ -326,16 +439,14 @@ const ContestQuestion = () => {
             >
               Next
             </button>
-            {
-              currentQuestionIndex === contest.QuestionSet.length - 1 && (
-                <button
-      onClick={()=>Navigate('/contest')} 
-      className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition"
-    >
-      Submit
-    </button>
-              )
-            }
+            {currentQuestionIndex === contest.QuestionSet.length - 1 && (
+              <button
+                onClick={() => handlesubmit(contest._id, localStorage.getItem("userId1"))}
+                className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition"
+              >
+                Submit
+              </button>
+            )}
           </div>
         </motion.div>
 
