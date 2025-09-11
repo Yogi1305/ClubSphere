@@ -24,9 +24,11 @@ import axios from 'axios';
 import { Baseurl } from '../../main';
 import Member from './Member';
 import Clubdetails from './Clubdetails';
+import { useAuth } from '../../hook/Auth';
 const club="HOBBY";
 export default function ClubSpherePage() {
   const [activeSection, setActiveSection] = useState('club-details');
+  const {role,loading}=useAuth()
 
   const handlejoinclub=async()=>{
     try {
@@ -258,7 +260,9 @@ export default function ClubSpherePage() {
                   <Info className="w-4 h-4" />
                   <span>Club Details</span>
                 </button>
-                <button 
+                {/* event */}
+                {
+                 (role==='ADMI'||role===club) &&(<button 
                   onClick={() => setActiveSection('events')}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
                     activeSection === 'events' 
@@ -268,7 +272,10 @@ export default function ClubSpherePage() {
                 >
                   <Calendar className="w-4 h-4" />
                   <span>Events</span>
-                </button>
+                </button>)
+                }
+
+
                 <button 
                   onClick={() => setActiveSection('members')}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${

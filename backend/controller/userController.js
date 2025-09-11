@@ -71,34 +71,19 @@ export const login = async (req, res) => {
 
     // Handle push notification subscription (optional)
     if (pushsubscription && pushsubscription.trim() !== '') {
-      try {
-        // Parse subscription safely
-        let parsedSubscription;
-        if (typeof pushsubscription === 'string') {
-          parsedSubscription = JSON.parse(pushsubscription);
-        } else {
-          parsedSubscription = pushsubscription;
-        }
-
-        const existingfire = await PushNotification.findOne({ userId: user._id });
-        
-        if (existingfire) {
-          existingfire.subscription = parsedSubscription;
-          await existingfire.save();
-          console.log("Push subscription updated for user:", user._id);
-        } else {
+     
           const newfire = await PushNotification.create({
             userId: user._id,
-            subscription: parsedSubscription
+            subscription: pushsubscription
           });
           console.log("New push subscription created for user:", user._id);
-        }
-      } catch (parseError) {
-        console.error("Error parsing push subscription:", parseError);
+    }
+       else {
+        // console.error("Error parsing push subscription:", parseError);
         // Don't fail the login, just log the error
         console.log("Login proceeding without push notification setup");
       }
-    }
+    
 
     // Return success response
     return res
