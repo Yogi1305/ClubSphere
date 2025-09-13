@@ -3,6 +3,7 @@ import { Admin, checkcompletecontest, checklogging, completecontest, login, logo
 import { isloggedin } from "../middleware/isLoggedin.js";
 import { isAdmin } from "../middleware/isAdmin.js";
 import { test } from "../openAi/openAiConfig.js";
+import { updatetime } from "../controller/contestControllers.js";
 
 const router=express.Router();
 router.route("/register").post(register);
@@ -16,6 +17,7 @@ router.route("/generate").post(test)
 router.route("/getuser/:userId").get(userdata)
 router.route("/contest/my-contests").get(isloggedin,userinfo); 
 router.route("/resetpassword").post(resetpassword)
+router.route("/changetime").post(isloggedin,isAdmin,updatetime)
 
 
 export default router;

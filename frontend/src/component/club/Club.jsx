@@ -262,7 +262,7 @@ export default function ClubSpherePage() {
                 </button>
                 {/* event */}
                 {
-                 (role==='ADMI'||role===club) &&(<button 
+                 (role==='ADMIN'||role===club) &&(<button 
                   onClick={() => setActiveSection('events')}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
                     activeSection === 'events' 

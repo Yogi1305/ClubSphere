@@ -33,7 +33,7 @@ const userModel = mongoose.Schema(
     poll: { type: Number, default: 0 },
     Batch:{
        type:Number,
-       required:true
+       
     }
    
   },

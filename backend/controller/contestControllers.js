@@ -523,3 +523,26 @@ export const makePublic = async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
+
+
+
+// update time of contest
+export const updatetime=async(req,res)=>{
+  try {
+    console.log("timing")
+    const {contestId,startDate,endDate}=req.body;
+    if(!contestId)
+    return res.status(400).json({success:false,message:"contestId is required"})
+    const contest=await Contest.findById({_id:contestId});  
+    if(!contest)
+      return res.status(400).json({success:false,message:"contestId is not found"})
+    contest.startDate=startDate;
+    contest.endDate=endDate;
+    await contest.save()
+    return res.status(200).json({success:true,message:"time is updates"})
+  } catch (error) {
+    console.log("error in updating the time of contest",error);
+    return res.status(400).json({success:false,message:error})
+  }
+}

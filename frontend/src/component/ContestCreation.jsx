@@ -7,7 +7,7 @@ import { Baseurl } from "../main";
 import QuestionForm from "./Question.jsx";
 import Navbar from "./Navbar.jsx";
 import AigeneratedQuestion from "./AigeneratedQuestion.jsx";
-import { Eye } from "lucide-react";
+import { Eye, Clock } from "lucide-react";
 
 // Modal component for the question form
 const Modal = ({ isOpen, onClose, children }) => {
@@ -57,12 +57,241 @@ const Modal = ({ isOpen, onClose, children }) => {
   );
 };
 
+// Time Change Modal Component
+const TimeChangeModal = ({ isOpen, onClose, contestId, currentStartDate, currentEndDate, onUpdate }) => {
+  const [timeData, setTimeData] = useState({
+    startDate: "",
+    startTime: "",
+    endDate: "",
+    endTime: "",
+  });
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && currentStartDate && currentEndDate) {
+      // Parse current dates and set initial values
+      const start = new Date(currentStartDate);
+      const end = new Date(currentEndDate);
+      
+      setTimeData({
+        startDate: start.toISOString().split('T')[0],
+        startTime: start.toTimeString().slice(0, 5),
+        endDate: end.toISOString().split('T')[0],
+        endTime: end.toTimeString().slice(0, 5),
+      });
+    }
+  }, [isOpen, currentStartDate, currentEndDate]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setTimeData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleUpdateTime = async () => {
+    // Combine date and time
+    // console.log("hi")
+    const startDateTime = new Date(`${timeData.startDate}T${timeData.startTime}`);
+    const endDateTime = new Date(`${timeData.endDate}T${timeData.endTime}`);
+
+    // Validate dates
+    if (endDateTime <= startDateTime) {
+      toast.error("End date must be after start date");
+      return;
+    }
+
+    setIsUpdating(true);
+
+    try {
+      const response = await axios.post(
+        `${Baseurl}/changetime`,
+        {
+          contestId: contestId,
+          startDate: startDateTime.toISOString(),
+          endDate: endDateTime.toISOString(),
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "x-user-id": localStorage.getItem("userId1"),
+          },
+        }
+      );
+      console.log("change time",response);
+
+      toast.success("Contest time updated successfully!");
+      onUpdate(); // Refresh the contests list
+      onClose(); // Close the modal
+    } catch (error) {
+      console.error("Error updating contest time:", error);
+      toast.error(error?.response?.data?.message || "Failed to update contest time. Please try again.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-600 bg-opacity-75 flex items-center justify-center">
+      <div className="relative bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+        <div className="absolute top-4 right-4">
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 focus:outline-none"
+            aria-label="Close"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        
+        <div className="p-6">
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-gray-800 flex items-center">
+              <Clock className="w-5 h-5 mr-2 text-indigo-600" />
+              Change Contest Time
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">Update the start and end time for this contest</p>
+          </div>
+
+          <div className="space-y-4">
+            {/* Start Date and Time */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  name="startDate"
+                  value={timeData.startDate}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Start Time
+                </label>
+                <input
+                  type="time"
+                  name="startTime"
+                  value={timeData.startTime}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* End Date and Time */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  name="endDate"
+                  value={timeData.endDate}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  End Time
+                </label>
+                <input
+                  type="time"
+                  name="endTime"
+                  value={timeData.endTime}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 flex space-x-3">
+            <button
+              onClick={onClose}
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleUpdateTime}
+              disabled={isUpdating}
+              className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                isUpdating
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-indigo-600 hover:bg-indigo-700 text-white"
+              }`}
+            >
+              {isUpdating ? (
+                <span className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Updating...
+                </span>
+              ) : (
+                "Update Time"
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ContestCreation = () => {
   const navigate = useNavigate();
   
   // State for AI modal and selected contest
   const [aiModalOpen, setAiModalOpen] = useState(false);
   const [selectedAiContestId, setSelectedAiContestId] = useState(null);
+
+  // State for time change modal
+  const [timeChangeModalOpen, setTimeChangeModalOpen] = useState(false);
+  const [selectedTimeChangeContest, setSelectedTimeChangeContest] = useState(null);
 
   // Handler to open AI modal with specific contest ID
   const handleOpenAiModal = (contestId) => {
@@ -76,6 +305,18 @@ const ContestCreation = () => {
     setAiModalOpen(false);
     setSelectedAiContestId(null);
     console.log("Closing AI modal");
+  };
+
+  // Handler to open time change modal
+  const handleOpenTimeChangeModal = (contest) => {
+    setSelectedTimeChangeContest(contest);
+    setTimeChangeModalOpen(true);
+  };
+
+  // Handler to close time change modal
+  const handleCloseTimeChangeModal = () => {
+    setTimeChangeModalOpen(false);
+    setSelectedTimeChangeContest(null);
   };
 
   // State for contest creation
@@ -485,25 +726,32 @@ const ContestCreation = () => {
                         <h3 className="font-bold text-xl text-gray-800 line-clamp-1">
                           {contest.title}
                         </h3>
-                        {/* for view question */}
-                        <span className=" py-1 px-2 bg-gray-100 text-black-800 text-xs rounded-full cursor-pointer hover:bg-green-200 transition-colors flex items-center" onClick={() => navigate(`/questionview/${contest.id || contest._id}`)}>
-                          View Questions
-                        </span>
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full hover:cursor-pointer hover:bg-gray-200 transition-colors ${
-                            contest.isPublic
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                          onClick={() =>
-                            toggleContestVisibility(
-                              contest.id || contest._id,
+                        <div className="flex items-center space-x-1">
+                          {/* View Questions button */}
+                          <span 
+                            className="py-1 px-2 bg-gray-100 text-black-800 text-xs rounded-full cursor-pointer hover:bg-green-200 transition-colors flex items-center" 
+                            onClick={() => navigate(`/questionview/${contest.id || contest._id}`)}
+                          >
+                            <Eye className="w-3 h-3 mr-1" />
+                            View
+                          </span>
+                          {/* Public/Private toggle */}
+                          <span
+                            className={`px-2 py-1 text-xs rounded-full hover:cursor-pointer hover:bg-gray-200 transition-colors ${
                               contest.isPublic
-                            )
-                          }
-                        >
-                          {contest.isPublic ? "Public" : "Private"}
-                        </span>
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                            onClick={() =>
+                              toggleContestVisibility(
+                                contest.id || contest._id,
+                                contest.isPublic
+                              )
+                            }
+                          >
+                            {contest.isPublic ? "Public" : "Private"}
+                          </span>
+                        </div>
                       </div>
 
                       <p className="text-gray-600 mb-4 line-clamp-2 h-12">
@@ -567,6 +815,15 @@ const ContestCreation = () => {
                             {contest.QuestionSet?.length || 0} Questions
                           </span>
                         </div>
+                        
+                        {/* Change Time Button */}
+                        <button
+                          onClick={() => handleOpenTimeChangeModal(contest)}
+                          className="text-sm bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-lg transition-colors flex items-center"
+                        >
+                          <Clock className="w-3 h-3 mr-1" />
+                          Change Time
+                        </button>
                       </div>
 
                       <div className="flex mt-4 space-x-2">
@@ -664,7 +921,19 @@ const ContestCreation = () => {
           )}
         </Modal>
 
-        {/* AI Generated Question Modal - Moved outside the contest cards loop */}
+        {/* Time Change Modal */}
+        {selectedTimeChangeContest && (
+          <TimeChangeModal
+            isOpen={timeChangeModalOpen}
+            onClose={handleCloseTimeChangeModal}
+            contestId={selectedTimeChangeContest.id || selectedTimeChangeContest._id}
+            currentStartDate={selectedTimeChangeContest.startDate}
+            currentEndDate={selectedTimeChangeContest.endDate}
+            onUpdate={fetchContests}
+          />
+        )}
+
+        {/* AI Generated Question Modal */}
         {selectedAiContestId && (
           <AigeneratedQuestion
             isOpen={aiModalOpen}
