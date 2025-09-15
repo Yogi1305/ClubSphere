@@ -276,7 +276,8 @@ export default function ClubSpherePage() {
                 }
 
 
-                <button 
+                {
+                  (role==='ADMIN'||role===club )&&(<button 
                   onClick={() => setActiveSection('members')}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
                     activeSection === 'members' 
@@ -286,8 +287,12 @@ export default function ClubSpherePage() {
                 >
                   <Users className="w-4 h-4" />
                   <span>Members</span>
-                </button>
-                <button 
+                </button>)
+                }
+
+
+               { 
+                (role==='ADMIN'||role===club)&&( <button 
                   onClick={() => setActiveSection('gallery')}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
                     activeSection === 'gallery' 
@@ -297,8 +302,12 @@ export default function ClubSpherePage() {
                 >
                   <Image className="w-4 h-4" />
                   <span>Gallery</span>
-                </button>
-                <button 
+                </button>)
+               }
+
+
+              {
+                (role==='ADMIN'&&role===club)&&(  <button 
                   onClick={() => setActiveSection('notifications')}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
                     activeSection === 'notifications' 
@@ -308,7 +317,10 @@ export default function ClubSpherePage() {
                 >
                   <Bell className="w-4 h-4" />
                   <span>Notifications</span>
-                </button>
+                </button>)
+              }
+
+
                 <button 
                   onClick={() => setActiveSection('settings')}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${

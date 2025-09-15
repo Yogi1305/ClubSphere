@@ -149,7 +149,7 @@ export const getallcontest = async (req, res) => {
   try {
     const contests = await Contest.find()
       .sort({ createdAt: -1 })
-      .populate('QuestionSet') // Populate questions
+      .populate({path:'QuestionSet',select:'-Answer'}) // Populate questions
       .select('-__v'); // Exclude version key
 
     if (contests.length === 0) {
@@ -183,7 +183,9 @@ export const getContestById = async (req, res) => {
     console.log("hi",contestId);
     
     const contest = await Contest.findById(contestId)
-      .populate('QuestionSet') // Populate questions
+      .populate({path:'QuestionSet',
+        select:'-Answer'})
+       // Populate questions
       .select('-__v');
     
     if (!contest) {
