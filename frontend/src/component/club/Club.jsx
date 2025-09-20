@@ -138,7 +138,7 @@ export default function ClubSpherePage() {
                 </div>
               </div>
 
-              <div>
+              <div className='w-full '>
                 <h3 className="text-xl font-bold text-gray-900 mb-6">Post Holders</h3>
                 <Clubdetails club={club} />
               </div>
