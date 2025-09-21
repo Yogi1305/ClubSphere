@@ -34,6 +34,7 @@ import EventPage from "./component/EventPage.jsx";
 import Club from "./component/club/Club.jsx";
 import Createevent from "./component/club/Createevent.jsx";
 import Member from "./component/club/Member.jsx"
+import Galleryedit from "./component/club/Galleryedit.jsx";
 
 
 const router=createBrowserRouter([
@@ -116,6 +117,9 @@ const router=createBrowserRouter([
   },{
      path:"/member",
      element:<Member/>
+  },{
+    path:"gallery/:club/:id",
+    element:<Galleryedit/>
   }
 ]);
 

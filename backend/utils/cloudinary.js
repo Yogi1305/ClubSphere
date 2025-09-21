@@ -40,3 +40,40 @@ export const uploadOnCloudinary = async (filePath) => {
   }
 };
 
+// helper to extract public_id from Cloudinary URL
+export const extractPublicId = (url) => {
+  if (!url) return null;
+  const cleanUrl = url.split("?")[0];
+  const parts = cleanUrl.split("/upload/");
+  if (parts.length < 2) return null;
+
+  // remove extension
+  let filePath = parts[1].split(".")[0];
+
+  // remove version prefix if present (v123456...)
+  if (filePath.includes("/")) {
+    const segments = filePath.split("/");
+    filePath = segments.slice(1).join("/");
+  }
+
+  return filePath;
+};
+
+
+//  delete image from Cloudinary using URL
+export const deleteFromCloudinary = async (url) => {
+  const publicId = extractPublicId(url);
+  if (!publicId) {
+    console.error("Invalid Cloudinary URL:", url);
+    return null;
+  }
+
+  try {
+    const result = await cloudinary.uploader.destroy(publicId,{invalidate: true});
+    console.log("Delete result:", result);
+    return result;
+  } catch (error) {
+    console.error("Cloudinary delete error:", error);
+    return null;
+  }
+};

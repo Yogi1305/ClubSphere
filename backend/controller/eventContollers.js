@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Event from "../model/event.js";
 import EventUser from  "../model/eventanduser.js"
 import Gallery from "../model/gallery.js";
+import { deleteFromCloudinary, extractPublicId } from "../utils/cloudinary.js";
 // import eventanduser from "../model/eventanduser.js";
 
 
@@ -145,7 +146,7 @@ export const getAllEventsForClub = async (req, res) => {
 // get club gallery
 export const getClubGallery = async (req, res) => {
   const { club } = req.params;
-
+  console.log("club is ",club);
   try {
    const gallery = await Gallery.find({ club }).populate({
   path: "EventId",
@@ -162,3 +163,38 @@ res.json({ success: true, gallery });
     return res.status(500).json({ success: false, message: "server failure" });
   }
 };
+
+// get event gallery for specific event or event id
+export const getEventbyId=async (req, res) => {
+  try {
+     const {id } = req.params;
+     console.log("idis ",id);
+    const gallery = await Gallery.findOne({ EventId: id });
+    if (!gallery) {
+      return res.status(404).json({ message: "Gallery not found" });
+    }
+    res.status(201).json({ success: true, gallery });
+  } catch (error) {
+    console.log("error in fetching event gallery by id", error);
+    return res.status(500).json({ success: false, message: "server failure" });
+  }
+}
+
+// delte the image from cludinary and gallery
+export const deleteImage = async (req, res) => {
+  // console.log("req.body is ",req.body);
+   try {
+    const {data1,index}=req.body;
+    console.log("gallery is ",data1,index);
+    if(!data1 ||!index){
+      return res.status(400).json({ message: "Data or index is required" });
+    }
+    const gallery = await Gallery.findByIdAndUpdate(data1._id, { $pull: { imageUrl: data1.imageUrl[index] } }, { new: true });
+    
+    const result=deleteFromCloudinary(data1.imageUrl[index]);
+    console.log(result);
+    return res.status(200).json({ success: true, message: "Image deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting image:", error);
+  }
+}

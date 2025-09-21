@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Upload, X, Image, Send, Loader2, Plus, Camera, Eye, ChevronUp, ChevronDown } from 'lucide-react'
+import { Upload, X, Image, Send, Loader2, Plus, Camera, Eye, ChevronUp, ChevronDown, Edit, Calendar, MapPin, Users } from 'lucide-react'
 import axios from 'axios'
 import { Baseurl } from '../../main'
 import { toast } from 'react-toastify'
+import { Navigate, useNavigate } from 'react-router-dom'
 
 const Addgallery = ({ club }) => {
   const [events, setEvents] = useState([])
@@ -15,6 +16,7 @@ const Addgallery = ({ club }) => {
   const [participantsLoading, setParticipantsLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [eventsLoading, setEventsLoading] = useState(true)
+  const navigate=useNavigate();
 
   // Gallery form states
   const [formData, setFormData] = useState({
@@ -133,6 +135,11 @@ const Addgallery = ({ club }) => {
       title: `${event.title} Gallery`,
       description: `Gallery for ${event.title} event`
     })
+  }
+
+  // Handle edit event click
+  const handleEditEvent = (event) => {
+     navigate(`/gallery/${club}/${event._id}`)
   }
 
   // Close popup
@@ -257,15 +264,15 @@ const Addgallery = ({ club }) => {
 
   if (eventsLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 max-w-md w-full mx-4">
           <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-gradient-to-r from-blue-200 to-purple-200 rounded-lg"></div>
+            <div className="h-8 bg-gradient-to-r from-blue-200 to-purple-200 rounded-2xl"></div>
             <div className="space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-4 bg-gray-200 rounded-xl w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded-xl w-1/2"></div>
             </div>
-            <div className="h-32 bg-gray-200 rounded-lg"></div>
+            <div className="h-32 bg-gray-200 rounded-2xl"></div>
           </div>
           <p className="text-center text-gray-600 mt-4 font-medium">Loading events...</p>
         </div>
@@ -275,8 +282,8 @@ const Addgallery = ({ club }) => {
 
   if (!events || events.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 text-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 max-w-md w-full mx-4 text-center">
           <Camera className="mx-auto h-16 w-16 text-gray-400 mb-4" />
           <h2 className="text-2xl font-bold text-gray-800 mb-2">No Events Found</h2>
           <p className="text-gray-600">No events available for this club yet.</p>
@@ -286,13 +293,13 @@ const Addgallery = ({ club }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-            Event Gallery Manager
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-8 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-slate-900 via-blue-600 to-indigo-700 bg-clip-text text-transparent mb-4">
+            Event Gallery Hub
           </h1>
-          <p className="text-gray-600 text-lg">Manage galleries for your events</p>
+          <p className="text-gray-600 text-xl font-medium">Create stunning galleries for your events</p>
         </div>
 
         {/* Events Grid */}
@@ -300,68 +307,105 @@ const Addgallery = ({ club }) => {
           {events.map((event, index) => (
             <div 
               key={event._id || index} 
-              className="bg-white rounded-3xl shadow-xl overflow-hidden backdrop-blur-lg bg-opacity-95 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+              className="group bg-white/60 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 overflow-hidden hover:shadow-2xl hover:bg-white/80 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]"
             >
-              {/* Event Image */}
-              {event.imageurl && (
-                <div className="relative h-48 overflow-hidden">
-                  <img 
-                    src={event.imageurl} 
-                    alt={event.title} 
-                    className="w-full h-full object-cover" 
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                  
-                  {/* Eye icon in top right corner */}
-                  <button
+              {/* Event Image with Overlay */}
+              <div className="relative h-56 overflow-hidden">
+                {event.imageurl ? (
+                  <>
+                    <img 
+                      src={event.imageurl} 
+                      alt={event.title} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                  </>
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                    <Camera className="w-16 h-16 text-gray-400" />
+                  </div>
+                )}
+                
+                {/* Action Buttons */}
+                <div className="absolute top-4 right-4 flex space-x-2">
+                  {/* <button
                     onClick={() => handleViewParticipants(event)}
-                    className="absolute top-3 right-3 p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all duration-200"
+                    className="p-2.5 bg-white/20 backdrop-blur-md rounded-full hover:bg-white/30 transition-all duration-200 group/btn"
                     title="View Participants"
                   >
-                    <Eye className="w-5 h-5 text-white" />
+                    <Eye className="w-5 h-5 text-white group-hover/btn:scale-110 transition-transform" /> */}
+                  {/* </button> */}
+                  <button
+                    onClick={() => handleEditEvent(event)}
+                    className="p-2.5 bg-white/20 backdrop-blur-md rounded-full hover:bg-white/30 transition-all duration-200 group/btn"
+                    title="Edit Event"
+                  >
+                    <Edit className="w-5 h-5 text-white group-hover/btn:scale-110 transition-transform" />
                   </button>
                 </div>
-              )}
+                
+                {/* Event Status Badge */}
+                <div className="absolute top-4 left-4">
+                  <div className="px-3 py-1 bg-emerald-500/90 backdrop-blur-md rounded-full">
+                    <span className="text-white text-sm font-semibold">Active</span>
+                  </div>
+                </div>
+              </div>
               
               {/* Event Content */}
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-3 line-clamp-2">
-                  {event.title}
-                </h3>
+                <div className="mb-4">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                    {event.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
+                    {event.description}
+                  </p>
+                </div>
                 
-                <p className="text-gray-600 mb-4 line-clamp-3">
-                  {event.description}
-                </p>
-                
-                {/* Event Details */}
+                {/* Event Meta Information */}
                 <div className="space-y-3 mb-6">
                   {/* Location */}
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <span className="truncate">{event.location}</span>
+                  <div className="flex items-center space-x-3 text-sm text-gray-700">
+                    <div className="p-2 bg-blue-100 rounded-full">
+                      <MapPin className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <span className="font-medium truncate">{event.location}</span>
                   </div>
                   
                   {/* Date */}
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>{new Date(event.start).toLocaleDateString()}</span>
+                  <div className="flex items-center space-x-3 text-sm text-gray-700">
+                    <div className="p-2 bg-purple-100 rounded-full">
+                      <Calendar className="w-4 h-4 text-purple-600" />
+                    </div>
+                    <span className="font-medium">{new Date(event.start).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}</span>
+                  </div>
+                  
+                  {/* Participants Count */}
+                  <div className="flex items-center space-x-3 text-sm text-gray-700 cursor-pointer" onClick={()=>handleViewParticipants(event)}>
+                    <div className="p-2 bg-emerald-100 rounded-full">
+                      <Users className="w-4 h-4 text-emerald-600" />
+                    </div>
+                    <span  className="font-medium">View participants</span>
                   </div>
                 </div>
                 
-                {/* Add Gallery Button (removed Upload icon) */}
+                {/* Add Gallery Button */}
                 <button
                   onClick={() => handleAddGallery(event)}
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold py-3 px-4 rounded-xl hover:from-green-600 hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                  className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white font-bold py-4 px-6 rounded-2xl hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-3 group/button"
                 >
-                  <Plus className="w-5 h-5" />
-                  <span>Add Gallery</span>
+                  <Plus className="w-5 h-5 group-hover/button:rotate-90 transition-transform duration-300" />
+                  <span>Create Gallery</span>
                 </button>
               </div>
+              
+              {/* Card Bottom Accent */}
+              <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500"></div>
             </div>
           ))}
         </div>
@@ -369,9 +413,9 @@ const Addgallery = ({ club }) => {
         {/* Participants Modal */}
         {showParticipantsModal && selectedEvent && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
-            <div className="bg-white rounded-3xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 max-w-6xl w-full max-h-[90vh] overflow-hidden">
               {/* Modal Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 flex items-center justify-between">
+              <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white p-6 flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold">Event Participants</h2>
                   <p className="text-blue-100 mt-1">{selectedEvent.title}</p>
@@ -399,27 +443,27 @@ const Addgallery = ({ club }) => {
                 </div>
 
                 {/* Participants Table */}
-                <div className="overflow-x-auto max-h-96">
+                <div className="overflow-x-auto max-h-96 rounded-2xl border border-gray-200">
                   {participantsLoading ? (
                     <div className="flex items-center justify-center py-8">
                       <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
                       <span className="ml-2 text-gray-600">Loading participants...</span>
                     </div>
                   ) : sortedParticipants.length > 0 ? (
-                    <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <table className="min-w-full bg-white">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                             #
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                             Student Name
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                             Email
                           </th>
                           <th 
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                            className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                             onClick={handleBatchSort}
                           >
                             <div className="flex items-center">
@@ -427,31 +471,31 @@ const Addgallery = ({ club }) => {
                               {getBatchSortIcon()}
                             </div>
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                             Contact Number
                           </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
                         {sortedParticipants.map((participant, index) => (
-                          <tr key={participant._id || index} className="hover:bg-gray-50">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <tr key={participant._id || index} className="hover:bg-gray-50 transition-colors">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                               {index + 1}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900">
+                              <div className="text-sm font-semibold text-gray-900">
                                 {participant.UserId?.fullName || 'N/A'}
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">{participant.UserId?.email || 'N/A'}</div>
+                              <div className="text-sm text-gray-700">{participant.UserId?.email || 'N/A'}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                              <span className="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-800">
                                 {participant.UserId?.batch || 'N/A'}
                               </span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
                               {participant.UserId?.contact || 'N/A'}
                             </td>
                           </tr>
@@ -473,11 +517,11 @@ const Addgallery = ({ club }) => {
         {/* Gallery Upload Popup */}
         {showGalleryForm && selectedEvent && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
-            <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
               {/* Popup Header */}
-              <div className="sticky top-0 bg-white rounded-t-3xl border-b border-gray-200 p-6 flex items-center justify-between">
+              <div className="sticky top-0 bg-white/95 backdrop-blur-xl rounded-t-3xl border-b border-gray-200 p-6 flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-800">Add Gallery</h2>
+                  <h2 className="text-2xl font-bold text-gray-800">Create Gallery</h2>
                   <p className="text-gray-600 mt-1">For event: {selectedEvent.title}</p>
                 </div>
                 <button
@@ -493,7 +537,7 @@ const Addgallery = ({ club }) => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Title Input */}
                   <div>
-                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="title" className="block text-sm font-bold text-gray-700 mb-2">
                       Gallery Title *
                     </label>
                     <input
@@ -502,7 +546,7 @@ const Addgallery = ({ club }) => {
                       name="title"
                       value={formData.title}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                       placeholder="Enter gallery title..."
                       required
                     />
@@ -510,7 +554,7 @@ const Addgallery = ({ club }) => {
 
                   {/* Description Input */}
                   <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="description" className="block text-sm font-bold text-gray-700 mb-2">
                       Description
                     </label>
                     <textarea
@@ -519,22 +563,22 @@ const Addgallery = ({ club }) => {
                       value={formData.description}
                       onChange={handleInputChange}
                       rows="4"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                       placeholder="Enter gallery description..."
                     />
                   </div>
 
                   {/* File Upload Area */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-gray-700 mb-2">
                       Gallery Images *
                     </label>
                     
                     <div
-                      className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                      className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 ${
                         dragActive 
-                          ? 'border-blue-500 bg-blue-50' 
-                          : 'border-gray-300 hover:border-gray-400'
+                          ? 'border-blue-500 bg-blue-50 scale-105' 
+                          : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
                       }`}
                       onDragEnter={handleDrag}
                       onDragLeave={handleDrag}
@@ -550,7 +594,7 @@ const Addgallery = ({ club }) => {
                       />
                       
                       <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <p className="text-lg font-medium text-gray-700 mb-2">
+                      <p className="text-lg font-bold text-gray-700 mb-2">
                         Drop images here or click to browse
                       </p>
                       <p className="text-sm text-gray-500">
@@ -562,17 +606,17 @@ const Addgallery = ({ club }) => {
                   {/* Selected Files Preview */}
                   {files.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-4">
+                      <h3 className="text-lg font-bold text-gray-900 mb-4">
                         Selected Images ({files.length})
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-80 overflow-y-auto">
                         {files.map((file, index) => (
-                          <div key={index} className="relative bg-gray-50 rounded-lg p-4">
+                          <div key={index} className="relative bg-white rounded-2xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow">
                             <div className="flex items-start justify-between">
                               <div className="flex items-start space-x-3 flex-1">
                                 <Image className="h-6 w-6 text-gray-400 mt-1" />
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium text-gray-900 truncate">
+                                  <p className="text-sm font-semibold text-gray-900 truncate">
                                     {file.name}
                                   </p>
                                   <p className="text-xs text-gray-500">
@@ -594,7 +638,7 @@ const Addgallery = ({ club }) => {
                               <img
                                 src={URL.createObjectURL(file)}
                                 alt={file.name}
-                                className="w-full h-32 object-cover rounded border"
+                                className="w-full h-32 object-cover rounded-xl border"
                               />
                             </div>
                           </div>
@@ -614,7 +658,7 @@ const Addgallery = ({ club }) => {
                         })
                         setFiles([])
                       }}
-                      className="sm:flex-none bg-gray-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-gray-600 transition-colors disabled:opacity-50"
+                      className="sm:flex-none bg-gray-500 text-white font-bold py-3 px-6 rounded-2xl hover:bg-gray-600 transition-colors disabled:opacity-50"
                       disabled={loading}
                     >
                       Reset
@@ -623,7 +667,7 @@ const Addgallery = ({ club }) => {
                     <button
                       type="submit"
                       disabled={loading || !formData.title.trim() || files.length === 0}
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center space-x-2"
+                      className="flex-1 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-2xl hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
                     >
                       {loading ? (
                         <>
@@ -641,7 +685,7 @@ const Addgallery = ({ club }) => {
                     <button
                       type="button"
                       onClick={closePopup}
-                      className="sm:flex-none bg-gray-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-gray-600 transition-colors"
+                      className="sm:flex-none bg-gray-500 text-white font-bold py-3 px-6 rounded-2xl hover:bg-gray-600 transition-colors"
                       disabled={loading}
                     >
                       Cancel
