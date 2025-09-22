@@ -16,13 +16,14 @@ export const addgallery = async (req, res) => {
       const url = await uploadOnCloudinary(file.path);
       if (url) urls.push(url);
     }
-
+   console.log(urls)
     
     let gallery = await Gallery.findOne({ EventId: eventId, club: club });
 
     if (gallery) {
       
       gallery.imageUrl.push(...urls);
+      console.log(gallery)
       await gallery.save();
       return res.json({
         success: true,
