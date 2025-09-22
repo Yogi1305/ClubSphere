@@ -19,7 +19,9 @@ export default function EventPage({club}) {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get(`${Baseurl}/event/allevent/${club}`);
+        const res = await axios.get(`${Baseurl}/event/allevent/${club}`,{headers:{
+          "Content-Type":"application/json"
+        },      withCredentials:true});
         console.log(res.data);
         setEvents(res.data.events);
       } catch (err) {

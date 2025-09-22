@@ -49,9 +49,9 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get(`${Baseurl}/logout`, {
-        withCredentials: true
-      });
+      await axios.get(`${Baseurl}/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true });
+        
+     
       localStorage.removeItem('userId1');
       localStorage.removeItem('contestid');
       setIsLoggedIn(false);

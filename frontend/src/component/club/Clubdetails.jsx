@@ -17,6 +17,7 @@ const Clubdetails = ({ club }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                withCredentials: true,
             });
             console.log('Club details response:', response.data.data);
             setClubDetails(response.data.data);

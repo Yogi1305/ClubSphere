@@ -159,7 +159,7 @@ const RegistrationForm = () => {
     try {
       const response = await axios.post(`${Baseurl}/otp/otpverify`, {
         otp: otp,
-      });
+      },{headers:{"Content-Type":"application/json"}, withCredentials:true,});
 
       toast.success(response?.data?.message || "OTP verified successfully!");
       setOtpVerified(true);
@@ -182,7 +182,7 @@ const RegistrationForm = () => {
     try {
       const response = await axios.post(`${Baseurl}/otp/otpsend`, {
         email: formData.email,
-      });
+      },{headers:{"Content-Type":"application/json"}, withCredentials:true,});
 
       toast.success(response?.data?.message || "OTP sent successfully!");
       setOtpSent(true);

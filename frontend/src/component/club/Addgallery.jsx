@@ -236,7 +236,7 @@ const Addgallery = ({ club }) => {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
           console.log(`Upload Progress: ${percentCompleted}%`)
-        }
+        },withCredentials: true,
       })
 
       console.log('Gallery created successfully:', response.data)

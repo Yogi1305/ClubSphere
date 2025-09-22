@@ -9,7 +9,7 @@ const Profile = () => {
     const userId = localStorage.getItem('userId1');
      
     try {
-      const response = await axios.get(`${Baseurl}/getuser/${userId}`);
+      const response = await axios.get(`${Baseurl}/getuser/${userId}`,{headers:{"Content-Type":"application/json"}, withCredentials:true,});
       setuserdata(response.data);
       console.log(response.data);
     } catch (error) {

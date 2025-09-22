@@ -66,9 +66,9 @@ export default function ClubSpherePage() {
                     <div className="ml-4">return collaboration + creativity;</div>
                   </div>
                   <div className="absolute top-16 right-8 text-blue-300 text-xs font-mono opacity-60">
-                    <div>&lt;TechClub&gt;</div>
+                    <div>&lt;Hobby Club&gt;</div>
                     <div className="ml-4">&lt;Innovation /&gt;</div>
-                    <div>&lt;/TechClub&gt;</div>
+                    <div>&lt;/Hobby Club&gt;</div>
                   </div>
                 </div>
               </div>
@@ -79,7 +79,7 @@ export default function ClubSpherePage() {
                     <Code className="w-10 h-10 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-4xl font-bold text-white mb-2">Tech Club</h1>
+                    <h1 className="text-4xl font-bold text-white mb-2">Hobby Club</h1>
                     <p className="text-blue-100 text-xl mb-4">Innovate. Create. Collaborate.</p>
                     <div className="flex items-center space-x-6 text-white">
                       <div className="flex items-center space-x-2">
@@ -112,13 +112,31 @@ export default function ClubSpherePage() {
             <div className="grid lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <div className="bg-white rounded-xl p-6 shadow-sm">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">About Tech Club</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">About Hobby Club</h2>
                   <p className="text-gray-700 leading-relaxed">
-                    The Tech Club exists to foster innovation and technical skills among university 
-                    students. We provide a collaborative environment where tech enthusiasts can learn, 
-                    create, and grow together. Members gain hands-on experience through workshops, 
-                    hackathons, and industry networking events.
+                    A Hobby Club is a group or community where people with shared interests come together to explore, practice, and enjoy their hobbies. It’s common in colleges, schools, and workplaces as an extracurricular or co-curricular activity.
+                    
                   </p>
+                  <h3 className="text-red-500 mt-4">🎯 Purpose of a Hobby Club</h3>
+
+            <ul className="mt-2 space-y-2 list-none">
+              <li className="flex items-start gap-3">
+                <span className="mt-1 inline-flex h-3 w-3 rounded-full bg-indigo-500" />
+                <span>Provide a platform for members to pursue interests outside academics/work.</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-1 inline-flex h-3 w-3 rounded-full bg-pink-500" />
+                <span>Encourage creativity, innovation, and teamwork.</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-1 inline-flex h-3 w-3 rounded-full bg-amber-400" />
+                <span>Offer relaxation and stress relief through engaging activities.</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-1 inline-flex h-3 w-3 rounded-full bg-emerald-500" />
+                <span>Help in personality development and skill-building.</span>
+              </li>
+            </ul>
                 </div>
               </div>
 

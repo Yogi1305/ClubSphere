@@ -23,7 +23,12 @@ const AigeneratedQuestion = ({ isOpen, onClose, onSave ,contestId}) => {
         number,topic
       }
        try {
-           const respomse=await axios.post(`${Baseurl}/generate`,data)
+           const respomse=await axios.post(`${Baseurl}/generate`,data,{
+             headers:{
+              'Content-Type':'application/json'
+             },
+             withCredentials:true
+           })
            console.log(respomse)
            setQuestions(respomse.data);
            setIsGenerating(false);

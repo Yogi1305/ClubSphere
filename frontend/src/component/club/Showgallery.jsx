@@ -1,9 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { useKeenSlider } from 'keen-slider/react';
-import 'keen-slider/keen-slider.min.css';
-import { ChevronLeft, ChevronRight, MapPin, Clock, Calendar, X } from 'lucide-react';
-import { Baseurl } from '../../main';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useKeenSlider } from "keen-slider/react";
+import "keen-slider/keen-slider.min.css";
+import {
+  ChevronLeft,
+  ChevronRight,
+  MapPin,
+  Clock,
+  Calendar,
+  X,
+} from "lucide-react";
+import { Baseurl } from "../../main";
+import axios from "axios";
 
 const Showgallery = ({ club }) => {
   const [gallery, setGallery] = useState([]);
@@ -14,11 +21,14 @@ const Showgallery = ({ club }) => {
   const getgallery = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${Baseurl}/event/gallery/${club}`);
+      const response = await axios.get(`${Baseurl}/event/gallery/${club}`, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
       setGallery(response.data.gallery);
       console.log(response.data.gallery);
     } catch (error) {
-      console.error('Error fetching gallery:', error);
+      console.error("Error fetching gallery:", error);
     }
     setLoading(false);
   };
@@ -40,26 +50,26 @@ const Showgallery = ({ club }) => {
   // Close modal on ESC key
   useEffect(() => {
     const handleEsc = (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         closeModal();
       }
     };
-    
+
     if (showModal) {
-      document.addEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", handleEsc);
+      document.body.style.overflow = "hidden";
     }
-    
+
     return () => {
-      document.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'unset';
+      document.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "unset";
     };
   }, [showModal]);
 
   // Individual event gallery component
   const EventGallery = ({ item, index }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
-    
+
     const [sliderRef, instanceRef] = useKeenSlider({
       loop: item.imageUrl && item.imageUrl.length > 1,
       slides: {
@@ -70,15 +80,18 @@ const Showgallery = ({ club }) => {
         setCurrentSlide(slider.track.details.rel);
       },
       breakpoints: {
-        '(min-width: 640px)': {
+        "(min-width: 640px)": {
           slides: {
             perView: item.imageUrl && item.imageUrl.length >= 2 ? 2 : 1,
             spacing: 20,
           },
         },
-        '(min-width: 1024px)': {
+        "(min-width: 1024px)": {
           slides: {
-            perView: item.imageUrl && item.imageUrl.length >= 3 ? 3 : item.imageUrl?.length || 1,
+            perView:
+              item.imageUrl && item.imageUrl.length >= 3
+                ? 3
+                : item.imageUrl?.length || 1,
             spacing: 25,
           },
         },
@@ -112,7 +125,7 @@ const Showgallery = ({ club }) => {
           ) : (
             <p className="text-gray-500">No event details available</p>
           )}
-          
+
           <div className="bg-gray-100 rounded-lg p-8 text-center">
             <p className="text-gray-500">No images available</p>
           </div>
@@ -161,12 +174,9 @@ const Showgallery = ({ club }) => {
                     className="w-full h-80 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
                     onClick={() => openModal(image, item.EventId?.title)}
                     onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/600x400?text=Image+Not+Found';
+                      e.target.src = "https://placehold.co/600x400";
                     }}
                   />
-                  
-                
-                 
                 </div>
               </div>
             ))}
@@ -200,8 +210,8 @@ const Showgallery = ({ club }) => {
                   onClick={() => instanceRef.current?.moveToIdx(imgIndex)}
                   className={`w-2 h-2 rounded-full transition-all duration-200 ${
                     imgIndex === currentSlide
-                      ? 'bg-blue-600 scale-125'
-                      : 'bg-gray-300 hover:bg-gray-400'
+                      ? "bg-blue-600 scale-125"
+                      : "bg-gray-300 hover:bg-gray-400"
                   }`}
                 />
               ))}
@@ -251,7 +261,7 @@ const Showgallery = ({ club }) => {
 
       {/* Modal for enlarged image */}
       {showModal && modalImage && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50 p-4"
           onClick={closeModal}
         >
@@ -267,7 +277,7 @@ const Showgallery = ({ club }) => {
             {/* Modal Image */}
             <img
               src={modalImage.imageUrl}
-              alt={modalImage.eventTitle || 'Gallery image'}
+              alt={modalImage.eventTitle || "Gallery image"}
               className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             />
@@ -275,7 +285,9 @@ const Showgallery = ({ club }) => {
             {/* Event title in modal */}
             {modalImage.eventTitle && (
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent text-white p-6 rounded-b-lg">
-                <h3 className="text-xl font-bold text-center">{modalImage.eventTitle}</h3>
+                <h3 className="text-xl font-bold text-center">
+                  {modalImage.eventTitle}
+                </h3>
               </div>
             )}
           </div>

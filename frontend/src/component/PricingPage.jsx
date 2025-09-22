@@ -106,10 +106,10 @@ export default function PricingPage() {
      localStorage.setItem("cn",contestnumber);
     //  console.log(userId)
    try {
-     const { data } = await axios.get(`${Baseurl}/payment/getkey`);
+     const { data } = await axios.get(`${Baseurl}/payment/getkey`,{headers:{"Content-Type":"application/json" ,"x-user-id":userId,}, withCredentials:true,});
     // console.log(data);
     const key = data.key;
-    const response = await axios.post(`${Baseurl}/payment/order`, { amount });
+    const response = await axios.post(`${Baseurl}/payment/order`, { amount },{headers:{"Content-Type":"application/json" ,"x-user-id":userId,}, withCredentials:true,});
     // console.log(response.data.response);
    
     
@@ -132,7 +132,7 @@ export default function PricingPage() {
             razorpay_signature:response.razorpay_signature,
             userId:userId,
             contestnumber:contestnumber,
-         })
+         },{headers:{"Content-Type":"application/json" ,"x-user-id":userId,}, withCredentials:true,})
          if(data.success)
          {
               

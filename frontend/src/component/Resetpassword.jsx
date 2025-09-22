@@ -52,7 +52,7 @@ const Resetpassword = () => {
             const response = await axios.post(`${Baseurl}/resetpassword`, {
                 email,
                 newPassword
-            });
+            },{headers:{"Content-Type":"application/json"}, withCredentials:true,});
             if (response.status == 200) {
                  navigate('/login'); // Redirect to login page after successful reset
             }

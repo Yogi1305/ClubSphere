@@ -38,7 +38,7 @@ const PollDisplay = ({ poll, onBack }) => {
         pollId,
         index,
         userId,
-      });
+      },{ headers: { 'Content-Type': 'application/json'  } , withCredentials: true });
       // console.log(res);
       toast.success("polling successfully");
     } catch (error) {
@@ -292,7 +292,7 @@ const PollCreator = () => {
   // Move useEffect to the top with other hooks
   const getdata = async () => {
     try {
-      const response = await axios.get(`${Baseurl}/voting/getpolls`);
+      const response = await axios.get(`${Baseurl}/voting/getpolls`,{headers: {'Content-Type': 'application/json' },withCredentials: true});
       setPolls(response.data.recentPolls);
       // console.log(response.data.recentPolls);
     } catch (error) {
@@ -400,7 +400,7 @@ const PollCreator = () => {
         userId: userId,
       };
       try {
-        const res = await axios.post(`${Baseurl}/voting/create`, formattedData);
+        const res = await axios.post(`${Baseurl}/voting/create`, formattedData,{headers: {'Content-Type': 'application/json' },withCredentials: true  });
         if (res.data.success) {
           toast.success("Poll created successfully!");
           // Refresh the polls list
