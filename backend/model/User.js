@@ -10,6 +10,7 @@ const userModel = mongoose.Schema(
 
     email: {
       type: String,
+      unique: true,
     },
 
     contact: {
