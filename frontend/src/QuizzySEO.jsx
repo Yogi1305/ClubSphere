@@ -4,26 +4,26 @@ const QuizzySEO = () => {
   return (
     <Helmet>
       {/* Title */}
-      <title>Quizzy - Create Quizzes, Polls & Contests with Prizes at Low Cost</title>
+      <title>ClubSphere - Create Quizzes, Polls & Contests with Prizes at Low Cost</title>
 
       {/* Meta description */}
       <meta
         name="description"
-        content="Quizzy lets you easily create engaging quizzes, polls, and contests with exciting prizes – all at the lowest cost. Join now and make learning fun!"
+        content="Clubsphere lets you easily create engaging quizzes, polls, and contests with exciting prizes – all at the lowest cost. Join now and make learning fun!"
       />
 
       {/* Canonical */}
-      <link rel="canonical" href="https://quizzy13.vercel.app" />
+      <link rel="canonical" href="https://theclubsphere.vercel.app" />
 
       {/* Open Graph */}
-      <meta property="og:title" content="Quizzy - Affordable Quizzes, Polls & Contests " />
+      <meta property="og:title" content="Clubsphere - Affordable Quizzes, Polls & Contests " />
       <meta
         property="og:description"
         content="Host your own quiz contests and polls with ease. Offer prizes and engage your audience for as little as ₹10 per contest!"
       />
       <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://quizzy13.vercel.app" />
-      <meta property="og:image" content="https://quizzy13.vercel.app" />
+      <meta property="og:url" content="https://theclubsphere.vercel.app" />
+      <meta property="og:image" content="https://theclubsphere.vercel.app" />
 
       {/* Twitter Card */}
       {/* <meta name="twitter:card" content="summary_large_image" />
@@ -40,7 +40,7 @@ const QuizzySEO = () => {
       {/* Keywords */}
       <meta
         name="keywords"
-        content="quiz platform, create quiz, online poll, contest with prize, affordable quiz contests, Quizzy app, run polls, interactive quizzes, host quiz games"
+        content="quiz platform, create quiz, online poll, contest with prize, affordable quiz contests, Clubsphere app, run polls, interactive quizzes, host quiz games"
       />
     </Helmet>
   );
