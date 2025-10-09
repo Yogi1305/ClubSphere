@@ -47,7 +47,7 @@ export const register=async(req,res)=>{
 export const login = async (req, res) => {
   try {
     const { email, passWord, pushsubscription } = req.body;
-    
+    console.log("push",pushsubscription)
     // Make pushsubscription optional
     if (!passWord || !email) {
       return res.status(400).json({ message: "Email and password are required" });
@@ -69,18 +69,31 @@ export const login = async (req, res) => {
       expiresIn: "1d",
     });
 
+
+    
     // Handle push notification subscription (optional)
     if (pushsubscription && pushsubscription.trim() !== '') {
      
-          const newfire = await PushNotification.create({
+        // Check if a subscription already exists for this user
+        const push=JSON.parse(pushsubscription)
+        const existingSubscription = await PushNotification.findOne({ userId: user._id });
+        if (existingSubscription) {
+          // Update the existing subscription
+          existingSubscription.subscription = push;
+          await existingSubscription.save();
+          console.log("Push notification subscription updated");
+        } else {
+          // Create a new subscription
+          const newSubscription = new PushNotification({
             userId: user._id,
-            subscription: pushsubscription
+            subscription: push,
           });
-          console.log("New push subscription created for user:", user._id);
+          await newSubscription.save();
+          console.log("Push notification subscription saved");
+        }
     }
        else {
-        // console.error("Error parsing push subscription:", parseError);
-        // Don't fail the login, just log the error
+        
         console.log("Login proceeding without push notification setup");
       }
     
