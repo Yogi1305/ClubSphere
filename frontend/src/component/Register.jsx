@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Baseurl } from "../main";
-import Navbar from "./Navbar";
-// import firebase from 'firebase/compat/app';
+import { Baseurl } from '../main';
 
 // Custom Logo Component
 const QuizLogo = () => (
@@ -46,27 +44,36 @@ const RegistrationForm = () => {
     passWord: "",
     contestgiven: [],
     confirmPassword: "",
-   Batch:null
+    Batch: null
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [formStep, setFormStep] = useState(1);
-  const [otp, setOtp] = useState(null);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpVerified, setOtpVerified] = useState(false);
-
- 
+  const [emailValid, setEmailValid] = useState(true);
+  
+  // COMMENTED OUT: OTP Logic
+  // const [otp, setOtp] = useState(null);
+  // const [otpSent, setOtpSent] = useState(false);
+  // const [otpVerified, setOtpVerified] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? checked : value;
 
-    if(name=="Batch")
+    if (name === "Batch") {
       setFormData({ ...formData, [name]: Number(value) });
+      return;
+    }
 
     setFormData({ ...formData, [name]: newValue });
-   
+
+    // Email validation for @knit.ac.in domain
+    if (name === "email") {
+      const isValidEmail = value.endsWith("@knit.ac.in");
+      setEmailValid(isValidEmail);
+    }
+
     // Check password match when either password field changes
     if (name === "passWord" || name === "confirmPassword") {
       if (name === "passWord") {
@@ -93,11 +100,17 @@ const RegistrationForm = () => {
       return;
     }
 
-    // Check if OTP is verified
-    if (!otpVerified) {
-      toast.warning("Please verify your email with OTP first");
+    // Check if email is from @knit.ac.in domain
+    if (!formData.email.endsWith("@knit.ac.in")) {
+      toast.error("Please use your KNIT email address (@knit.ac.in)");
       return;
     }
+
+    // COMMENTED OUT: OTP verification check
+    // if (!otpVerified) {
+    //   toast.warning("Please verify your email with OTP first");
+    //   return;
+    // }
 
     setFormStep(2);
   };
@@ -127,7 +140,8 @@ const RegistrationForm = () => {
     setIsSubmitting(true);
     console.log(dataToSubmit);
     try {
-      axios.defaults.withCredentials = true;
+    
+      
       const response = await axios.post(`${Baseurl}/register`, dataToSubmit, {
         headers: {
           "Content-Type": "application/json",
@@ -150,6 +164,8 @@ const RegistrationForm = () => {
     }
   };
 
+  // COMMENTED OUT: OTP Functions
+  /*
   const handleVerifyOtp = async () => {
     if (!otp) {
       toast.warning("Please enter your OTP");
@@ -160,7 +176,10 @@ const RegistrationForm = () => {
       const response = await axios.post(`${Baseurl}/otp/otpverify`, {
         otp: otp,
         email: formData.email,
-      },{headers:{"Content-Type":"application/json"}, withCredentials:true,});
+      }, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
 
       toast.success(response?.data?.message || "OTP verified successfully!");
       setOtpVerified(true);
@@ -183,7 +202,10 @@ const RegistrationForm = () => {
     try {
       const response = await axios.post(`${Baseurl}/otp/otpsend`, {
         email: formData.email,
-      },{headers:{"Content-Type":"application/json"}, withCredentials:true,});
+      }, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
 
       toast.success(response?.data?.message || "OTP sent successfully!");
       setOtpSent(true);
@@ -195,11 +217,21 @@ const RegistrationForm = () => {
       );
     }
   };
+  */
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-500 flex flex-col">
-      {/* Navigation */}
-      <Navbar />
+      {/* Navigation - Simplified without Navbar component */}
+      <nav className="w-full backdrop-blur-sm bg-black/30 border-b border-white/10 shadow-2xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <Link to="/" className="flex items-center">
+              <QuizLogo />
+              <span className="text-white font-bold text-xl ml-2">Quizzy</span>
+            </Link>
+          </div>
+        </div>
+      </nav>
 
       {/* Registration Form */}
       <div className="flex-1 flex items-center justify-center p-4">
@@ -265,7 +297,7 @@ const RegistrationForm = () => {
                       {/* Email */}
                       <div>
                         <label className="block text-sm font-medium text-white mb-1">
-                          Email Address
+                          Email Address (@knit.ac.in)
                         </label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -289,15 +321,22 @@ const RegistrationForm = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            className="block w-full pl-10 pr-3 py-3 border-0 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900"
-                            placeholder="you@example.com"
+                            className={`block w-full pl-10 pr-3 py-3 border-0 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 ${
+                              !emailValid && formData.email ? "ring-2 ring-red-500" : ""
+                            }`}
+                            placeholder="yourname@knit.ac.in"
                             required
                           />
                         </div>
+                        {!emailValid && formData.email && (
+                          <p className="mt-1 text-sm text-red-300">
+                            Please use your KNIT email address (@knit.ac.in)
+                          </p>
+                        )}
                       </div>
 
-                      {/* Send OTP Button - Only show if OTP not sent and not verified */}
-                      {!otpSent && !otpVerified && (
+                      {/* COMMENTED OUT: Send OTP Button */}
+                      {/* {!otpSent && !otpVerified && (
                         <button
                           type="button"
                           onClick={handleSendOtp}
@@ -305,10 +344,10 @@ const RegistrationForm = () => {
                         >
                           Send OTP
                         </button>
-                      )}
+                      )} */}
 
-                      {/* OTP Input - Only show if OTP is sent but not verified */}
-                      {otpSent && !otpVerified && (
+                      {/* COMMENTED OUT: OTP Input */}
+                      {/* {otpSent && !otpVerified && (
                         <div>
                           <label className="block text-sm font-medium text-white mb-1">
                             OTP
@@ -341,10 +380,10 @@ const RegistrationForm = () => {
                             />
                           </div>
                         </div>
-                      )}
+                      )} */}
 
-                      {/* Verify OTP Button - Only show if OTP is sent but not verified */}
-                      {otpSent && !otpVerified && (
+                      {/* COMMENTED OUT: Verify OTP Button */}
+                      {/* {otpSent && !otpVerified && (
                         <button
                           type="button"
                           onClick={handleVerifyOtp}
@@ -352,10 +391,10 @@ const RegistrationForm = () => {
                         >
                           Verify OTP
                         </button>
-                      )}
+                      )} */}
 
-                      {/* Success Message - Show if OTP is verified */}
-                      {otpVerified && (
+                      {/* COMMENTED OUT: Success Message */}
+                      {/* {otpVerified && (
                         <div className="flex items-center justify-center p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
                           <svg
                             className="h-5 w-5 text-green-400 mr-2"
@@ -375,31 +414,57 @@ const RegistrationForm = () => {
                             Email verified successfully!
                           </span>
                         </div>
-                      )}
+                      )} */}
 
-                      {/* Continue Button - Only show if OTP is verified */}
-                      {otpVerified && (
-                        <button
-                          type="button"
-                          onClick={nextStep}
-                          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
-                        >
-                          Continue
+                      {/* Email Verification Success - Shows when email is valid */}
+                      {emailValid && formData.email.endsWith("@knit.ac.in") && (
+                        <div className="flex items-center justify-center p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
                           <svg
-                            className="ml-2 w-5 h-5"
+                            className="h-5 w-5 text-green-400 mr-2"
+                            xmlns="http://www.w3.org/2000/svg"
                             fill="none"
-                            stroke="currentColor"
                             viewBox="0 0 24 24"
+                            stroke="currentColor"
                           >
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth="2"
-                              d="M9 5l7 7-7 7"
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
-                        </button>
+                          <span className="text-green-200 font-medium">
+                            Valid KNIT email address!
+                          </span>
+                        </div>
                       )}
+
+                      {/* Continue Button */}
+                      <button
+                        type="button"
+                        onClick={nextStep}
+                        disabled={!emailValid || !formData.email.endsWith("@knit.ac.in")}
+                        className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white transition-all duration-200 ${
+                          !emailValid || !formData.email.endsWith("@knit.ac.in")
+                            ? "bg-indigo-400 cursor-not-allowed"
+                            : "bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        }`}
+                      >
+                        Continue
+                        <svg
+                          className="ml-2 w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
                     </div>
                   </>
                 ) : (
@@ -424,14 +489,14 @@ const RegistrationForm = () => {
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 strokeWidth="2"
-                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                               />
                             </svg>
                           </div>
                           <input
-                            type="Number"
+                            type="number"
                             name="contact"
-                            value={formData.contact}
+                            value={formData.contact || ""}
                             onChange={handleChange}
                             className="block w-full pl-10 pr-3 py-3 border-0 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900"
                             placeholder="1234567890"
@@ -516,15 +581,16 @@ const RegistrationForm = () => {
                       </div>
 
                       {/* BATCH */}
-                      <div className="flex items-center">
-                        <label className="mr-2 block text-sm text-white">
+                      <div>
+                        <label className="block text-sm font-medium text-white mb-1">
                           Year
                         </label>
                         <select
                           name="Batch"
-                          value={formData.Batch}
+                          value={formData.Batch || ""}
                           onChange={handleChange}
-                          className="h-10 px-3 rounded border bg-gray-800 text-white focus:ring-indigo-500"
+                          className="block w-full px-3 py-3 border-0 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900"
+                          required
                         >
                           <option value="">Select Year</option>
                           {Array.from({ length: 6 }, (_, i) => {
@@ -619,8 +685,6 @@ const RegistrationForm = () => {
           </div>
         </div>
       </div>
-
-      <ToastContainer theme="colored" />
     </div>
   );
 };

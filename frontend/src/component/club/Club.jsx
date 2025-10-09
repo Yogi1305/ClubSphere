@@ -280,7 +280,7 @@ export default function ClubSpherePage() {
                 </button>
                 {/* event */}
                 {
-                 (role==='ADMIN'||role===club) &&(<button 
+                 (role==='ADMIN'||role===club ||role==='USER') &&(<button 
                   onClick={() => setActiveSection('events')}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
                     activeSection === 'events' 
@@ -339,7 +339,7 @@ export default function ClubSpherePage() {
               }
 
 
-                <button 
+                {/* <button 
                   onClick={() => setActiveSection('settings')}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
                     activeSection === 'settings' 
@@ -349,7 +349,7 @@ export default function ClubSpherePage() {
                 >
                   <Settings className="w-4 h-4" />
                   <span>Settings</span>
-                </button>
+                </button> */}
                  <button 
                   onClick={() => setActiveSection('showgallery')}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${

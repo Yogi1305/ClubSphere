@@ -30,6 +30,7 @@
     "otp-generator": "^4.0.1",
     "razorpay": "^2.9.6",
     "redis": "^5.8.2",
+    "resend": "^6.1.2",
     "web-push": "^3.6.7"
   }
 }

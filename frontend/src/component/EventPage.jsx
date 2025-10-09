@@ -5,6 +5,7 @@ import { Baseurl } from "../main";
 import { toast } from "react-toastify";
 import BasicPopup from "./Popup";
 import CreateEventPage from "./Event";
+import { useAuth } from "../hook/Auth";
 
 export default function EventPage({club}) {
   
@@ -12,6 +13,7 @@ export default function EventPage({club}) {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const[popup,setPopup]=useState(false);
+    const {role,loading}=useAuth()
 
   const { register, handleSubmit, control, formState: { errors }, reset } = useForm();
 
@@ -104,7 +106,9 @@ const onSubmit = async (data) => {
           <p className="text-gray-600 text-lg">Discover and register for upcoming events</p>
         </div>
          {/* create a event */}
-         <div className="text-center mb-10">
+         {
+          (role==='ADMIN'||role===club) && (
+            <div className="text-center mb-10">
            <button onClick={() => setPopup(true)} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
              Create Event
            </button>
@@ -112,6 +116,8 @@ const onSubmit = async (data) => {
              <CreateEventPage clubId={club} />
            </BasicPopup>
          </div>
+          )
+         }
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {events.map((event, index) => (

@@ -189,7 +189,7 @@ const Resetpassword = () => {
                                     className="group relative w-full flex justify-center py-4 px-6 border border-transparent rounded-2xl shadow-2xl text-base font-black text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-300 hover:scale-105 hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none overflow-hidden"
                                     disabled={isSubmitting}
                                 >
-                                    <span className="relative z-10 flex items-center justify-center">
+                                    <span className="relative z-10 flex items-center justify-center" onClick={handlesubmmit}>
                                         {isSubmitting ? (
                                             <div className="flex items-center">
                                                 <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
