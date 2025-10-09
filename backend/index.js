@@ -17,13 +17,26 @@ import multer from "multer";
 dotenv.config();
 
 const app =express();
-app.use(cors({
-    origin: 'https://theclubsphere.vercel.app',
-   
-    // origin:'http://localhost:5173',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept','X-User-Id'], 
-    credentials:true}));
+// ✅ CORS configuration
+const allowedOrigins = [
+  "https://theclubsphere.vercel.app",
+  "http://localhost:5173",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept", "X-User-Id"],
+    credentials: true,
+  })
+);
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(cookieParser());
