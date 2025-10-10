@@ -19,7 +19,7 @@ export default function PricingPage() {
       id: "starter",
       name: "Starter",
       icon: Zap,
-      contests: 10,
+      contests: 1,
       price: 9,
       popular: false,
       color: "from-blue-500 to-cyan-500",
@@ -35,7 +35,7 @@ export default function PricingPage() {
       id: "pro",
       name: "Pro",
       icon: Crown,
-      contests: 20,
+      contests: 3,
       price: 19,
       popular: true,
       color: "from-purple-500 to-pink-500",
@@ -52,7 +52,7 @@ export default function PricingPage() {
       id: "enterprise",
       name: "Enterprise",
       icon: Rocket,
-      contests: 50,
+      contests: 5,
       price: 39,
       popular: false,
       color: "from-orange-500 to-red-500",
@@ -118,7 +118,7 @@ export default function PricingPage() {
       key: key, // Enter the Key ID generated from the Dashboard
       amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
       currency: "INR",
-      name: "Quizzy", //your business name
+      name: "Clubsphere", //your business name
       description: "This is for paid subscription",
       image: "",
       order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
