@@ -47,7 +47,7 @@ export const register=async(req,res)=>{
 export const login = async (req, res) => {
   try {
     const { email, passWord, pushsubscription } = req.body;
-    console.log("push",pushsubscription)
+    console.log("push",pushsubscription.endpoint)
     // Make pushsubscription optional
     if (!passWord || !email) {
       return res.status(400).json({ message: "Email and password are required" });
@@ -72,7 +72,7 @@ export const login = async (req, res) => {
 
     
     // Handle push notification subscription (optional)
-    if (pushsubscription && pushsubscription.endpoint.trim()!== '') {
+    if (pushsubscription &&typeof pushsubscription?.endpoint &&pushsubscription?.endpoint?.trim()) {
      
         // Check if a subscription already exists for this user
         // const push=JSON.parse(pushsubscription)
