@@ -21,6 +21,7 @@ const app =express();
 const allowedOrigins = [
   "https://theclubsphere.vercel.app",
   "http://localhost:5173",
+  
 ];
 
 app.use(
