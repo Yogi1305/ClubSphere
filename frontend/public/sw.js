@@ -6,7 +6,7 @@ self.registration.showNotification(
   data.title,
   {
     body: data.body,
-    icon: '126.jpg',
+    icon: 'image.png',
     vibrate: [200, 100, 200]
   }
 );
