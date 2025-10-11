@@ -47,7 +47,7 @@ export const register=async(req,res)=>{
 export const login = async (req, res) => {
   try {
     const { email, passWord, pushsubscription } = req.body;
-    console.log("push",pushsubscription)
+    console.log("push", typeof pushsubscription)
     // Make pushsubscription optional
     if (!passWord || !email) {
       return res.status(400).json({ message: "Email and password are required" });
