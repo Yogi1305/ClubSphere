@@ -22,4 +22,5 @@ router.route("/update/:contestId/:questionId").put(isloggedin,updatequestion);
 router.route("/answer").post(isloggedin,saveAnswer)
 router.route("/results").post(getQuizResult)
 router.route("/makepublic").post(makePublic)
+
 export default router
