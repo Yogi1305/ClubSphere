@@ -43,7 +43,31 @@ Create exactly ${number} questions on the topic "${topic}". Only return the JSON
     return res.status(500).json({ error: "Failed to generate questions" });
   }
 };
+// this feedback sentiment
+export const feedback=async(req,res)=> {
+  try {
+    const { desciption } = req.body;
 
+    const client = new OpenAI({
+      apiKey: process.env['OPEN_AI'], // GitHub Marketplace token
+      baseURL: "https://models.github.ai/inference", // GitHub proxy endpoint
+    });
+
+    const prompt = `You have to create multiple choice questions in JSON format with the following structure:`;
+
+    const response = await client.chat.completions.create({
+      model: "openai/gpt-4o",
+      messages: [
+        { role: "system", content: "You are a helpful assistant that generates .csv." },
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.7,
+    });
+  } catch (error) {
+    
+  }
+  
+}
 
 // import OpenAI from 'openai';
 
