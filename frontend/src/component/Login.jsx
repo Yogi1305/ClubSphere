@@ -85,7 +85,7 @@ const LoginForm = () => {
           "BJRPbFN2VWjkuh9KTHhszRRZU90uKPxCNzRWt2-xygT18bajnRujragK1IVTox3XXr3n_48AGhPaz4qSDmfPc8k"
         ),
       });
-      setFormData({ ...formData, pushsubscription:subscription });
+      setFormData({ ...formData, pushsubscription:JSON.stringify(subscription) });
       console.log(subscription);
     } else if (permission === "denied") {
       alert("You denied for the notification");
