@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import { 
-  Users, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
-  UserPlus, 
-  Mail, 
-  Phone, 
+import React, { useState, useEffect } from "react";
+import {
+  Users,
+  Clock,
+  CheckCircle,
+  XCircle,
+  UserPlus,
+  Mail,
+  Phone,
   Crown,
   Shield,
   User,
@@ -15,181 +15,264 @@ import {
   MoreVertical,
   ArrowUp,
   UserCheck,
-  Loader2
-} from 'lucide-react'
-import { MEMBER_ROLES } from '../../util/constant.js'
-import axios from 'axios'
-import { Baseurl } from '../../main.jsx'
+  Loader2,
+} from "lucide-react";
+import { MEMBER_ROLES } from "../../util/constant.js";
+import axios from "axios";
+import { Baseurl } from "../../main.jsx";
+import { toast } from "react-toastify";
 
 const Member = ({ club }) => {
-
-  const [activeTab, setActiveTab] = useState('members')
-  const [members, setMembers] = useState([])
-  const [pendingMembers, setPendingMembers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [actionLoading, setActionLoading] = useState({})
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [activeTab, setActiveTab] = useState("members");
+  const [members, setMembers] = useState([]);
+  const [pendingMembers, setPendingMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   // Fetch members data
   useEffect(() => {
     if (club) {
-      fetchMembers()
+      fetchMembers();
     }
-  }, [club])
+  }, [club]);
 
   const fetchMembers = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await axios.get(`${Baseurl}/member/allmembers/${club}`, {
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        withCredentials: true
-      })
-      
+        withCredentials: true,
+      });
+
       // Fix: Access the correct data structure from API response
-      const allMembers = res.data?.data || []
-      
+      const allMembers = res.data?.data || [];
+
       // Fix: Use correct field names (Status with capital S, not status)
-      const activeMembers = allMembers.filter(member => member.Status?.toLowerCase() !== 'pending')
-      const pendingMembersList = allMembers.filter(member => member.Status?.toLowerCase() === 'pending')
-      
-      setMembers(activeMembers)
-      setPendingMembers(pendingMembersList)
+      const activeMembers = allMembers.filter(
+        (member) => member.Status?.toLowerCase() !== "pending"
+      );
+      const pendingMembersList = allMembers.filter(
+        (member) => member.Status?.toLowerCase() === "pending"
+      );
+
+      setMembers(activeMembers);
+      setPendingMembers(pendingMembersList);
     } catch (error) {
-      console.error('Error fetching members:', error)
+      console.error("Error fetching members:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   // Filter members based on search and status
-  const filteredMembers = members.filter(member => {
-    const matchesSearch = (member.UserId?.fullName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (member.UserId?.email || '').toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === 'all' || member.Status?.toLowerCase() === statusFilter.toLowerCase()
-    return matchesSearch && matchesStatus
-  })
+  const filteredMembers = members.filter((member) => {
+    const matchesSearch =
+      (member.UserId?.fullName || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (member.UserId?.email || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      statusFilter === "all" ||
+      member.Status?.toLowerCase() === statusFilter.toLowerCase();
+    return matchesSearch && matchesStatus;
+  });
 
-  const filteredPendingMembers = pendingMembers.filter(member => 
-    (member.UserId?.fullName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (member.UserId?.email || '').toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredPendingMembers = pendingMembers.filter(
+    (member) =>
+      (member.UserId?.fullName || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (member.UserId?.email || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+  );
 
   // Handle role change/upgrade
   const handleRoleChange = async (memberId, selectedRole) => {
-    if (!selectedRole) return
-    
-    setActionLoading(prev => ({ ...prev, [memberId]: true }))
-    
-    try {
-      const res = await axios.post(`${Baseurl}/member/upgrade`, {
-        memberId: memberId,
-        Role: selectedRole,
-        club: club
-      }, {
-        headers: {
-          "Content-Type": "application/json"
-        },
-        withCredentials: true
-      })
-      
-      // Update local state
-      setMembers(prev => prev.map(member => 
-        member._id === memberId 
-          ? { ...member, Status: selectedRole }
-          : member
-      ))
-    } catch (error) {
-      console.error('Error upgrading member:', error)
-    } finally {
-      setActionLoading(prev => ({ ...prev, [memberId]: false }))
+    if (!selectedRole) return;
+
+    setActionLoading((prev) => ({ ...prev, [memberId]: true }));
+    if (selectedRole === "Remove") {
+      try {
+        const res = await axios.post(
+          `${Baseurl}/member/remove/${memberId}`,
+          {},
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+
+         if(res.data.success)
+             setMembers((prev) => prev.filter((member) => member._id !== memberId));
+        toast.error(res.data.message)
+      } catch (error) {
+        console.error("Error upgrading member:", error);
+      } finally {
+        setActionLoading((prev) => ({ ...prev, [memberId]: false }));
+      }
+    } else {
+      try {
+        const res = await axios.post(
+          `${Baseurl}/member/upgrade`,
+          {
+            memberId: memberId,
+            Role: selectedRole,
+            club: club,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+
+        // Update local state
+        setMembers((prev) =>
+          prev.map((member) =>
+            member._id === memberId
+              ? { ...member, Status: selectedRole }
+              : member
+          )
+        );
+      } catch (error) {
+        console.error("Error upgrading member:", error);
+      } finally {
+        setActionLoading((prev) => ({ ...prev, [memberId]: false }));
+      }
     }
-  }
+  };
 
   // Handle approve pending member
   const handleApproveMember = async (memberId) => {
-    setActionLoading(prev => ({ ...prev, [memberId]: true }))
-    
+    setActionLoading((prev) => ({ ...prev, [memberId]: true }));
+
     try {
       // Assuming you have an approve endpoint
-      await axios.post(`${Baseurl}/member/approve/${memberId}`, {}, {
-        headers: {
-          "Content-Type": "application/json"
-        },
-        withCredentials: true
-      })
-      
+      await axios.post(
+        `${Baseurl}/member/approve/${memberId}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
       // Move from pending to active members
-      const memberToApprove = pendingMembers.find(member => member._id === memberId)
+      const memberToApprove = pendingMembers.find(
+        (member) => member._id === memberId
+      );
       if (memberToApprove) {
-        setMembers(prev => [...prev, { ...memberToApprove, Status: 'Member' }])
-        setPendingMembers(prev => prev.filter(member => member._id !== memberId))
+        setMembers((prev) => [
+          ...prev,
+          { ...memberToApprove, Status: "Member" },
+        ]);
+        setPendingMembers((prev) =>
+          prev.filter((member) => member._id !== memberId)
+        );
       }
     } catch (error) {
-      console.error('Error approving member:', error)
+      console.error("Error approving member:", error);
     } finally {
-      setActionLoading(prev => ({ ...prev, [memberId]: false }))
+      setActionLoading((prev) => ({ ...prev, [memberId]: false }));
     }
-  }
+  };
 
   // Handle reject pending member
   const handleRejectMember = async (memberId) => {
-    setActionLoading(prev => ({ ...prev, [memberId]: true }))
-    
+    setActionLoading((prev) => ({ ...prev, [memberId]: true }));
+
     try {
       // Assuming you have a reject endpoint
-      await axios.post(`${Baseurl}/member/reject/${memberId}`, {}, {
-        headers: {
-          "Content-Type": "application/json"
-        },
-        withCredentials: true
-      })
-      
-      setPendingMembers(prev => prev.filter(member => member._id !== memberId))
+      await axios.post(
+        `${Baseurl}/member/reject/${memberId}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      setPendingMembers((prev) =>
+        prev.filter((member) => member._id !== memberId)
+      );
     } catch (error) {
-      console.error('Error rejecting member:', error)
+      console.error("Error rejecting member:", error);
     } finally {
-      setActionLoading(prev => ({ ...prev, [memberId]: false }))
+      setActionLoading((prev) => ({ ...prev, [memberId]: false }));
     }
-  }
+  };
 
   const getStatusBadge = (status) => {
-    console.log('Rendering status badge for status:', status)
-    const normalizedStatus = status?.toLowerCase()
+    console.log("Rendering status badge for status:", status);
+    const normalizedStatus = status?.toLowerCase();
     const statusConfig = {
-      admin: { icon: Crown, color: 'bg-purple-100 text-purple-800', label: 'Admin' },
-      president: { icon: Crown, color: 'bg-blue-100 text-blue-800', label: 'President' },
-      member: { icon: User, color: 'bg-green-100 text-green-800', label: 'Member' },
-      pending: { icon: Clock, color: 'bg-yellow-100 text-yellow-800', label: 'Pending' }
-    }
-    
-    const config = statusConfig[normalizedStatus] || statusConfig.member
-    const IconComponent = config.icon
-    
+      admin: {
+        icon: Crown,
+        color: "bg-purple-100 text-purple-800",
+        label: "Admin",
+      },
+      president: {
+        icon: Crown,
+        color: "bg-blue-100 text-blue-800",
+        label: "President",
+      },
+      member: {
+        icon: User,
+        color: "bg-green-100 text-green-800",
+        label: "Member",
+      },
+      pending: {
+        icon: Clock,
+        color: "bg-yellow-100 text-yellow-800",
+        label: "Pending",
+      },
+    };
+
+    const config = statusConfig[normalizedStatus] || statusConfig.member;
+    const IconComponent = config.icon;
+
     return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}>
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}
+      >
         <IconComponent className="w-3 h-3 mr-1" />
         {config.label}
       </span>
-    )
-  }
+    );
+  };
 
   const getRoleUpgradeSelect = (member) => {
-    const isLoading = actionLoading[member._id]
-    const currentStatus = member.Status?.toLowerCase()
-    const availableRoles = MEMBER_ROLES.filter(role => role.toLowerCase() !== currentStatus)
-    
-    if (availableRoles.length === 0) return null
-    
+    const isLoading = actionLoading[member._id];
+    const currentStatus = member.Status?.toLowerCase();
+    const availableRoles = MEMBER_ROLES.filter(
+      (role) => role.toLowerCase() !== currentStatus
+    );
+    availableRoles.push("Remove");
+    // console.log("avail",availableRoles);
+
+    if (availableRoles.length === 0) return null;
+
     return (
       <select
         key={`select-${member._id}-${member.Status}`} // Force re-render when status changes
         data-member-id={member._id}
         onChange={(e) => {
-          console.log('Select changed:', e.target.value)
-          handleRoleChange(member._id, e.target.value)
+          console.log("Select changed:", e.target.value);
+          handleRoleChange(member._id, e.target.value);
         }}
         disabled={isLoading}
         defaultValue=""
@@ -202,18 +285,18 @@ const Member = ({ club }) => {
           </option>
         ))}
       </select>
-    )
-  }
+    );
+  };
 
   // Format date function
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A'
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })
-  }
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   if (loading) {
     return (
@@ -227,10 +310,12 @@ const Member = ({ club }) => {
             </div>
             <div className="h-32 bg-gray-200 rounded-lg"></div>
           </div>
-          <p className="text-center text-gray-600 mt-4 font-medium">Loading members...</p>
+          <p className="text-center text-gray-600 mt-4 font-medium">
+            Loading members...
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -241,7 +326,9 @@ const Member = ({ club }) => {
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
             Member Management
           </h1>
-          <p className="text-gray-600 text-lg">Manage your club members and pending applications</p>
+          <p className="text-gray-600 text-lg">
+            Manage your club members and pending applications
+          </p>
         </div>
 
         {/* Stats Cards */}
@@ -250,29 +337,45 @@ const Member = ({ club }) => {
             <div className="flex items-center">
               <Users className="h-8 w-8 text-blue-500" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Members</p>
-                <p className="text-2xl font-bold text-gray-900">{members.length}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Members
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {members.length}
+                </p>
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500">
             <div className="flex items-center">
               <Clock className="h-8 w-8 text-yellow-500" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Pending Applications</p>
-                <p className="text-2xl font-bold text-gray-900">{pendingMembers.length}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Pending Applications
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {pendingMembers.length}
+                </p>
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
             <div className="flex items-center">
               <Crown className="h-8 w-8 text-green-500" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Admins & Moderators</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Admins & Moderators
+                </p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {members.filter(m => m.Status?.toLowerCase() === 'admin' || m.Status?.toLowerCase() === 'moderator').length}
+                  {
+                    members.filter(
+                      (m) =>
+                        m.Status?.toLowerCase() === "admin" ||
+                        m.Status?.toLowerCase() === "moderator"
+                    ).length
+                  }
                 </p>
               </div>
             </div>
@@ -284,11 +387,11 @@ const Member = ({ club }) => {
           <div className="border-b border-gray-200">
             <nav className="flex space-x-8 px-6">
               <button
-                onClick={() => setActiveTab('members')}
+                onClick={() => setActiveTab("members")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
-                  activeTab === 'members'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  activeTab === "members"
+                    ? "border-blue-500 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
                 <div className="flex items-center">
@@ -296,13 +399,13 @@ const Member = ({ club }) => {
                   Active Members ({members.length})
                 </div>
               </button>
-              
+
               <button
-                onClick={() => setActiveTab('pending')}
+                onClick={() => setActiveTab("pending")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
-                  activeTab === 'pending'
-                    ? 'border-yellow-500 text-yellow-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  activeTab === "pending"
+                    ? "border-yellow-500 text-yellow-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
                 <div className="flex items-center">
@@ -328,8 +431,8 @@ const Member = ({ club }) => {
                   />
                 </div>
               </div>
-              
-              {activeTab === 'members' && (
+
+              {activeTab === "members" && (
                 <div className="sm:w-48">
                   <select
                     value={statusFilter}
@@ -349,7 +452,7 @@ const Member = ({ club }) => {
           </div>
 
           {/* Members Table */}
-          {activeTab === 'members' && (
+          {activeTab === "members" && (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -373,21 +476,28 @@ const Member = ({ club }) => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredMembers.map((member) => (
-                    <tr key={member._id} className="hover:bg-gray-50 transition-colors duration-150">
+                    <tr
+                      key={member._id}
+                      className="hover:bg-gray-50 transition-colors duration-150"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="h-10 w-10 flex-shrink-0">
                             <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
                               <span className="text-white font-medium text-sm">
-                                {(member.UserId?.fullName || 'U').charAt(0).toUpperCase()}
+                                {(member.UserId?.fullName || "U")
+                                  .charAt(0)
+                                  .toUpperCase()}
                               </span>
                             </div>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{member.UserId?.fullName || 'N/A'}</div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {member.UserId?.fullName || "N/A"}
+                            </div>
                             <div className="text-sm text-gray-500 flex items-center">
                               <Mail className="w-3 h-3 mr-1" />
-                              {member.UserId?.email || 'N/A'}
+                              {member.UserId?.email || "N/A"}
                             </div>
                           </div>
                         </div>
@@ -395,7 +505,7 @@ const Member = ({ club }) => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900 flex items-center">
                           <Phone className="w-3 h-3 mr-1 text-gray-400" />
-                          {member.UserId?.contact || 'N/A'}
+                          {member.UserId?.contact || "N/A"}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -418,19 +528,23 @@ const Member = ({ club }) => {
                   ))}
                 </tbody>
               </table>
-              
+
               {filteredMembers.length === 0 && (
                 <div className="text-center py-12">
                   <Users className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No members found</h3>
-                  <p className="mt-1 text-sm text-gray-500">Try adjusting your search or filter criteria.</p>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">
+                    No members found
+                  </h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Try adjusting your search or filter criteria.
+                  </p>
                 </div>
               )}
             </div>
           )}
 
           {/* Pending Members Table */}
-          {activeTab === 'pending' && (
+          {activeTab === "pending" && (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -454,21 +568,28 @@ const Member = ({ club }) => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredPendingMembers.map((member) => (
-                    <tr key={member._id} className="hover:bg-gray-50 transition-colors duration-150">
+                    <tr
+                      key={member._id}
+                      className="hover:bg-gray-50 transition-colors duration-150"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="h-10 w-10 flex-shrink-0">
                             <div className="h-10 w-10 rounded-full bg-gradient-to-r from-yellow-500 to-orange-600 flex items-center justify-center">
                               <span className="text-white font-medium text-sm">
-                                {(member.UserId?.fullName || 'U').charAt(0).toUpperCase()}
+                                {(member.UserId?.fullName || "U")
+                                  .charAt(0)
+                                  .toUpperCase()}
                               </span>
                             </div>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{member.UserId?.fullName || 'N/A'}</div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {member.UserId?.fullName || "N/A"}
+                            </div>
                             <div className="text-sm text-gray-500 flex items-center">
                               <Mail className="w-3 h-3 mr-1" />
-                              {member.UserId?.email || 'N/A'}
+                              {member.UserId?.email || "N/A"}
                             </div>
                           </div>
                         </div>
@@ -476,7 +597,7 @@ const Member = ({ club }) => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900 flex items-center">
                           <Phone className="w-3 h-3 mr-1 text-gray-400" />
-                          {member.UserId?.contact || 'N/A'}
+                          {member.UserId?.contact || "N/A"}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -501,7 +622,7 @@ const Member = ({ club }) => {
                             )}
                             Approve
                           </button>
-                          
+
                           <button
                             onClick={() => handleRejectMember(member._id)}
                             disabled={actionLoading[member._id]}
@@ -516,12 +637,16 @@ const Member = ({ club }) => {
                   ))}
                 </tbody>
               </table>
-              
+
               {filteredPendingMembers.length === 0 && (
                 <div className="text-center py-12">
                   <Clock className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No pending applications</h3>
-                  <p className="mt-1 text-sm text-gray-500">All applications have been processed.</p>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">
+                    No pending applications
+                  </h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    All applications have been processed.
+                  </p>
                 </div>
               )}
             </div>
@@ -529,7 +654,7 @@ const Member = ({ club }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Member
+export default Member;

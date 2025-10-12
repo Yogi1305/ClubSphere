@@ -346,7 +346,7 @@ export default function ClubSpherePage() {
                 <button
                   onClick={() => setActiveSection("feedback")}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
-                    activeSection === "showgallery"
+                    activeSection === "feedback"
                       ? "text-blue-600 bg-blue-50"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}

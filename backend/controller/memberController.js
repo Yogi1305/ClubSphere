@@ -1,3 +1,4 @@
+
 import ClubMember from "../model/clubmember.js";
 import PushNotification from "../model/pushnotification.js";
 import { MEMBER_ROLES } from "../utils/constant.js";
@@ -9,7 +10,8 @@ export const joinToClub = async (req, res) => {
     const userId = req.id;
 
     // Check if already a member
-    const existing = await ClubMember.findOne({ user: userId, club });
+    const existing = await ClubMember.findOne({ UserId: userId, Club:club });
+    console.log(existing)
 
     if (existing) {
       return res.status(400).json({
@@ -94,9 +96,9 @@ export const rejectToClub = async (req, res) => {
       });
     }
 
-    // Reject the membership
-    membership.Status = "Rejected";
-    await membership.save();
+    const del= await ClubMember.deleteOne({_id:memberId});
+    console.log("rejected",del);
+ 
     const message = JSON.stringify({
       title: `Membership Rejected by ${membership.Club}`,
       body: `Your membership request to join ${membership.Club} has been rejected.`,
@@ -118,6 +120,54 @@ export const rejectToClub = async (req, res) => {
       success: false,
       message: "Server failure",
     });
+  }
+};
+// remove from club
+export const removeFromClub = async (req, res) => {
+  try {
+    const { memberId } = req.params;
+   
+    if (!memberId) {
+      return res.status(400).json({ message: "memberId is required", success: false });
+    }
+    
+    const existingMember = await ClubMember.findById(memberId);
+    // console.log("exist",existingMember)
+    
+    if (!existingMember) {
+      return res.status(404).json({ message: "Member not found", success: false });
+    }
+    console.log(existingMember)
+   if (req.id.toString() === existingMember.UserId.toString()) {
+        return res.status(201).json({message:"Be in your limit",success:false})
+}
+
+      
+    
+    const del = await ClubMember.deleteOne({ _id: memberId });
+    console.log(del)
+
+    if (del.deletedCount === 1) {
+      const message = JSON.stringify({
+        title: `Membership Rejected by ${existingMember.Club}`,
+        body: `You have been removed from ${existingMember.Club}.`,
+      });
+
+      const userSub = await PushNotification.find({ userId: existingMember.UserId });
+
+      if (userSub ) {
+        await sendNotification(userSub, message);
+      } else {
+        console.log("No push subscription found for user:", existingMember.UserId);
+      }
+
+      return res.status(200).json({ message: "Successfully removed from club", success: true });
+    } else {
+      return res.status(400).json({ message: "Failed to remove member", success: false });
+    }
+  } catch (error) {
+    console.error("Error in removing from club:", error);
+    return res.status(500).json({ message: "Internal server error", success: false });
   }
 };
 
