@@ -15,6 +15,18 @@ import razorpay from "razorpay"
 import  "./redis/worker.js" ;
 import multer from "multer";
 dotenv.config();
+import swaggerUi from "swagger-ui-express"
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const swaggerDocument = require("./swagger-output.json");
+
+// import swaggerDocument from "./swagger-output.json"
+// import { swaggerSpec } from "./swagger.js";
+
+
+
+
+
 
 const app =express();
 // ✅ CORS configuration
@@ -44,7 +56,7 @@ app.use(cookieParser());
 
 connectDb();
 
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/",userRoute);
 app.use("/post",postRoute);
 app.use("/payment",paymentRoute);
