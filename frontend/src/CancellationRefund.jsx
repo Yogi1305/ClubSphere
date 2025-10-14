@@ -33,7 +33,7 @@ const CancellationRefund = () => {
         </ul>
 
         <p className="text-gray-600 text-sm mt-6">
-          Quizzy reserves the right to change this policy at any time without prior notice.
+          Clubsphere reserves the right to change this policy at any time without prior notice.
         </p>
       </div>
     </div>

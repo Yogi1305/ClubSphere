@@ -7,7 +7,7 @@ const ContactUs = () => {
       <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
         <h1 className="text-4xl font-bold text-blue-700 mb-4">Contact Us</h1>
         <p className="text-gray-600 mb-8">
-          We'd love to hear from you! Whether you have a question, suggestion, or need support with Quizzy — feel free to reach out.
+          We'd love to hear from you! Whether you have a question, suggestion, or need support with Clubsphere — feel free to reach out.
         </p>
 
         <div className="space-y-6">

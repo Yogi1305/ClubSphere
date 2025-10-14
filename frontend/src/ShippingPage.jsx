@@ -28,7 +28,7 @@ const ShippingPage = () => {
         <div className="text-left bg-gray-50 border border-gray-200 rounded-xl p-6 mt-6">
           <h2 className="text-xl font-semibold text-purple-700 mb-2">🚚 Shipping Policy</h2>
           <p className="text-gray-700 text-sm mb-2">
-            At <strong>Quizzy</strong>, all products are delivered digitally. Once your payment is confirmed, your quiz content or service will be added to your account automatically within 1 minute.
+            At <strong>Clubsphere</strong>, all products are delivered digitally. Once your payment is confirmed, your quiz content or service will be added to your account automatically within 1 minute.
           </p>
           <p className="text-gray-700 text-sm mb-2">
             No physical items are shipped. You can access your purchase by navigating to your <strong>Dashboard</strong>.
