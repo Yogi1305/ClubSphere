@@ -192,7 +192,7 @@ const LoginForm = () => {
                 </svg>
               </div>
               <span className="text-white font-bold text-xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                Quizzy
+                Clubsphere
               </span>
             </Link>
 
