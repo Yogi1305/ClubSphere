@@ -3,6 +3,7 @@ import ClubMember from "../model/clubmember.js";
 import PushNotification from "../model/pushnotification.js";
 import { MEMBER_ROLES } from "../utils/constant.js";
 import { sendNotification } from "../utils/pushnotication.js";
+import Feedback from "../model/feedback.js"
 // to join a club
 export const joinToClub = async (req, res) => {
   try {
@@ -256,3 +257,22 @@ export const getPostHolders = async (req, res) => {
     });
   }
 };
+
+
+// club feedback
+export const feedback=async(req,res)=>{
+    try {
+      const {title,type,description}=req.body
+      if(! title || ! type || !description)
+        return res.status(400).json({message:"all filed are required",success:false})
+       const feed= await Feedback.create({
+        title,
+        description,
+        type
+        ,club:req.role
+       })
+       return res.status(201).json({message:`your feedback successfully send to ${req.role}`,success:true})
+    } catch (error) {
+      console.log("error in feedback creation",error)
+    }
+}
