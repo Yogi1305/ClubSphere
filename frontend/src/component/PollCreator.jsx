@@ -15,6 +15,7 @@ import Navbar from "./Navbar";
 import axios from "axios";
 import { Baseurl } from "../main";
 import { toast } from "react-toastify";
+import ProtectedRoute from "../hook/loginCheck";
 
 const PollDisplay = ({ poll, onBack }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -475,7 +476,7 @@ const PollCreator = () => {
           {/* <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8 px-4"> */}
             <div className="max-w-7xl mx-auto mt-2 ">
               {/* Header Section */}
-              <div className="text-center mb-12  ">
+              <ProtectedRoute><div className="text-center mb-12  ">
                 <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full mb-6">
                   <Vote className="w-10 h-10 text-white" />
                 </div>
@@ -493,7 +494,7 @@ const PollCreator = () => {
                   <Plus className="w-5 h-5 inline mr-2" />
                   Create New Poll
                 </button>
-              </div>
+              </div></ProtectedRoute>
 
               {/* Polls Grid */}
               {polls.length > 0 && (

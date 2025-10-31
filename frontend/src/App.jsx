@@ -91,7 +91,7 @@ const router=createBrowserRouter([
     element:<ShippingPage/>
   },{
     path:"polls",
-    element:<PollCreator/>
+    element:<ProtectedRoute><PollCreator/></ProtectedRoute>
   },{
     path:"my-contests",
     element:<Mycontest/>

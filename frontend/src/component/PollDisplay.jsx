@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Clock, Users, Building2, Vote, CheckCircle, BarChart3, Calendar, Timer } from 'lucide-react';
 
 export default function PollDisplay() {
-  // Mock poll data - replace with actual API call
+
   const [pollData, setPollData] = useState({
     _id: "poll123",
     Title: "What's your favorite programming language for web development?",
