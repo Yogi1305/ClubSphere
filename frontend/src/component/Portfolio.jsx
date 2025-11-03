@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, Github, Linkedin, ExternalLink, Calendar, Award, Code, Briefcase, Star, Zap, TrendingUp, Users } from 'lucide-react';
 import Navbar from './Navbar';
+import { Link } from 'react-router-dom';
 
 const Portfolio = () => {
   const [activeSection, setActiveSection] = useState('hero');
@@ -28,15 +29,31 @@ const Portfolio = () => {
   }, []);
 
   const skills = {
-    "Programming Languages": ["JavaScript (ES6+)", "C++", "C", "SQL"],
-    "Frontend Development": ["React.js", "Redux", "HTML5", "CSS3", "Tailwind CSS", "Bootstrap", "Responsive Design", "AJAX"],
-    "Backend Development": ["Node.js", "Express.js", "RESTful APIs", "Socket.io", "JWT Authentication"],
-    "Database Systems": ["MongoDB", "MySQL", "NoSQL", "IndexedDB"],
-    "Developer Tools": ["Git", "GitHub", "VS Code", "Webpack", "npm", "CI/CD"],
-    "CS Fundamentals": ["Data Structures", "Algorithms", "OOP", "Operating Systems", "DBMS", "Computer Networks"]
-  };
+  "Programming Languages": ["JavaScript (ES6+)", "C++", "C", "SQL"],
+  "Frontend Development": ["React.js", "Redux", "HTML5", "CSS3", "Tailwind CSS", "Bootstrap", "Responsive Design"],
+  "Backend Development": ["Node.js", "Express.js", "RESTful APIs", "Socket.io", "JWT Authentication", "Razorpay", "Redis", "BullMQ", "Cloudinary", "OpenAI API"],
+  "Database Systems": ["MongoDB", "PostgreSQL", "NoSQL", "IndexedDB"],
+  "Developer Tools": ["Git", "GitHub", "VS Code", "npm", "CI/CD"],
+  "CS Fundamentals": ["Data Structures & Algorithms", "OOP", "Operating Systems", "DBMS", "Computer Networks"]
+};
+
 
   const projects = [
+    {
+  name: "Quizzy",
+  tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Tailwind CSS", "Razorpay", "OpenAI API", "JWT"],
+  description: "Full-stack quiz and polling platform for educators and organizations with AI-generated quizzes.",
+  features: [
+    "Automated quiz creation using OpenAI API with 80% faster question generation",
+    "Real-time quiz and poll management with analytics dashboard",
+    "Secure Razorpay integration for premium features",
+    "Deployed with seamless CI/CD using Vercel (frontend) and Render (backend)"
+  ],
+  hasLiveDemo: true,
+  gradient: "from-green-500 to-emerald-500",
+  link:"https://quizzy13.vercel.app/"
+},
+
     {
       name: "Chatly",
       tech: ["React", "Redux", "Socket.io", "Tailwind CSS", "Node.js", "Express.js", "MongoDB", "JWT"],
@@ -48,7 +65,9 @@ const Portfolio = () => {
         "Deployed on Vercel (frontend) and Render (backend)"
       ],
       hasLiveDemo: true,
-      gradient: "from-purple-500 to-pink-500"
+      gradient: "from-purple-500 to-pink-500",
+      link:"https://chatly13.vercel.app/"
+      
     },
     {
       name: "Giphy",
@@ -61,7 +80,8 @@ const Portfolio = () => {
         "Easy GIF sharing through copy links and embedding"
       ],
       hasLiveDemo: true,
-      gradient: "from-blue-500 to-cyan-500"
+      gradient: "from-blue-500 to-cyan-500",
+      link:"https://giphy13.netlify.app/"
     },
     {
       name: "Shopping Site",
@@ -73,7 +93,8 @@ const Portfolio = () => {
         "Interactive elements with product filtering and cart functionality"
       ],
       hasLiveDemo: false,
-      gradient: "from-orange-500 to-red-500"
+      gradient: "from-orange-500 to-red-500",
+      link:"https://yogi1305.github.io/Myntra-clone/"
     }
   ];
 
@@ -434,10 +455,10 @@ const Portfolio = () => {
                     </div>
 
                     <div className="mt-6 pt-6 border-t border-white/10">
-                      <button className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold text-white hover:from-purple-500 hover:to-pink-500 transition-all duration-300 flex items-center justify-center group">
+                      <Link to={project.link} target='_blank' className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold text-white hover:from-purple-500 hover:to-pink-500 transition-all duration-300 flex items-center justify-center group">
                         <ExternalLink className="w-4 h-4 mr-2 group-hover:rotate-45 transition-transform duration-300" />
                         View Project
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </div>

@@ -42,7 +42,7 @@ const Contest = () => {
   const [contestStatuses, setContestStatuses] = useState({}); // Track contest completion status
   const navigate = useNavigate();
 
-  // Check if user is admin
+ 
   const checkAdminStatus = async () => {
     const UserId = localStorage.getItem("userId1");
     try {
