@@ -227,7 +227,7 @@ const RegistrationForm = () => {
           <div className="flex justify-between h-16 items-center">
             <Link to="/" className="flex items-center">
               <QuizLogo />
-              <span className="text-white font-bold text-xl ml-2">Quizzy</span>
+              <span className="text-white font-bold text-xl ml-2">Clubsphere</span>
             </Link>
           </div>
         </div>
