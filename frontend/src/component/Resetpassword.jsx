@@ -95,7 +95,7 @@ const Resetpassword = () => {
                                     </defs>
                                 </svg>
                             </div>
-                            <span className="text-white font-bold text-xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Quizzy</span>
+                            <span className="text-white font-bold text-xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Clubsphere</span>
                         </Link>
 
                         <div className="hidden md:flex items-center space-x-8">
