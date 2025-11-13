@@ -1,5 +1,5 @@
 import express from "express"
-import { deleteImage, eventdetails, eventRegister, getAllEventsForClub, getClubGallery, getEventAttendees, getEventbyId, registerToevent } from "../controller/eventContollers.js";
+import { deleteEventByClub, deleteImage, eventdetails, eventRegister, getAllEventsForClub, getClubGallery, getEventAttendees, getEventbyId, registerToevent } from "../controller/eventContollers.js";
 import { sendtoall, sendtomembers } from "../controller/notificationController.js";
 import { isloggedin } from "../middleware/isLoggedin.js";
 import { isAdmin } from "../middleware/isAdmin.js";
@@ -18,5 +18,6 @@ router.route("/participants/:eventId").get(isloggedin,getEventAttendees);
 router.route("/gallery/:club").get(getClubGallery);
 router.route("/galleryedit/:id").get(isloggedin,isAdmin,getEventbyId)
 router.route("/deleteimg").delete(isloggedin,isAdmin,deleteImage)
-router.route("/feedback").post(isloggedin,isAdmin,feedback)
+router.route("/feedback").post(isloggedin,feedback)
+router.route("/deleteEvent/:eventId").post(isloggedin,isAdmin,deleteEventByClub)
 export default router;

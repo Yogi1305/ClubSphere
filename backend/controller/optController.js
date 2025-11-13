@@ -38,10 +38,7 @@ dotenv.config();
 //   }
 // };
 
-// ====================================================================
 
-
-// =================== NEW CODE (Resend API) ===================
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Send OTP to user

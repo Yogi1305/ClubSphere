@@ -198,3 +198,22 @@ export const deleteImage = async (req, res) => {
     console.error("Error deleting image:", error);
   }
 }
+
+// delete the event by club
+export const deleteEventByClub = async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    // if (event.club !== req.role) {
+    //   return res.status(403).json({ message: "Unauthorized to delete this event" });
+    // } 
+    await Event.findByIdAndDelete(eventId);
+    return res.status(200).json({ message: "Event deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
