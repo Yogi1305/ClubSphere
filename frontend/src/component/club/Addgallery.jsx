@@ -1,266 +1,289 @@
-import React, { useEffect, useState } from 'react'
-import { Upload, X, Image, Send, Loader2, Plus, Camera, Eye, ChevronUp, ChevronDown, Edit, Calendar, MapPin, Users } from 'lucide-react'
-import axios from 'axios'
-import { Baseurl } from '../../main'
-import { toast } from 'react-toastify'
-import { Navigate, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import {
+  Upload,
+  X,
+  Image,
+  Send,
+  Loader2,
+  Plus,
+  Camera,
+  Eye,
+  ChevronUp,
+  ChevronDown,
+  Edit,
+  Calendar,
+  MapPin,
+  Users,
+  DownloadIcon,
+} from "lucide-react";
+import axios from "axios";
+import { Baseurl } from "../../main";
+import { toast } from "react-toastify";
+import { Navigate, useNavigate } from "react-router-dom";
+import { exportParticipantsToExcel } from "../../util/exportfile";
 
 const Addgallery = ({ club }) => {
-  const [events, setEvents] = useState([])
-  const [selectedEvent, setSelectedEvent] = useState(null)
-  const [showGalleryForm, setShowGalleryForm] = useState(false)
-  const [showParticipantsModal, setShowParticipantsModal] = useState(false)
-  const [participants, setParticipants] = useState([])
-  const [sortedParticipants, setSortedParticipants] = useState([])
-  const [batchSortOrder, setBatchSortOrder] = useState('none') // 'asc', 'desc', 'none'
-  const [participantsLoading, setParticipantsLoading] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [eventsLoading, setEventsLoading] = useState(true)
-  const navigate=useNavigate();
+  const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showGalleryForm, setShowGalleryForm] = useState(false);
+  const [showParticipantsModal, setShowParticipantsModal] = useState(false);
+  const [participants, setParticipants] = useState([]);
+  const [sortedParticipants, setSortedParticipants] = useState([]);
+  const [batchSortOrder, setBatchSortOrder] = useState("none"); // 'asc', 'desc', 'none'
+  const [participantsLoading, setParticipantsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [eventsLoading, setEventsLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Gallery form states
   const [formData, setFormData] = useState({
-    title: '',
-    description: ''
-  })
-  const [files, setFiles] = useState([])
-  const [dragActive, setDragActive] = useState(false)
+    title: "",
+    description: "",
+  });
+  const [files, setFiles] = useState([]);
+  const [dragActive, setDragActive] = useState(false);
 
   // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get(`${Baseurl}/event/allevent/${club}`,{
-          headers:{
-            "Content-Type":"application/json"
+        const res = await axios.get(`${Baseurl}/event/allevent/${club}`, {
+          headers: {
+            "Content-Type": "application/json",
           },
-          withCredentials:true
-        })
-        console.log(res.data.events)
-        setEvents(res.data.events)
+          withCredentials: true,
+        });
+        console.log(res.data.events);
+        setEvents(res.data.events);
       } catch (err) {
-        console.error("Error fetching events:", err)
-        toast.error("Failed to fetch events")
+        console.error("Error fetching events:", err);
+        toast.error("Failed to fetch events");
       } finally {
-        setEventsLoading(false)
+        setEventsLoading(false);
       }
-    }
-    fetchEvents()
-  }, [club])
+    };
+    fetchEvents();
+  }, [club]);
 
   // Sort participants by batch when participants or sort order changes
   useEffect(() => {
-    let sorted = [...participants]
-    
-    if (batchSortOrder === 'asc') {
+    let sorted = [...participants];
+
+    if (batchSortOrder === "asc") {
       sorted.sort((a, b) => {
-        const batchA = a.UserId?.batch || ''
-        const batchB = b.UserId?.batch || ''
-        return batchA.localeCompare(batchB)
-      })
-    } else if (batchSortOrder === 'desc') {
+        const batchA = a.UserId?.batch || "";
+        const batchB = b.UserId?.batch || "";
+        return batchA.localeCompare(batchB);
+      });
+    } else if (batchSortOrder === "desc") {
       sorted.sort((a, b) => {
-        const batchA = a.UserId?.batch || ''
-        const batchB = b.UserId?.batch || ''
-        return batchB.localeCompare(batchA)
-      })
+        const batchA = a.UserId?.batch || "";
+        const batchB = b.UserId?.batch || "";
+        return batchB.localeCompare(batchA);
+      });
     }
-    
-    setSortedParticipants(sorted)
-  }, [participants, batchSortOrder])
+
+    setSortedParticipants(sorted);
+  }, [participants, batchSortOrder]);
 
   // Fetch event participants
   const fetchParticipants = async (eventId) => {
-    setParticipantsLoading(true)
+    setParticipantsLoading(true);
     try {
       // Replace with your actual API endpoint for fetching event participants
-      const res = await axios.get(`${Baseurl}/event/participants/${eventId}`,{
-        headers:{
-          "Content-Type":"application/json"
+      const res = await axios.get(`${Baseurl}/event/participants/${eventId}`, {
+        headers: {
+          "Content-Type": "application/json",
         },
-        withCredentials:true
-      })
-      setParticipants(res.data.event || [])
+        withCredentials: true,
+      });
+      setParticipants(res.data.event || []);
     } catch (err) {
-      console.error("Error fetching participants:", err)
-      toast.error("Failed to fetch event participants")
-      setParticipants([])
+      console.error("Error fetching participants:", err);
+      toast.error("Failed to fetch event participants");
+      setParticipants([]);
     } finally {
-      setParticipantsLoading(false)
+      setParticipantsLoading(false);
     }
-  }
+  };
 
   // Handle view participants click
   const handleViewParticipants = async (event) => {
-    setSelectedEvent(event)
-    setShowParticipantsModal(true)
-    setBatchSortOrder('none') // Reset sort order
-    await fetchParticipants(event._id)
-  }
+    setSelectedEvent(event);
+    setShowParticipantsModal(true);
+    setBatchSortOrder("none"); // Reset sort order
+    await fetchParticipants(event._id);
+  };
 
   // Close participants modal
   const closeParticipantsModal = () => {
-    setShowParticipantsModal(false)
-    setSelectedEvent(null)
-    setParticipants([])
-    setSortedParticipants([])
-    setBatchSortOrder('none')
-  }
+    setShowParticipantsModal(false);
+    setSelectedEvent(null);
+    setParticipants([]);
+    setSortedParticipants([]);
+    setBatchSortOrder("none");
+  };
 
   // Handle batch column sorting
   const handleBatchSort = () => {
-    if (batchSortOrder === 'none' || batchSortOrder === 'desc') {
-      setBatchSortOrder('asc')
+    if (batchSortOrder === "none" || batchSortOrder === "desc") {
+      setBatchSortOrder("asc");
     } else {
-      setBatchSortOrder('desc')
+      setBatchSortOrder("desc");
     }
-  }
+  };
 
   // Get sort icon for batch column
   const getBatchSortIcon = () => {
-    if (batchSortOrder === 'asc') {
-      return <ChevronUp className="w-4 h-4 ml-1" />
-    } else if (batchSortOrder === 'desc') {
-      return <ChevronDown className="w-4 h-4 ml-1" />
+    if (batchSortOrder === "asc") {
+      return <ChevronUp className="w-4 h-4 ml-1" />;
+    } else if (batchSortOrder === "desc") {
+      return <ChevronDown className="w-4 h-4 ml-1" />;
     }
-    return <div className="w-4 h-4 ml-1" /> // placeholder for alignment
-  }
+    return <div className="w-4 h-4 ml-1" />; // placeholder for alignment
+  };
 
   // Handle add gallery click
   const handleAddGallery = (event) => {
-    setSelectedEvent(event)
-    setShowGalleryForm(true)
+    setSelectedEvent(event);
+    setShowGalleryForm(true);
     // Pre-fill with event title if desired
     setFormData({
       title: `${event.title} Gallery`,
-      description: `Gallery for ${event.title} event`
-    })
-  }
+      description: `Gallery for ${event.title} event`,
+    });
+  };
 
   // Handle edit event click
   const handleEditEvent = (event) => {
-     navigate(`/gallery/${club}/${event._id}`)
-  }
+    navigate(`/gallery/${club}/${event._id}`);
+  };
 
   // Close popup
   const closePopup = () => {
-    setShowGalleryForm(false)
-    setSelectedEvent(null)
-    setFormData({ title: '', description: '' })
-    setFiles([])
-    setDragActive(false)
-  }
+    setShowGalleryForm(false);
+    setSelectedEvent(null);
+    setFormData({ title: "", description: "" });
+    setFiles([]);
+    setDragActive(false);
+  };
 
   // Gallery form handlers
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
+    const { name, value } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const handleFileSelect = (e) => {
-    const selectedFiles = Array.from(e.target.files)
-    addFiles(selectedFiles)
-  }
+    const selectedFiles = Array.from(e.target.files);
+    addFiles(selectedFiles);
+  };
 
   const addFiles = (newFiles) => {
-    const validFiles = newFiles.filter(file => 
-      file.type.startsWith('image/') && file.size <= 10 * 1024 * 1024 // 10MB limit
-    )
-    
+    const validFiles = newFiles.filter(
+      (file) => file.type.startsWith("image/") && file.size <= 10 * 1024 * 1024 // 10MB limit
+    );
+
     if (validFiles.length !== newFiles.length) {
-      toast.warning('Some files were skipped (only images up to 10MB allowed)')
+      toast.warning("Some files were skipped (only images up to 10MB allowed)");
     }
-    
-    setFiles(prev => [...prev, ...validFiles])
-  }
+
+    setFiles((prev) => [...prev, ...validFiles]);
+  };
 
   const removeFile = (index) => {
-    setFiles(prev => prev.filter((_, i) => i !== index))
-  }
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const handleDrag = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
     if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true)
+      setDragActive(true);
     } else if (e.type === "dragleave") {
-      setDragActive(false)
+      setDragActive(false);
     }
-  }
+  };
 
   const handleDrop = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-    
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFiles = Array.from(e.dataTransfer.files)
-      addFiles(droppedFiles)
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      addFiles(droppedFiles);
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     if (!formData.title.trim()) {
-      toast.error('Please enter a title')
-      return
-    }
-    
-    if (files.length === 0) {
-      toast.error('Please select at least one image')
-      return
+      toast.error("Please enter a title");
+      return;
     }
 
-    setLoading(true)
+    if (files.length === 0) {
+      toast.error("Please select at least one image");
+      return;
+    }
+
+    setLoading(true);
 
     try {
-      const formDataToSend = new FormData()
-      formDataToSend.append('title', formData.title)
-      formDataToSend.append('description', formData.description)
-      formDataToSend.append('eventId', selectedEvent._id) // Include event ID
-      formDataToSend.append('club',club);
-      
+      const formDataToSend = new FormData();
+      formDataToSend.append("title", formData.title);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("eventId", selectedEvent._id); // Include event ID
+      formDataToSend.append("club", club);
+
       files.forEach((file, index) => {
-        formDataToSend.append('images', file)
-      })
+        formDataToSend.append("images", file);
+      });
 
       // Axios API call
-      const response = await axios.post(`${Baseurl}/upload/addgallery`, formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          console.log(`Upload Progress: ${percentCompleted}%`)
-        },withCredentials: true,
-      })
+      const response = await axios.post(
+        `${Baseurl}/upload/addgallery`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            console.log(`Upload Progress: ${percentCompleted}%`);
+          },
+          withCredentials: true,
+        }
+      );
 
-      console.log('Gallery created successfully:', response.data)
-      
+      console.log("Gallery created successfully:", response.data);
+
       // Reset form and close popup
-      closePopup()
-      
-      toast.success('Gallery created successfully!')
-      
+      closePopup();
+
+      toast.success("Gallery created successfully!");
     } catch (error) {
-      console.error('Error creating gallery:', error)
-      toast.error(error.response?.data?.message || 'Failed to create gallery')
+      console.error("Error creating gallery:", error);
+      toast.error(error.response?.data?.message || "Failed to create gallery");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes'
-    const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-  }
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  };
 
   if (eventsLoading) {
     return (
@@ -274,10 +297,12 @@ const Addgallery = ({ club }) => {
             </div>
             <div className="h-32 bg-gray-200 rounded-2xl"></div>
           </div>
-          <p className="text-center text-gray-600 mt-4 font-medium">Loading events...</p>
+          <p className="text-center text-gray-600 mt-4 font-medium">
+            Loading events...
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
   if (!events || events.length === 0) {
@@ -285,11 +310,15 @@ const Addgallery = ({ club }) => {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 max-w-md w-full mx-4 text-center">
           <Camera className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">No Events Found</h2>
-          <p className="text-gray-600">No events available for this club yet.</p>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            No Events Found
+          </h2>
+          <p className="text-gray-600">
+            No events available for this club yet.
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -299,24 +328,26 @@ const Addgallery = ({ club }) => {
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-slate-900 via-blue-600 to-indigo-700 bg-clip-text text-transparent mb-4">
             Event Gallery Hub
           </h1>
-          <p className="text-gray-600 text-xl font-medium">Create stunning galleries for your events</p>
+          <p className="text-gray-600 text-xl font-medium">
+            Create stunning galleries for your events
+          </p>
         </div>
 
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {events.map((event, index) => (
-            <div 
-              key={event._id || index} 
+            <div
+              key={event._id || index}
               className="group bg-white/60 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 overflow-hidden hover:shadow-2xl hover:bg-white/80 transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02]"
             >
               {/* Event Image with Overlay */}
               <div className="relative h-56 overflow-hidden">
                 {event.imageurl ? (
                   <>
-                    <img 
-                      src={event.imageurl} 
-                      alt={event.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                    <img
+                      src={event.imageurl}
+                      alt={event.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                   </>
@@ -325,7 +356,7 @@ const Addgallery = ({ club }) => {
                     <Camera className="w-16 h-16 text-gray-400" />
                   </div>
                 )}
-                
+
                 {/* Action Buttons */}
                 <div className="absolute top-4 right-4 flex space-x-2">
                   {/* <button
@@ -343,15 +374,17 @@ const Addgallery = ({ club }) => {
                     <Edit className="w-5 h-5 text-white group-hover/btn:scale-110 transition-transform" />
                   </button>
                 </div>
-                
+
                 {/* Event Status Badge */}
                 <div className="absolute top-4 left-4">
                   <div className="px-3 py-1 bg-emerald-500/90 backdrop-blur-md rounded-full">
-                    <span className="text-white text-sm font-semibold">Active</span>
+                    <span className="text-white text-sm font-semibold">
+                      Active
+                    </span>
                   </div>
                 </div>
               </div>
-              
+
               {/* Event Content */}
               <div className="p-6">
                 <div className="mb-4">
@@ -362,7 +395,7 @@ const Addgallery = ({ club }) => {
                     {event.description}
                   </p>
                 </div>
-                
+
                 {/* Event Meta Information */}
                 <div className="space-y-3 mb-6">
                   {/* Location */}
@@ -370,30 +403,37 @@ const Addgallery = ({ club }) => {
                     <div className="p-2 bg-blue-100 rounded-full">
                       <MapPin className="w-4 h-4 text-blue-600" />
                     </div>
-                    <span className="font-medium truncate">{event.location}</span>
+                    <span className="font-medium truncate">
+                      {event.location}
+                    </span>
                   </div>
-                  
+
                   {/* Date */}
                   <div className="flex items-center space-x-3 text-sm text-gray-700">
                     <div className="p-2 bg-purple-100 rounded-full">
                       <Calendar className="w-4 h-4 text-purple-600" />
                     </div>
-                    <span className="font-medium">{new Date(event.start).toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}</span>
+                    <span className="font-medium">
+                      {new Date(event.start).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
                   </div>
-                  
+
                   {/* Participants Count */}
-                  <div className="flex items-center space-x-3 text-sm text-gray-700 cursor-pointer" onClick={()=>handleViewParticipants(event)}>
+                  <div
+                    className="flex items-center space-x-3 text-sm text-gray-700 cursor-pointer"
+                    onClick={() => handleViewParticipants(event)}
+                  >
                     <div className="p-2 bg-emerald-100 rounded-full">
                       <Users className="w-4 h-4 text-emerald-600" />
                     </div>
-                    <span  className="font-medium">View participants</span>
+                    <span className="font-medium">View participants</span>
                   </div>
                 </div>
-                
+
                 {/* Add Gallery Button */}
                 <button
                   onClick={() => handleAddGallery(event)}
@@ -403,7 +443,7 @@ const Addgallery = ({ club }) => {
                   <span>Create Gallery</span>
                 </button>
               </div>
-              
+
               {/* Card Bottom Accent */}
               <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500"></div>
             </div>
@@ -421,6 +461,16 @@ const Addgallery = ({ club }) => {
                   <p className="text-blue-100 mt-1">{selectedEvent.title}</p>
                 </div>
                 <button
+                  onClick={() =>
+                    exportParticipantsToExcel(participants, selectedEvent.title)
+                  }
+                  className="p-2 bg-white/20 text-white rounded-xl hover:bg-white/30 transition-all text-sm font-semibold backdrop-blur-md"
+                >
+                  Export as Excel 
+                
+                </button>
+
+                <button
                   onClick={closeParticipantsModal}
                   className="p-2 hover:bg-white/20 rounded-full transition-colors"
                 >
@@ -432,12 +482,16 @@ const Addgallery = ({ club }) => {
                 {/* Participant Count */}
                 <div className="mb-6 flex items-center justify-between">
                   <div className="text-sm text-gray-600">
-                    Total Participants: <span className="font-semibold text-gray-800">{participants.length}</span>
+                    Total Participants:{" "}
+                    <span className="font-semibold text-gray-800">
+                      {participants.length}
+                    </span>
                   </div>
-                  
-                  {batchSortOrder !== 'none' && (
+
+                  {batchSortOrder !== "none" && (
                     <div className="text-sm text-gray-600">
-                      Sorted by batch ({batchSortOrder === 'asc' ? 'A-Z' : 'Z-A'})
+                      Sorted by batch (
+                      {batchSortOrder === "asc" ? "A-Z" : "Z-A"})
                     </div>
                   )}
                 </div>
@@ -447,7 +501,9 @@ const Addgallery = ({ club }) => {
                   {participantsLoading ? (
                     <div className="flex items-center justify-center py-8">
                       <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-                      <span className="ml-2 text-gray-600">Loading participants...</span>
+                      <span className="ml-2 text-gray-600">
+                        Loading participants...
+                      </span>
                     </div>
                   ) : sortedParticipants.length > 0 ? (
                     <table className="min-w-full bg-white">
@@ -462,7 +518,7 @@ const Addgallery = ({ club }) => {
                           <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                             Email
                           </th>
-                          <th 
+                          <th
                             className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
                             onClick={handleBatchSort}
                           >
@@ -478,25 +534,30 @@ const Addgallery = ({ club }) => {
                       </thead>
                       <tbody className="divide-y divide-gray-200">
                         {sortedParticipants.map((participant, index) => (
-                          <tr key={participant._id || index} className="hover:bg-gray-50 transition-colors">
+                          <tr
+                            key={participant._id || index}
+                            className="hover:bg-gray-50 transition-colors"
+                          >
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                               {index + 1}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm font-semibold text-gray-900">
-                                {participant.UserId?.fullName || 'N/A'}
+                                {participant.UserId?.fullName || "N/A"}
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-700">{participant.UserId?.email || 'N/A'}</div>
+                              <div className="text-sm text-gray-700">
+                                {participant.UserId?.email || "N/A"}
+                              </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span className="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-800">
-                                {participant.UserId?.batch || 'N/A'}
+                                {participant.UserId?.batch || "N/A"}
                               </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
-                              {participant.UserId?.contact || 'N/A'}
+                              {participant.UserId?.contact || "N/A"}
                             </td>
                           </tr>
                         ))}
@@ -505,7 +566,9 @@ const Addgallery = ({ club }) => {
                   ) : (
                     <div className="text-center py-8">
                       <Eye className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <p className="text-gray-500">No participants found for this event.</p>
+                      <p className="text-gray-500">
+                        No participants found for this event.
+                      </p>
                     </div>
                   )}
                 </div>
@@ -521,8 +584,12 @@ const Addgallery = ({ club }) => {
               {/* Popup Header */}
               <div className="sticky top-0 bg-white/95 backdrop-blur-xl rounded-t-3xl border-b border-gray-200 p-6 flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-800">Create Gallery</h2>
-                  <p className="text-gray-600 mt-1">For event: {selectedEvent.title}</p>
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    Create Gallery
+                  </h2>
+                  <p className="text-gray-600 mt-1">
+                    For event: {selectedEvent.title}
+                  </p>
                 </div>
                 <button
                   onClick={closePopup}
@@ -537,7 +604,10 @@ const Addgallery = ({ club }) => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Title Input */}
                   <div>
-                    <label htmlFor="title" className="block text-sm font-bold text-gray-700 mb-2">
+                    <label
+                      htmlFor="title"
+                      className="block text-sm font-bold text-gray-700 mb-2"
+                    >
                       Gallery Title *
                     </label>
                     <input
@@ -554,7 +624,10 @@ const Addgallery = ({ club }) => {
 
                   {/* Description Input */}
                   <div>
-                    <label htmlFor="description" className="block text-sm font-bold text-gray-700 mb-2">
+                    <label
+                      htmlFor="description"
+                      className="block text-sm font-bold text-gray-700 mb-2"
+                    >
                       Description
                     </label>
                     <textarea
@@ -573,12 +646,12 @@ const Addgallery = ({ club }) => {
                     <label className="block text-sm font-bold text-gray-700 mb-2">
                       Gallery Images *
                     </label>
-                    
+
                     <div
                       className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 ${
-                        dragActive 
-                          ? 'border-blue-500 bg-blue-50 scale-105' 
-                          : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+                        dragActive
+                          ? "border-blue-500 bg-blue-50 scale-105"
+                          : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                       }`}
                       onDragEnter={handleDrag}
                       onDragLeave={handleDrag}
@@ -592,7 +665,7 @@ const Addgallery = ({ club }) => {
                         onChange={handleFileSelect}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       />
-                      
+
                       <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                       <p className="text-lg font-bold text-gray-700 mb-2">
                         Drop images here or click to browse
@@ -611,7 +684,10 @@ const Addgallery = ({ club }) => {
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-80 overflow-y-auto">
                         {files.map((file, index) => (
-                          <div key={index} className="relative bg-white rounded-2xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow">
+                          <div
+                            key={index}
+                            className="relative bg-white rounded-2xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow"
+                          >
                             <div className="flex items-start justify-between">
                               <div className="flex items-start space-x-3 flex-1">
                                 <Image className="h-6 w-6 text-gray-400 mt-1" />
@@ -632,7 +708,7 @@ const Addgallery = ({ club }) => {
                                 <X className="h-4 w-4" />
                               </button>
                             </div>
-                            
+
                             {/* Image Preview */}
                             <div className="mt-3">
                               <img
@@ -652,21 +728,23 @@ const Addgallery = ({ club }) => {
                     <button
                       type="button"
                       onClick={() => {
-                        setFormData({ 
+                        setFormData({
                           title: `${selectedEvent.title} Gallery`,
-                          description: `Gallery for ${selectedEvent.title} event`
-                        })
-                        setFiles([])
+                          description: `Gallery for ${selectedEvent.title} event`,
+                        });
+                        setFiles([]);
                       }}
                       className="sm:flex-none bg-gray-500 text-white font-bold py-3 px-6 rounded-2xl hover:bg-gray-600 transition-colors disabled:opacity-50"
                       disabled={loading}
                     >
                       Reset
                     </button>
-                    
+
                     <button
                       type="submit"
-                      disabled={loading || !formData.title.trim() || files.length === 0}
+                      disabled={
+                        loading || !formData.title.trim() || files.length === 0
+                      }
                       className="flex-1 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-2xl hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
                     >
                       {loading ? (
@@ -681,7 +759,7 @@ const Addgallery = ({ club }) => {
                         </>
                       )}
                     </button>
-                    
+
                     <button
                       type="button"
                       onClick={closePopup}
@@ -698,7 +776,7 @@ const Addgallery = ({ club }) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Addgallery
+export default Addgallery;
