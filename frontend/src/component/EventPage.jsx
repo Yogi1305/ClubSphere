@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, set } from "react-hook-form";
 import axios from "axios";
 import { Baseurl } from "../main";
 import { toast } from "react-toastify";
@@ -14,6 +14,7 @@ export default function EventPage({club}) {
   const [showForm, setShowForm] = useState(false);
   const[popup,setPopup]=useState(false);
     const {role,loading}=useAuth()
+  const [loader,setloader]=useState(true);
 
   const { register, handleSubmit, control, formState: { errors }, reset } = useForm();
 
@@ -26,7 +27,9 @@ export default function EventPage({club}) {
         },      withCredentials:true});
         console.log(res.data);
         setEvents(res.data.events);
+          setloader(false);
       } catch (err) {
+
         console.error("Error fetching events:", err);
       }
     };
@@ -78,7 +81,7 @@ const onSubmit = async (data) => {
     reset();
   };
 
-  if (!events || events.length === 0) {
+  if (loader) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
@@ -119,7 +122,23 @@ const onSubmit = async (data) => {
           )
          }
         {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {
+          events.length === 0 ? (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+           <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-gradient-to-r from-blue-200 to-purple-200 rounded-lg"></div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+             </div>
+           <div className="h-32 bg-gray-200 rounded-lg"></div>
+          </div>
+          <p className="text-center text-gray-600 mt-4 font-medium">no event found...</p>
+        </div>
+      </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {events.map((event, index) => (
             <div 
               key={event._id || index} 
@@ -178,6 +197,8 @@ const onSubmit = async (data) => {
             </div>
           ))}
         </div>
+          )
+        }
 
         {/* Registration Popup */}
         {showForm && selectedEvent && (

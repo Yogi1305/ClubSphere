@@ -361,7 +361,9 @@ export default function ClubSpherePage() {
                   < MailIcon className="w-4 h-4" />
                   <span>feedback form </span>
                 </button>
-                <button
+                {
+                  (role === "ADMIN" || role === club) && (
+                    <button
                   onClick={() => setActiveSection("feedbackview")}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
                     activeSection === "feedbackview"
@@ -372,6 +374,9 @@ export default function ClubSpherePage() {
                   < EyeIcon className="w-4 h-4" />
                   <span>feedback </span>
                 </button>
+                  )
+                 
+                }
               </nav>
             </div>
           </aside>
