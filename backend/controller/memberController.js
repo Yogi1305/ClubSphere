@@ -262,17 +262,28 @@ export const getPostHolders = async (req, res) => {
 // club feedback
 export const feedback=async(req,res)=>{
     try {
-      const {title,type,description}=req.body
+      const {title,type,description,club}=req.body
       if(! title || ! type || !description)
         return res.status(400).json({message:"all filed are required",success:false})
        const feed= await Feedback.create({
         title,
         description,
         type
-        ,club:req.role
+        ,club
        })
        return res.status(201).json({message:`your feedback successfully send to ${req.role}`,success:true})
     } catch (error) {
       console.log("error in feedback creation",error)
     }
+};
+// fetch the club my feedback
+export const fetchClubFeedback=async(req,res)=>{
+  try {
+    const {club}=req.body;
+    const feeds= await Feedback.find({club}).sort({_id:-1});
+    return res.status(200).json({data:feeds,success:true})
+  } catch (error) { 
+    console.log("error in fetchClubFeedback",error)
+    return res.status(500).json({message:"server error",success:false})
+  }
 }

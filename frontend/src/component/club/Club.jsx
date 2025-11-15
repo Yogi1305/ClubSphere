@@ -14,6 +14,7 @@ import {
   Info,
   ImageIcon,
   MailIcon,
+  EyeIcon,
 } from "lucide-react";
 import EventPage from "../EventPage";
 import Notification from "./Notification";
@@ -27,6 +28,7 @@ import Member from "./Member";
 import Clubdetails from "./Clubdetails";
 import { useAuth } from "../../hook/Auth";
 import Feedback from "./Feedback";
+import FeedbackView from "./FeedbackView";
 const club = "HOBBY";
 export default function ClubSpherePage() {
   const [activeSection, setActiveSection] = useState("club-details");
@@ -233,7 +235,12 @@ export default function ClubSpherePage() {
             <Showgallery club={club} />
           </div>
         );
-
+      case "feedbackview":
+        return (
+          <div className="bg-white rounded-xl p-6 shadow-sm w-full">
+            <FeedbackView />
+          </div>
+        );
       default:
         return null;
     }
@@ -353,6 +360,17 @@ export default function ClubSpherePage() {
                 >
                   < MailIcon className="w-4 h-4" />
                   <span>feedback form </span>
+                </button>
+                <button
+                  onClick={() => setActiveSection("feedbackview")}
+                  className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
+                    activeSection === "feedbackview"
+                      ? "text-blue-600 bg-blue-50"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  < EyeIcon className="w-4 h-4" />
+                  <span>feedback </span>
                 </button>
               </nav>
             </div>
