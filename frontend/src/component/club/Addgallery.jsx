@@ -98,6 +98,7 @@ const Addgallery = ({ club }) => {
         withCredentials: true,
       });
       setParticipants(res.data.event || []);
+      console.log("Fetched participants:", res.data.event);
     } catch (err) {
       console.error("Error fetching participants:", err);
       toast.error("Failed to fetch event participants");
@@ -553,7 +554,7 @@ const Addgallery = ({ club }) => {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span className="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-800">
-                                {participant.UserId?.batch || "N/A"}
+                                {participant.UserId?.Batch || "N/A"}
                               </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">

@@ -117,7 +117,7 @@ export const getEventAttendees = async (req, res) => {
   try {
     const event = await EventUser.find({EventId:eventId,club:"HOBBY"}).populate({
       path:"UserId",
-      select:"contact fullName email"
+      select:"contact fullName email Batch"
     });
     if (!event) {
       return res.status(404).json({ success: false, message: "Event not found" });

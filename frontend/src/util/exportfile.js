@@ -8,7 +8,7 @@ export const exportParticipantsToExcel = (participants, eventName) => {
     S_No: index + 1,
     Name: p.UserId?.fullName || "N/A",
     Email: p.UserId?.email || "N/A",
-    Batch: p.UserId?.batch || "N/A",
+    Batch: p.UserId?.Batch || "N/A",
     Contact: p.UserId?.contact || "N/A",
   }));
 
