@@ -501,7 +501,9 @@ export const makePublic = async (req, res) => {
       });
 
       try {
+        // console.log("Sending web push notification to all subscribers...");
         const subscriptions = await PushNotification.find({}, "subscription");
+        console.log("subscriptions",subscriptions);
         
          sendNotification(subscriptions,message)
 

@@ -14,6 +14,7 @@ webpush.setVapidDetails(
 );
 export const sendNotification = async (subscriptions, message) => {
   try {
+      console.log("Sending notification to subscriptions:", subscriptions);
     for(const {subscription} of subscriptions){
       addNotificationJob({subscription, message});
     }
