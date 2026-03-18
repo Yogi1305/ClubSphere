@@ -1,6 +1,6 @@
 export const ClubsData = [
   {
-    image: "https://images.unsplash.com/photo-1503437313881-503a91226419",
+    image: "https://4.bp.blogspot.com/-Icx-RdKCuXE/WBN5mcUgobI/AAAAAAAAFEU/346qJ_3Ldb4-0vJZIcToTzNhUvbGmAjvACLcB/s1600/TWELFTH%2BNIGHT%2B-%2B2016%2BHindi%2B2.jpg",
     category: "Arts",
     tagline: "Express Your Creative Soul",
     title: "Drama Club",
@@ -48,7 +48,7 @@ export const ClubsData = [
     quote: "A word after a word after a word is power.",
   },
   {
-    image: "https://images.unsplash.com/photo-1515169067865-5387ec356754",
+    image: "https://tse2.mm.bing.net/th/id/OIP.pHt7rrbGuTYRc1Rf3vd_SwHaE7?rs=1&pid=ImgDetMain&o=7&rm=3",
     category: "Sports",
     tagline: "Play Hard, Stay Fit",
     title: "Sports Club",
@@ -64,7 +64,7 @@ export const ClubsData = [
     quote: "Champions keep playing until they get it right.",
   },
   {
-    image: "https://images.unsplash.com/photo-1484981184820-2e84ea0fc3a3",
+    image: "https://img.freepik.com/premium-photo/colorful-music-notes-background-with-sheet-music-disc-treble-clef-illustration-ai-generative_118124-13529.jpg",
     category: "Music",
     tagline: "Feel the Rhythm",
     title: "Music Club",
