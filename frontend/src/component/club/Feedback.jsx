@@ -1,446 +1,637 @@
-import { useState } from "react";
+// import React, { useState } from 'react';
 
-const COUNCILS = [
-  "Hobby Club",
-  "Cultural Council",
-  "Literary Council",
+// const Feedback = () => {
+//   const [submitted, setSubmitted] = useState(false);
+//   const [formData, setFormData] = useState({
+//     rating: 0,
+//     category: 'General',
+//     usability: 3,
+//     performance: 3,
+//     design: 3,
+//     comment: ''
+//   });
+
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     // Add your logic to send data to your Flask/MySQL backend here
+//     setSubmitted(true);
+//   };
+
+//   if (submitted) {
+//     return (
+//       <div className="min-h-screen bg-[#0a0510] text-white flex items-center justify-center p-8">
+//         <div className="max-w-md w-full bg-[#1a0b2e]/50 backdrop-blur-xl border border-pink-500/30 rounded-[3rem] p-12 text-center shadow-[0_0_50px_rgba(236,72,153,0.15)] animate-in fade-in zoom-in duration-500">
+//           <div className="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-pink-500/40">
+//             <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+//             </svg>
+//           </div>
+//           <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+//             Feedback Received!
+//           </h2>
+//           <p className="text-gray-400 leading-relaxed mb-8">
+//             Your insights help us build a better community for students worldwide.
+//           </p>
+//           <button 
+//             onClick={() => setSubmitted(false)}
+//             className="text-pink-400 font-medium hover:text-pink-300 transition-colors underline underline-offset-8"
+//           >
+//             Send another response
+//           </button>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="min-h-screen bg-[#0a0510] text-white flex items-center justify-center p-10 font-sans">
+//       {/* The "Flowy" Container */}
+//       <div className="max-w-3xl w-full bg-[#160d22]/40 backdrop-blur-md border border-purple-500/20 rounded-[2.5rem] p-10 md:p-16 shadow-[0_20px_80px_rgba(0,0,0,0.4)] relative overflow-hidden">
+        
+//         {/* Background Decorative Glows */}
+//         <div className="absolute -top-24 -right-24 w-64 h-64 bg-pink-600/10 blur-[100px] rounded-full"></div>
+//         <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-600/10 blur-[100px] rounded-full"></div>
+
+//         <div className="relative z-10">
+//           <header className="mb-12">
+//             <h2 className="text-5xl font-extrabold tracking-tight bg-gradient-to-br from-white via-purple-200 to-pink-400 bg-clip-text text-transparent mb-4">
+//               Rate your experience
+//             </h2>
+//             <p className="text-lg text-gray-400/80 max-w-md">
+//               We value your input. Let us know how we're doing.
+//             </p>
+//           </header>
+
+//           <form onSubmit={handleSubmit} className="space-y-10">
+//             {/* Overall Rating - More Spaced Out */}
+//             <div className="space-y-4">
+//               <label className="text-xs uppercase tracking-[0.2em] text-purple-400 font-semibold">Overall Vibe</label>
+//               <div className="flex gap-4">
+//                 {[1, 2, 3, 4, 5].map((star) => (
+//                   <button
+//                     key={star}
+//                     type="button"
+//                     onClick={() => setFormData({...formData, rating: star})}
+//                     className={`text-4xl transition-all duration-300 transform hover:scale-125 ${
+//                       formData.rating >= star ? 'text-pink-500 drop-shadow-[0_0_8px_rgba(236,72,153,0.6)]' : 'text-gray-800'
+//                     }`}
+//                   >
+//                     ★
+//                   </button>
+//                 ))}
+//               </div>
+//             </div>
+
+//             {/* Parameter Sliders - Grid for breathing room */}
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+//               {['usability', 'performance', 'design'].map((key) => (
+//                 <div key={key} className="group">
+//                   <div className="flex justify-between mb-3">
+//                     <label className="capitalize text-sm text-gray-300 group-hover:text-pink-400 transition-colors">{key}</label>
+//                     <span className="text-xs font-mono text-pink-500">{formData[key]}/5</span>
+//                   </div>
+//                   <input
+//                     type="range" min="1" max="5"
+//                     value={formData[key]}
+//                     onChange={(e) => setFormData({...formData, [key]: e.target.value})}
+//                     className="w-full h-1.5 bg-purple-900/40 rounded-full appearance-none cursor-pointer accent-pink-500 transition-all hover:bg-purple-800/60"
+//                   />
+//                 </div>
+//               ))}
+//             </div>
+
+//             {/* Comment Area - Rounded and Deep */}
+//             <div className="space-y-4">
+//               <label className="text-xs uppercase tracking-[0.2em] text-purple-400 font-semibold">Tell us more</label>
+//               <textarea
+//                 rows="4"
+//                 className="w-full bg-[#0d0716] border border-purple-500/10 rounded-2xl p-6 focus:outline-none focus:ring-2 focus:ring-pink-500/40 focus:border-pink-500/50 transition-all placeholder:text-gray-700 text-gray-200 resize-none"
+//                 placeholder="Share your ClubSphere journey..."
+//                 value={formData.comment}
+//                 onChange={(e) => setFormData({...formData, comment: e.target.value})}
+//               />
+//             </div>
+
+//             {/* Submit Button - Matches the main theme buttons */}
+//             <button
+//               type="submit"
+//               className="group relative w-full py-5 bg-gradient-to-r from-purple-600 to-pink-500 rounded-2xl font-bold text-xl overflow-hidden transition-all hover:shadow-[0_0_40px_rgba(236,72,153,0.3)] active:scale-[0.99]"
+//             >
+//               <span className="relative z-10">Submit Feedback</span>
+//               <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+//             </button>
+//           </form>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Feedback;
+// import { useState } from "react";
+
+// const events = [
+//   "TechFest 2026",
+//   "Cultural Night",
+//   "Hackathon Spring",
+//   "Debate Championship",
+//   "Music Fest",
+//   "Sports Carnival",
+//   "Photography Walk",
+//   "Startup Summit",
+// ];
+
+// const years = ["1st Year", "2nd Year", "3rd Year", "4th Year", "Postgraduate", "Alumni"];
+
+// const categories = [
+//   "Organization & Planning",
+//   "Content & Activities",
+//   "Venue & Facilities",
+//   "Team & Volunteers",
+//   "Communication",
+//   "Overall Experience",
+// ];
+
+// const StarRating = ({ value, onChange }) => {
+//   const [hovered, setHovered] = useState(0);
+//   return (
+//     <div className="flex gap-2">
+//       {[1, 2, 3, 4, 5].map((star) => (
+//         <button
+//           key={star}
+//           type="button"
+//           onClick={() => onChange(star)}
+//           onMouseEnter={() => setHovered(star)}
+//           onMouseLeave={() => setHovered(0)}
+//           className="transition-all duration-150 hover:scale-125 focus:outline-none"
+//         >
+//           <svg
+//             viewBox="0 0 24 24"
+//             className="w-8 h-8 transition-all duration-200"
+//             fill={star <= (hovered || value) ? "currentColor" : "none"}
+//             stroke="currentColor"
+//             strokeWidth="1.5"
+//             style={{
+//               color: star <= (hovered || value) ? "#ec4899" : "#374151",
+//               filter:
+//                 star <= (hovered || value)
+//                   ? "drop-shadow(0 0 6px rgba(236,72,153,0.7))"
+//                   : "none",
+//             }}
+//           >
+//             <path
+//               strokeLinecap="round"
+//               strokeLinejoin="round"
+//               d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+//             />
+//           </svg>
+//         </button>
+//       ))}
+//       <span className="ml-2 text-sm text-gray-400 self-center">
+//         {value > 0 ? ["", "Poor", "Fair", "Good", "Great", "Excellent"][value] : "Tap to rate"}
+//       </span>
+//     </div>
+//   );
+// };
+
+// const LikelihoodSlider = ({ value, onChange }) => {
+//   const getColor = (v) => {
+//     if (v <= 3) return "#ef4444";
+//     if (v <= 6) return "#f59e0b";
+//     if (v <= 8) return "#8b5cf6";
+//     return "#ec4899";
+//   };
+
+//   const getLabel = (v) => {
+//     if (v === 0) return "Drag to rate";
+//     if (v <= 2) return "Very Unlikely";
+//     if (v <= 4) return "Unlikely";
+//     if (v <= 6) return "Maybe";
+//     if (v <= 8) return "Likely";
+//     return "Definitely!";
+//   };
+
+//   return (
+//     <div className="space-y-3">
+//       <div className="flex justify-between items-center">
+//         <span
+//           className="text-2xl font-black tabular-nums transition-all duration-200"
+//           style={{ color: value > 0 ? getColor(value) : "#4b5563" }}
+//         >
+//           {value > 0 ? value : "—"}
+//           <span className="text-sm font-normal text-gray-500">/10</span>
+//         </span>
+//         <span
+//           className="text-xs font-semibold px-3 py-1 rounded-full border transition-all duration-200"
+//           style={
+//             value > 0
+//               ? {
+//                   color: getColor(value),
+//                   borderColor: getColor(value) + "55",
+//                   backgroundColor: getColor(value) + "15",
+//                 }
+//               : { color: "#4b5563", borderColor: "#374151", backgroundColor: "transparent" }
+//           }
+//         >
+//           {getLabel(value)}
+//         </span>
+//       </div>
+//       <div className="relative">
+//         <input
+//           type="range"
+//           min="0"
+//           max="10"
+//           value={value}
+//           onChange={(e) => onChange(Number(e.target.value))}
+//           className="w-full h-2 rounded-full appearance-none cursor-pointer"
+//           style={{
+//             background: `linear-gradient(to right, ${getColor(value)} ${value * 10}%, #1f2937 ${value * 10}%)`,
+//           }}
+//         />
+//         <div className="flex justify-between mt-1.5 px-0.5">
+//           {[0, 2, 4, 6, 8, 10].map((n) => (
+//             <span key={n} className="text-[10px] text-gray-600">{n}</span>
+//           ))}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+import React, { useState } from "react";
+
+const events = [
+  "TechFest 2026",
+  "Cultural Night",
+  "Hackathon Spring",
+  "Debate Championship",
+  "Music Fest",
+  "Sports Carnival",
+  "Photography Walk",
+  "Startup Summit",
 ];
 
-const ATTEND_OPTIONS = [
-  { value: "definitely", label: "Definitely" },
-  { value: "probably", label: "Probably" },
-  { value: "unsure", label: "Not Sure" },
-  { value: "probably_not", label: "Probably Not" },
-  { value: "no", label: "No" },
+const years = ["1st Year", "2nd Year", "3rd Year", "4th Year", "Postgraduate", "Alumni"];
+
+const categories = [
+  "Organization & Planning",
+  "Content & Activities",
+  "Venue & Facilities",
+  "Team & Volunteers",
+  "Communication",
+  "Overall Experience",
 ];
 
-const YEARS = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
-
-function StarRating({ value, onChange }) {
-  const [hover, setHover] = useState(0);
-  const labels = ["", "Poor", "Fair", "Good", "Great", "Excellent"];
+const StarRating = ({ value, onChange }) => {
+  const [hovered, setHovered] = useState(0);
   return (
-    <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+    <div className="flex gap-2">
       {[1, 2, 3, 4, 5].map((star) => (
         <button
           key={star}
           type="button"
           onClick={() => onChange(star)}
-          onMouseEnter={() => setHover(star)}
-          onMouseLeave={() => setHover(0)}
-          style={{
-            background: "none", border: "none", cursor: "pointer",
-            fontSize: "2rem", padding: "2px", lineHeight: 1,
-            color: star <= (hover || value) ? "#a855f7" : "#D1D5DB",
-            transform: star <= (hover || value) ? "scale(1.2)" : "scale(1)",
-            transition: "all 0.15s ease",
-            filter: star <= (hover || value) ? "drop-shadow(0 0 4px #a855f788)" : "none",
-          }}
-        >★</button>
+          onMouseEnter={() => setHovered(star)}
+          onMouseLeave={() => setHovered(0)}
+          className="transition-all duration-150 hover:scale-125 focus:outline-none"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            className="w-8 h-8 transition-all duration-200"
+            fill={star <= (hovered || value) ? "currentColor" : "none"}
+            stroke="currentColor"
+            strokeWidth="1.5"
+            style={{
+              color: star <= (hovered || value) ? "#ec4899" : "#374151",
+              filter:
+                star <= (hovered || value)
+                  ? "drop-shadow(0 0 6px rgba(236,72,153,0.7))"
+                  : "none",
+            }}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+            />
+          </svg>
+        </button>
       ))}
-      {(hover || value) > 0 && (
-        <span style={{
-          background: "linear-gradient(135deg, #a855f7, #ec4899)",
-          WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-          fontSize: "0.82rem", fontFamily: "'Nunito', sans-serif", fontWeight: 700, marginLeft: "8px"
-        }}>
-          {labels[hover || value]}
-        </span>
-      )}
+      <span className="ml-2 text-sm text-gray-400 self-center">
+        {value > 0 ? ["", "Poor", "Fair", "Good", "Great", "Excellent"][value] : "Tap to rate"}
+      </span>
     </div>
   );
-}
+};
 
-function AttendLikelihood({ value, onChange }) {
-  return (
-    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-      {ATTEND_OPTIONS.map((opt) => (
-        <button
-          key={opt.value}
-          type="button"
-          onClick={() => onChange(opt.value)}
-          style={{
-            padding: "8px 18px", borderRadius: "40px", border: "2px solid",
-            borderColor: value === opt.value ? "#a855f7" : "#E5E7EB",
-            background: value === opt.value ? "linear-gradient(135deg, #a855f7, #ec4899)" : "#fff",
-            color: value === opt.value ? "#fff" : "#6B7280",
-            cursor: "pointer", fontSize: "0.82rem",
-            fontFamily: "'Nunito', sans-serif", fontWeight: 600,
-            transition: "all 0.2s ease",
-            boxShadow: value === opt.value ? "0 4px 15px #a855f740" : "none",
-          }}
-        >{opt.label}</button>
-      ))}
-    </div>
-  );
-}
-
-export default function EventFeedbackForm() {
-  const [step, setStep] = useState(0);
-  const [form, setForm] = useState({
-    council: "", eventName: "", participantName: "",
-    year: "", rating: 0, attendAgain: "",
-    eventFeedback: "", appFeedback: "",
-  });
-  const [errors, setErrors] = useState({});
-  const [submittedData, setSubmittedData] = useState(null);
-  const [focusedField, setFocusedField] = useState(null);
-
-  const set = (key, val) => setForm((f) => ({ ...f, [key]: val }));
-
-  const validate = () => {
-    const e = {};
-    if (!form.council) e.council = "Please select a council.";
-    if (!form.eventName) e.eventName = "Please select an event.";
-    if (!form.rating) e.rating = "Please give a rating.";
-    if (!form.attendAgain) e.attendAgain = "Please select an option.";
-    if (!form.eventFeedback.trim()) e.eventFeedback = "Please share your feedback.";
-    setErrors(e);
-    return Object.keys(e).length === 0;
+const LikelihoodSlider = ({ value, onChange }) => {
+  const getColor = (v) => {
+    if (v <= 3) return "#ef4444";
+    if (v <= 6) return "#f59e0b";
+    if (v <= 8) return "#8b5cf6";
+    return "#ec4899";
   };
+
+  const getLabel = (v) => {
+    if (v === 0) return "Drag to rate";
+    if (v <= 2) return "Very Unlikely";
+    if (v <= 4) return "Unlikely";
+    if (v <= 6) return "Maybe";
+    if (v <= 8) return "Likely";
+    return "Definitely!";
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex justify-between items-center">
+        <span
+          className="text-2xl font-black tabular-nums transition-all duration-200"
+          style={{ color: value > 0 ? getColor(value) : "#4b5563" }}
+        >
+          {value > 0 ? value : "—"}
+          <span className="text-sm font-normal text-gray-500">/10</span>
+        </span>
+        <span
+          className="text-xs font-semibold px-3 py-1 rounded-full border transition-all duration-200"
+          style={
+            value > 0
+              ? {
+                  color: getColor(value),
+                  borderColor: getColor(value) + "55",
+                  backgroundColor: getColor(value) + "15",
+                }
+              : { color: "#4b5563", borderColor: "#374151", backgroundColor: "transparent" }
+          }
+        >
+          {getLabel(value)}
+        </span>
+      </div>
+      <div className="relative">
+        <input
+          type="range"
+          min="0"
+          max="10"
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className="w-full h-2 rounded-full appearance-none cursor-pointer"
+          style={{
+            background: `linear-gradient(to right, ${getColor(value)} ${value * 10}%, #1f2937 ${value * 10}%)`,
+          }}
+        />
+        <div className="flex justify-between mt-1.5 px-0.5">
+          {[0, 2, 4, 6, 8, 10].map((n) => (
+            <span key={n} className="text-[10px] text-gray-600">{n}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default function Feedback() {
+  const [form, setForm] = useState({
+    event: "",
+    year: "",
+    rating: 0,
+    category: "",
+    suggestions: "",
+    likelihood: 0,
+  });
+  const [submitted, setSubmitted] = useState(false);
+  const [focused, setFocused] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!validate()) return;
-    const payload = {
-      metadata: {
-        council: form.council,
-        event_name: form.eventName,
-        participant_name: form.participantName || null,
-        year: form.year || null,
-        submitted_at: new Date().toISOString(),
-      },
-      quantitative: {
-        overall_rating: form.rating,
-        rating_max: 5,
-        attend_again_likelihood: form.attendAgain,
-      },
-      sentiment_targets: [
-        { field_id: "event_feedback", label: "Event Experience", text: form.eventFeedback },
-        { field_id: "app_feedback", label: "App / Platform Experience", text: form.appFeedback || null },
-      ],
-    };
-    setSubmittedData(payload);
-    setStep(1);
-    console.log("Feedback payload (sentiment-analysis ready):", JSON.stringify(payload, null, 2));
+    setSubmitted(true);
   };
 
-  const getInputStyle = (field) => ({
-    width: "100%", background: "#fff",
-    border: "2px solid",
-    borderColor: errors[field] ? "#f87171" : focusedField === field ? "#a855f7" : "#E5E7EB",
-    borderRadius: "10px", padding: "11px 16px",
-    color: "#111827", fontSize: "0.92rem",
-    fontFamily: "'Nunito', sans-serif",
-    outline: "none", boxSizing: "border-box",
-    transition: "border-color 0.2s, box-shadow 0.2s",
-    boxShadow: focusedField === field ? "0 0 0 3px #a855f720" : "none",
-  });
+  const focusStyle = (field) =>
+    focused === field
+      ? "border-violet-500 shadow-[0_0_0_3px_rgba(139,92,246,0.12)] bg-white/[0.07]"
+      : "border-white/10 hover:border-white/20";
 
-  const labelStyle = {
-    display: "block", color: "#374151", fontSize: "0.82rem",
-    fontFamily: "'Nunito', sans-serif", fontWeight: 700,
-    letterSpacing: "0.02em", marginBottom: "7px",
-  };
-  const fieldWrap = { display: "flex", flexDirection: "column", gap: "4px" };
-  const errStyle = { color: "#ef4444", fontSize: "0.73rem", fontFamily: "'Nunito', sans-serif", fontWeight: 600 };
-  const optStyle = { color: "#9CA3AF", fontWeight: 600 };
-
-  /* ── Success screen ── */
-  if (step === 1) {
+  if (submitted) {
     return (
-      <>
-        <style>{fonts}</style>
-        <div style={pageStyle}>
-          <div style={cardStyle}>
-            <div style={{ textAlign: "center" }}>
-              <Logo />
-              <div style={{
-                width: "72px", height: "72px", borderRadius: "50%",
-                background: "linear-gradient(135deg, #a855f7, #ec4899)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                margin: "24px auto 20px", fontSize: "1.8rem", color: "#fff",
-                boxShadow: "0 8px 25px #a855f740"
-              }}>✓</div>
-              <h2 style={{ fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: "1.8rem", color: "#111827", marginBottom: "10px" }}>
-                Feedback Submitted!
-              </h2>
-              <p style={{ color: "#6B7280", fontFamily: "'Nunito', sans-serif", fontSize: "0.9rem", lineHeight: 1.7, maxWidth: "340px", margin: "0 auto 24px" }}>
-                Thanks for sharing your thoughts on{" "}
-                <strong style={{ background: "linear-gradient(135deg,#a855f7,#ec4899)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                  {submittedData.metadata.event_name}
-                </strong>. Your feedback helps us improve!
-              </p>
-              <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginBottom: "28px" }}>
-                <SummaryChip label="Rating" value={`${submittedData.quantitative.overall_rating} / 5 ★`} />
-                <SummaryChip label="Attend Again" value={submittedData.quantitative.attend_again_likelihood} />
-              </div>
-              <button
-                onClick={() => { setForm({ council: "", eventName: "", participantName: "", year: "", rating: 0, attendAgain: "", eventFeedback: "", appFeedback: "" }); setStep(0); setErrors({}); }}
-                style={submitBtn}
-              >
-                Submit Another Response
-              </button>
-            </div>
-          </div>
+      <div className="min-h-screen bg-[#09090f] flex items-center justify-center p-6">
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-violet-700/20 rounded-full blur-3xl" />
         </div>
-      </>
+        <div className="relative text-center space-y-5 max-w-sm w-full">
+          <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-violet-600 to-pink-500 flex items-center justify-center shadow-[0_0_50px_rgba(139,92,246,0.5)]">
+            <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-3xl font-black text-white">Feedback Sent!</h2>
+            <p className="text-gray-400 text-sm mt-2 leading-relaxed">
+              Thanks for rating{" "}
+              <span className="text-violet-400 font-semibold">{form.event || "the event"}</span>.
+              Your input shapes every future experience.
+            </p>
+          </div>
+          {/* <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+              <div className="text-gray-500 text-xs mb-1">Rating</div>
+              <div className="text-pink-400 font-bold text-base">
+                {"★".repeat(form.rating)}{"☆".repeat(5 - form.rating)}
+              </div>
+            </div>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+              <div className="text-gray-500 text-xs mb-1">Join Likelihood</div>
+              <div className="text-violet-400 font-bold text-lg">{form.likelihood}/10</div>
+            </div>
+          </div> */}
+          <button
+            onClick={() => {
+              setSubmitted(false);
+              setForm({ event: "", year: "", rating: 0, category: "", suggestions: "", likelihood: 0 });
+            }}
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 text-white font-bold text-sm hover:opacity-90 transition-opacity"
+          >
+            Submit Another Response
+          </button>
+        </div>
+      </div>
     );
   }
 
-  /* ── Main form ── */
   return (
-    <>
-      <style>{fonts}</style>
-      <div style={pageStyle}>
-        <div style={cardStyle}>
-          {/* Header */}
-          <div style={{ marginBottom: "28px" }}>
-            <Logo />
-            <div style={{ marginTop: "16px" }}>
-              <h1 style={{
-                fontFamily: "'Nunito', sans-serif", fontWeight: 800,
-                fontSize: "clamp(1.4rem, 4vw, 1.9rem)", color: "#111827",
-                margin: "0 0 6px", lineHeight: 1.2
-              }}>
-                Event Feedback Form
-              </h1>
-              <p style={{ color: "#9CA3AF", fontFamily: "'Nunito', sans-serif", fontSize: "0.85rem", margin: 0 }}>
-                Help us make every event better for you.
-              </p>
+    <div className="min-h-screen bg-[#09090f] flex items-center justify-center p-4 py-10 rounded-xl ">
+      {/* Ambient blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-violet-800/15 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -right-20 w-[400px] h-[400px] bg-pink-700/10 rounded-full blur-3xl" />
+      </div>
+
+      {/* <div className="relative w-full max-w-md shadow-lg"> */}
+      <div className="relative w-full max-w-xl bg-[#1a0b2e]/50 backdrop-blur-xl border border-purple-500/30 rounded-[3rem] p-10 md:p-16 shadow-[0_20px_80px_rgba(0,0,0,0.4)] ">
+        {/* Brand */}
+        <div className="flex items-center gap-2.5 mb-6">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 shadow-[0_0_20px_rgba(139,92,246,0.4)]" />
+          <span className="text-white font-black text-xl tracking-tight">ClubSphere</span>
+        </div>
+
+        {/* Heading */}
+        <div className="mb-7">
+          <h1 className="text-4xl font-black text-white leading-none">
+            Event<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-pink-500">
+              Feedback.
+            </span>
+          </h1>
+          <p className="text-gray-500 text-sm mt-2.5 leading-relaxed">
+            Rate your experience and help us build better communities.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* 1. Event Name */}
+          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-4 space-y-2">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.15em] flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-[9px] font-black">1</span>
+              Event Name
+            </label>
+            <div className="relative">
+              <select
+                value={form.event}
+                onChange={(e) => setForm({ ...form, event: e.target.value })}
+                onFocus={() => setFocused("event")}
+                onBlur={() => setFocused("")}
+                required
+                className={`w-full bg-white/5 border rounded-xl px-4 py-3 text-white outline-none transition-all duration-300 text-sm tracking-wide appearance-none cursor-pointer pr-10 ${focusStyle("event")}`}
+              >
+                <option value="" disabled className="bg-[#13131f] text-gray-500">Select an event…</option>
+                {events.map((ev) => (
+                  <option key={ev} value={ev} className="bg-[#13131f] text-white">{ev}</option>
+                ))}
+              </select>
+              <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-
-            <SectionLabel>Event Details</SectionLabel>
-
-            {/* Council */}
-            <div style={fieldWrap}>
-              <label style={labelStyle}>Organising Council <Req /></label>
-              <div style={{ position: "relative" }}>
-                <select
-                  value={form.council}
-                  onChange={(e) => set("council", e.target.value)}
-                  onFocus={() => setFocusedField("council")}
-                  onBlur={() => setFocusedField(null)}
-                  style={{ ...getInputStyle("council"), appearance: "none", cursor: "pointer", paddingRight: "36px" }}
+          {/* 2. Year */}
+          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-4 space-y-2.5">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.15em] flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-[9px] font-black">2</span>
+              Year of Study
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {years.map((yr) => (
+                <button
+                  key={yr}
+                  type="button"
+                  onClick={() => setForm({ ...form, year: yr })}
+                  className={`py-2 px-2 rounded-xl text-xs font-semibold border transition-all duration-200 ${
+                    form.year === yr
+                      ? "bg-violet-600/25 border-violet-500 text-violet-300 shadow-[0_0_12px_rgba(139,92,246,0.25)]"
+                      : "bg-white/5 border-white/10 text-gray-500 hover:border-white/25 hover:text-gray-300"
+                  }`}
                 >
-                  <option value="">— Select Council —</option>
-                  {COUNCILS.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
-                <Chevron />
-              </div>
-              {errors.council && <span style={errStyle}>⚠ {errors.council}</span>}
+                  {yr}
+                </button>
+              ))}
             </div>
+          </div>
 
-            {/* Event */}
-            <div style={fieldWrap}>
-              <label style={labelStyle}>Event Name <Req /></label>
-              <input
-                type="text"
-                placeholder="Enter the event name…"
-                value={form.eventName}
-                onChange={(e) => set("eventName", e.target.value)}
-                onFocus={() => setFocusedField("eventName")}
-                onBlur={() => setFocusedField(null)}
-                style={getInputStyle("eventName")}
-              />
-              {errors.eventName && <span style={errStyle}>⚠ {errors.eventName}</span>}
+          {/* 3. Rating */}
+          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-4 space-y-2.5">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.15em] flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-[9px] font-black">3</span>
+              Overall Rating
+            </label>
+            <StarRating value={form.rating} onChange={(val) => setForm({ ...form, rating: val })} />
+          </div>
+
+          {/* 4. Feedback Category */}
+          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-4 space-y-2.5">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.15em] flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-[9px] font-black">4</span>
+              Feedback Category
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setForm({ ...form, category: cat })}
+                  className={`py-2.5 px-3 rounded-xl text-xs font-medium border text-left transition-all duration-200 leading-tight ${
+                    form.category === cat
+                      ? "bg-pink-600/20 border-pink-500/60 text-pink-300 shadow-[0_0_12px_rgba(236,72,153,0.2)]"
+                      : "bg-white/5 border-white/10 text-gray-500 hover:border-white/25 hover:text-gray-300"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
+          </div>
 
-            {/* Name + Year */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
-              <div style={fieldWrap}>
-                <label style={labelStyle}>Your Name <span style={optStyle}>(optional)</span></label>
-                <input
-                  type="text" placeholder="Anonymous"
-                  value={form.participantName}
-                  onChange={(e) => set("participantName", e.target.value)}
-                  onFocus={() => setFocusedField("name")}
-                  onBlur={() => setFocusedField(null)}
-                  style={getInputStyle("name")}
-                />
-              </div>
-              <div style={fieldWrap}>
-                <label style={labelStyle}>Year <span style={optStyle}>(optional)</span></label>
-                <div style={{ position: "relative" }}>
-                  <select
-                    value={form.year}
-                    onChange={(e) => set("year", e.target.value)}
-                    onFocus={() => setFocusedField("year")}
-                    onBlur={() => setFocusedField(null)}
-                    style={{ ...getInputStyle("year"), appearance: "none", cursor: "pointer", paddingRight: "36px" }}
-                  >
-                    <option value="">— Year —</option>
-                    {YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
-                  </select>
-                  <Chevron />
-                </div>
-              </div>
-            </div>
+          {/* 5. Suggestions */}
+          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-4 space-y-2">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.15em] flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-[9px] font-black">5</span>
+              Any Suggestions?
+            </label>
+            <textarea
+              placeholder="What could we do better? Any ideas are welcome…"
+              value={form.suggestions}
+              onChange={(e) => setForm({ ...form, suggestions: e.target.value })}
+              onFocus={() => setFocused("suggestions")}
+              onBlur={() => setFocused("")}
+              rows={3}
+              className={`w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-600 outline-none transition-all duration-300 text-sm tracking-wide resize-none ${focusStyle("suggestions")}`}
+            />
+          </div>
 
-            <SectionLabel>Your Rating</SectionLabel>
+          {/* 6. Likelihood to Join */}
+          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-4 space-y-2.5">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.15em] flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-[9px] font-black">6</span>
+              Likelihood to Join This Club
+            </label>
+            <LikelihoodSlider
+              value={form.likelihood}
+              onChange={(val) => setForm({ ...form, likelihood: val })}
+            />
+          </div>
 
-            {/* Stars */}
-            <div style={fieldWrap}>
-              <label style={labelStyle}>Overall Event Experience <Req /></label>
-              <div style={{ padding: "12px 16px", background: "#FAFAFA", borderRadius: "10px", border: `2px solid ${errors.rating ? "#f87171" : "#E5E7EB"}` }}>
-                <StarRating value={form.rating} onChange={(v) => set("rating", v)} />
-              </div>
-              {errors.rating && <span style={errStyle}>⚠ {errors.rating}</span>}
-            </div>
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full py-4 rounded-2xl font-black text-white text-sm tracking-widest uppercase bg-gradient-to-r from-violet-600 to-pink-500 hover:from-violet-500 hover:to-pink-400 transition-all duration-300 shadow-[0_8px_32px_rgba(139,92,246,0.35)] hover:shadow-[0_8px_40px_rgba(139,92,246,0.55)] hover:-translate-y-0.5 active:translate-y-0"
+          >
+            Submit Feedback →
+          </button>
 
-            {/* Attend Again */}
-            <div style={fieldWrap}>
-              <label style={labelStyle}>Would you attend a similar event again? <Req /></label>
-              <div style={{ padding: "12px 16px", background: "#FAFAFA", borderRadius: "10px", border: `2px solid ${errors.attendAgain ? "#f87171" : "#E5E7EB"}` }}>
-                <AttendLikelihood value={form.attendAgain} onChange={(v) => set("attendAgain", v)} />
-              </div>
-              {errors.attendAgain && <span style={errStyle}>⚠ {errors.attendAgain}</span>}
-            </div>
-
-            <SectionLabel>Open Feedback</SectionLabel>
-
-            {/* Event Feedback */}
-            <div style={fieldWrap}>
-              <label style={labelStyle}>What did you think of the event? <Req /></label>
-              <textarea
-                rows={4}
-                placeholder="Share what you loved, what could be improved, standout moments, suggestions…"
-                value={form.eventFeedback}
-                onChange={(e) => set("eventFeedback", e.target.value)}
-                onFocus={() => setFocusedField("eventFeedback")}
-                onBlur={() => setFocusedField(null)}
-                style={{ ...getInputStyle("eventFeedback"), resize: "vertical", minHeight: "100px" }}
-              />
-              {errors.eventFeedback && <span style={errStyle}>⚠ {errors.eventFeedback}</span>}
-            </div>
-
-            {/* App Feedback */}
-            <div style={fieldWrap}>
-              <label style={labelStyle}>
-                Any feedback on the{" "}
-                <span style={{ background: "linear-gradient(135deg,#a855f7,#ec4899)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", fontWeight: 800 }}>
-                  ClubSphere
-                </span>{" "}
-                app experience? <span style={optStyle}>(optional)</span>
-              </label>
-              <textarea
-                rows={3}
-                placeholder="Registration flow, UI issues, features you'd like to see, navigation improvements…"
-                value={form.appFeedback}
-                onChange={(e) => set("appFeedback", e.target.value)}
-                onFocus={() => setFocusedField("appFeedback")}
-                onBlur={() => setFocusedField(null)}
-                style={{ ...getInputStyle("appFeedback"), resize: "vertical", minHeight: "80px" }}
-              />
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              style={submitBtn}
-              onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.9"; e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 8px 30px #a855f760"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px #a855f740"; }}
-            >
-              Submit Feedback
-            </button>
-
-            <p style={{ color: "#C4B5C4", fontFamily: "'Nunito', sans-serif", fontSize: "0.72rem", textAlign: "center", margin: 0 }}>
-              Responses are structured for sentiment analysis · Fields marked <span style={{ color: "#ef4444" }}>*</span> are required
-            </p>
-          </form>
-        </div>
+          <p className="text-center text-gray-700 text-xs tracking-wide pb-2">
+            Join 50,000+ students · ClubSphere
+          </p>
+        </form>
       </div>
-    </>
-  );
-}
 
-/* ─── Helpers ─── */
-function Logo() {
-  return (
-    <span style={{
-      fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: "1.6rem",
-      background: "linear-gradient(135deg, #a855f7 0%, #ec4899 100%)",
-      WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-      letterSpacing: "-0.02em",
-    }}>ClubSphere</span>
-  );
-}
-
-function Req() {
-  return <span style={{ color: "#ef4444", marginLeft: "2px" }}>*</span>;
-}
-
-function Chevron() {
-  return (
-    <span style={{
-      position: "absolute", right: "14px", top: "50%",
-      transform: "translateY(-50%)", pointerEvents: "none",
-      color: "#9CA3AF", fontSize: "0.8rem"
-    }}>▾</span>
-  );
-}
-
-function SectionLabel({ children }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-      <div style={{ flex: 1, height: "1.5px", background: "linear-gradient(90deg, #a855f730, transparent)" }} />
-      <span style={{
-        background: "linear-gradient(135deg, #a855f7, #ec4899)",
-        WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-        fontFamily: "'Nunito', sans-serif", fontWeight: 800,
-        fontSize: "0.7rem", letterSpacing: "0.14em",
-        textTransform: "uppercase", whiteSpace: "nowrap",
-      }}>{children}</span>
-      <div style={{ flex: 1, height: "1.5px", background: "linear-gradient(90deg, transparent, #ec489930)" }} />
+      <style>{`
+        input[type='range']::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: white;
+          box-shadow: 0 0 10px rgba(139,92,246,0.6);
+          cursor: pointer;
+        }
+        input[type='range']::-moz-range-thumb {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: white;
+          border: none;
+          box-shadow: 0 0 10px rgba(139,92,246,0.6);
+          cursor: pointer;
+        }
+      `}</style>
     </div>
   );
 }
-
-function SummaryChip({ label, value }) {
-  return (
-    <div style={{
-      background: "#F9FAFB", border: "1.5px solid #E5E7EB",
-      borderRadius: "12px", padding: "10px 18px", textAlign: "center"
-    }}>
-      <div style={{ color: "#9CA3AF", fontFamily: "'Nunito', sans-serif", fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "4px" }}>{label}</div>
-      <div style={{ background: "linear-gradient(135deg, #a855f7, #ec4899)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: "0.92rem" }}>{value}</div>
-    </div>
-  );
-}
-
-/* ─── Styles ─── */
-const pageStyle = {
-  minHeight: "100vh",
-  background: "linear-gradient(150deg, #fdf4ff 0%, #fff0f9 50%, #f5f3ff 100%)",
-  display: "flex", alignItems: "flex-start", justifyContent: "center",
-  padding: "40px 16px 60px",
-};
-
-const cardStyle = {
-  width: "100%", maxWidth: "560px",
-  background: "#ffffff",
-  border: "1.5px solid #EDE0F5",
-  borderRadius: "20px", padding: "36px 32px",
-  boxShadow: "0 4px 40px #a855f715, 0 1px 3px #0000000a",
-};
-
-const submitBtn = {
-  width: "100%", padding: "14px",
-  background: "linear-gradient(135deg, #a855f7 0%, #ec4899 100%)",
-  border: "none", borderRadius: "12px",
-  color: "#fff", fontSize: "0.95rem",
-  fontFamily: "'Nunito', sans-serif", fontWeight: 800,
-  letterSpacing: "0.03em", cursor: "pointer",
-  boxShadow: "0 4px 20px #a855f740",
-  transition: "all 0.2s ease", display: "block",
-};
-
-const fonts = `
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  select option { font-family: 'Nunito', sans-serif; background: #fff; color: #111827; }
-  textarea, input, select { font-family: 'Nunito', sans-serif !important; }
-`;
