@@ -279,7 +279,7 @@ export const feedback=async(req,res)=>{
 // fetch the club my feedback
 export const fetchClubFeedback=async(req,res)=>{
   try {
-    const {club}=req.body;
+    const {club}=req.params;
     const feeds= await Feedback.find({club}).sort({_id:-1});
     return res.status(200).json({data:feeds,success:true})
   } catch (error) { 
