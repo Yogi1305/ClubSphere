@@ -124,17 +124,17 @@ const Navbar = () => {
                 </button>
                 
                 {showClubDropdown && (
-                  <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-2xl shadow-xl py-2 z-50 border border-gray-200 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-pink-50/50"></div>
+                  <div className="absolute top-full left-0 mt-2 w-56 bg-gray-900 backdrop-blur-md rounded-2xl shadow-xl py-2 z-50 border border-gray-700 overflow-hidden">
+                    <div className="absolute inset-0 from-purple-900/20 to-pink-900/20"></div>
                     <div className="relative z-10">
-                      <div className="px-4 py-2 border-b border-gray-100">
-                        <p className="text-sm font-medium text-gray-900">Choose a Club</p>
+                      <div className="px-4 py-2 border-b border-gray-700">
+                        <p className="text-sm font-medium text-gray-100">Choose a Club</p>
                       </div>
                       {clubs.map((club) => (
                         <button
                           key={club.id}
                           onClick={() => handleClubClick(club.id)}
-                          className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:text-gray-900 hover:bg-purple-50 transition-all duration-200 group"
+                          className="flex items-center w-full px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200"
                         >
                           <span className="text-lg mr-3">{club.icon}</span>
                           <span className="font-medium">{club.name}</span>
