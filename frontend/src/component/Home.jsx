@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
-<<<<<<< HEAD
   Users, Bell, Calendar, Search,
   ChevronLeft, ChevronRight,
   MapPin, Clock, ArrowRight, CalendarDays, Lock,
@@ -272,7 +271,6 @@ const Home = () => {
 
   return (
     <>
-      <style>{STYLES}</style>
       <MagneticCursor />
 
       <div className="cs-page page-transition">
