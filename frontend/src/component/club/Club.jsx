@@ -238,7 +238,7 @@ export default function ClubSpherePage() {
       case "feedbackview":
         return (
           <div className="bg-white rounded-xl p-6 shadow-sm w-full">
-            <FeedbackView />
+            <FeedbackView  club={club}/>
           </div>
         );
       default:

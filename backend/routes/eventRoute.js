@@ -19,6 +19,6 @@ router.route("/gallery/:club").get(getClubGallery);
 router.route("/galleryedit/:id").get(isloggedin,isAdmin,getEventbyId)
 router.route("/deleteimg").delete(isloggedin,isAdmin,deleteImage)
 router.route("/feedback").post(isloggedin,feedback)
-router.route("/feedback/club").get(isloggedin,isAdmin,fetchClubFeedback)
+router.route("/feedback/:club").get(isloggedin,isAdmin,fetchClubFeedback)
 router.route("/deleteEvent/:eventId").post(isloggedin,isAdmin,deleteEventByClub)
 export default router;

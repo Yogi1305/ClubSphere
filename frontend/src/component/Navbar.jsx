@@ -106,8 +106,8 @@ const Navbar = () => {
                 to="/" 
                 className="relative px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 group rounded-xl"
               >
-                <span className="relative z-10">Home</span>
-                <div className="absolute inset-0 bg-purple-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="relative z-10 group-hover:text-pink-400 transition-colors duration-300">Home</span>
+                <div className="absolute inset-0 rounded-xl border border-transparent group-hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] scale-[1.02] transition-opacity duration-300"></div>
               </Link>
 
               {/* Club Dropdown */}
@@ -116,25 +116,25 @@ const Navbar = () => {
                   onClick={toggleClubDropdown}
                   className="relative px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 group rounded-xl flex items-center space-x-1"
                 >
-                  <span className="relative z-10">Clubs</span>
-                  <svg className={`w-4 h-4 transition-transform duration-300 ${showClubDropdown ? 'rotate-180' : ''} relative z-10`} fill="currentColor" viewBox="0 0 20 20">
+                    <span className="relative z-10 group-hover:text-pink-400 transition-colors duration-300">Clubs</span>                  
+                    <svg className={`w-4 h-4 transition-transform duration-300 ${showClubDropdown ? 'rotate-180' : ''} relative z-10`} fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"></path>
                   </svg>
-                  <div className="absolute inset-0 bg-purple-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 rounded-xl border border-transparent group-hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] scale-[1.02] transition-opacity duration-300"></div>
                 </button>
                 
                 {showClubDropdown && (
-                  <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-2xl shadow-xl py-2 z-50 border border-gray-200 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-pink-50/50"></div>
+                  <div className="absolute top-full left-0 mt-2 w-56 bg-gray-900 backdrop-blur-md rounded-2xl shadow-xl py-2 z-50 border border-gray-700 overflow-hidden">
+                    <div className="absolute inset-0 from-purple-900/20 to-pink-900/20"></div>
                     <div className="relative z-10">
-                      <div className="px-4 py-2 border-b border-gray-100">
-                        <p className="text-sm font-medium text-gray-900">Choose a Club</p>
+                      <div className="px-4 py-2 border-b border-gray-700">
+                        <p className="text-sm font-medium text-gray-100">Choose a Club</p>
                       </div>
                       {clubs.map((club) => (
                         <button
                           key={club.id}
                           onClick={() => handleClubClick(club.id)}
-                          className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:text-gray-900 hover:bg-purple-50 transition-all duration-200 group"
+                          className="flex items-center w-full px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200"
                         >
                           <span className="text-lg mr-3">{club.icon}</span>
                           <span className="font-medium">{club.name}</span>
@@ -149,29 +149,29 @@ const Navbar = () => {
                 to="/contest" 
                 className="relative px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 group rounded-xl"
               >
-                <span className="relative z-10">Contests</span>
-                <div className="absolute inset-0 bg-purple-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="relative z-10 group-hover:text-pink-400 transition-colors duration-300">Contests</span>
+                <div className="absolute inset-0 rounded-xl border border-transparent group-hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] scale-[1.02] transition-opacity duration-300"></div>
               </Link>
               <Link 
                 to="/polls" 
                 className="relative px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 group rounded-xl"
               >
-                <span className="relative z-10">Polls</span>
-                <div className="absolute inset-0 bg-purple-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+               <span className="relative z-10 group-hover:text-pink-400 transition-colors duration-300">Polls</span>
+                <div className="absolute inset-0 rounded-xl border border-transparent group-hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] scale-[1.02] transition-opacity duration-300"></div>
               </Link>
               <Link 
                 to="/pricing" 
                 className="relative px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 group rounded-xl"
               >
-                <span className="relative z-10">Pricing</span>
-                <div className="absolute inset-0 bg-purple-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="relative z-10 group-hover:text-pink-400 transition-colors duration-300">Pricing</span>
+                <div className="absolute inset-0 rounded-xl border border-transparent group-hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] scale-[1.02] transition-opacity duration-300"></div>
               </Link>
               <Link 
                 to="/about" 
-                className="relative px-4 py-2 text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 group rounded-xl"
+                className="relative px-4 py-2 text-gray-700 hover:text-purple-100/40 font-medium transition-all duration-300 group rounded-xl"
               >
-                <span className="relative z-10">About Me</span>
-                <div className="absolute inset-0 bg-purple-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="relative z-10 group-hover:text-pink-400 transition-colors duration-300">About Me</span>
+                <div className="absolute inset-0 rounded-xl border border-transparent group-hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] scale-[1.02] transition-opacity duration-300"></div>
               </Link>
             </div>
 
@@ -204,12 +204,12 @@ const Navbar = () => {
                   </button>
                   
                   {showDropdown && (
-                    <div className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-xl py-2 z-50 border border-gray-200 overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-pink-50/50"></div>
+                    <div className="absolute right-0 mt-3 w-64 bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-2xl py-2 z-50 border border-white/10 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="absolute inset-0 from-purple-900/20 to-pink-900/20"></div>
                       <div className="relative z-10">
                         <div className="px-4 py-3 border-b border-gray-100">
-                          <p className="text-sm font-medium text-gray-900">{userName}</p>
-                          <p className="text-xs text-gray-500">Manage your account</p>
+                          <p className="text-sm font-medium text-white">{userName}</p>
+                          <p className="text-md text-gray-400">Manage your account</p>
                         </div>
                         <Link 
                           to="/profile" 
@@ -219,7 +219,7 @@ const Navbar = () => {
                           <svg className="w-4 h-4 mr-3 text-gray-500 group-hover:text-purple-600 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                           </svg>
-                          My Profile
+                          <span className="font-bold">My Profile</span>
                         </Link>
                         <Link 
                           to="/my-contests" 
@@ -229,9 +229,9 @@ const Navbar = () => {
                           <svg className="w-4 h-4 mr-3 text-gray-500 group-hover:text-blue-600 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                           </svg>
-                          My Contests
+                          <span className="font-bold">My Contests</span>
                         </Link>
-                        <div className="border-t border-gray-100 my-1"></div>
+                        <div className="border-t border-white/10 my-2 mx-2"></div>
                         <button 
                           onClick={handleLogout}
                           className="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-200 group"
@@ -239,7 +239,7 @@ const Navbar = () => {
                           <svg className="w-4 h-4 mr-3 text-red-500 group-hover:text-red-600 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                           </svg>
-                          Sign out
+                          <span className="font-bold">Sign Out</span>
                         </button>
                       </div>
                     </div>
