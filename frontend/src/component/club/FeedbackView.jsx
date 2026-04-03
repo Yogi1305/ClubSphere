@@ -579,7 +579,6 @@ const FeedbackView = ({ club }) => {
 
       </div>
     </>
-);
-};
-
+  );
+}
 export default FeedbackView;
