@@ -126,17 +126,11 @@ const router=createBrowserRouter([
 
 function App() {
   //  this to convert url
-
-
-  return (
-    
+  return (    
     <div className='w-lg h-screen  bg-cyan-200'>
-       <QuizzySEO/>
-     <ToastContainer/>
-      <RouterProvider router={router}/>
-      
-      
-       
+      <QuizzySEO/>
+      <ToastContainer/>
+      <RouterProvider router={router}/>   
     </div>
   )
 }

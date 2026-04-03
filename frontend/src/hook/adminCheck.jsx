@@ -6,7 +6,7 @@ import { Baseurl } from "../main";
 
 const ProtectedRouteAdmin = ({ children }) => {
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState("USER");
+  const [isAdmin, setIsAdmin] = useState("ADMIN");
 
   useEffect(() => {
     const checkAdminStatus = async () => {
