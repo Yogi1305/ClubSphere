@@ -261,7 +261,6 @@ const Home = () => {
 
   if (loading) return (
     <>
-      <style>{STYLES}</style>
       <MagneticCursor />
       <div className="min-h-screen cs-page flex items-center justify-center">
         <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-purple-500" />
