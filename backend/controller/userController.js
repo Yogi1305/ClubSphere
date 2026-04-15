@@ -127,14 +127,29 @@ export const login = async (req, res) => {
     // logout
     export const logout = async(req, res) => {
       try {
-        const {userId}=req.id;
-        const user= await User.findOne({userId});
-        if(user){
-        return res.status(200).cookie("token", "", { maxAge: 0 }).json({
-          message: `${user.fullName} logged out successfully.`,
-        });}
+            const userId = req.id;
+            const user = await User.findById(userId);
+
+            return res
+              .status(200)
+              .clearCookie("token", "", {
+                maxAge: 0,
+                httpOnly: true,
+                sameSite: "none",
+                secure: true,
+              })
+              .json({
+                message: user
+                  ? `${user.fullName} logged out successfully.`
+                  : "Logged out successfully.",
+                success: true,
+              });
       } catch (error) {
-        console.log(error);
+            console.log("Logout error:", error);
+            return res.status(500).json({
+              message: "Internal server error during logout",
+              success: false,
+            });
       }
     };
     // checklogging
