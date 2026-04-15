@@ -262,6 +262,7 @@ export const getPostHolders = async (req, res) => {
 // club feedback
 export const feedback=async(req,res)=>{
     try {
+      const userId=req.id;
       const {title,type,description,club}=req.body
       if(! title || ! type || !description)
         return res.status(400).json({message:"all filed are required",success:false})

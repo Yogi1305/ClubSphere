@@ -132,9 +132,10 @@ export const getEventAttendees = async (req, res) => {
 
 // get all event of created for specific club
 export const getAllEventsForClub = async (req, res) => {
-  const { club } = req.params;
+ 
 
   try {
+     const { club } = req.params;
     const events = await Event.find({club});
     res.status(200).json({ events });
   } catch (error) {
@@ -144,6 +145,7 @@ export const getAllEventsForClub = async (req, res) => {
 };
 export const getAllEvent = async (req, res) => {
   try {
+    console.log("hi ")
      const events = await Event.find({});
     res.status(200).json({ events });
   } catch (error) {
