@@ -142,6 +142,15 @@ export const getAllEventsForClub = async (req, res) => {
     return res.status(500).json({ success: false, message: "server failure" });
   }
 };
+export const getAllEvent = async (req, res) => {
+  try {
+     const events = await Event.find({});
+    res.status(200).json({ events });
+  } catch (error) {
+    console.log("error in fetching all events", error);
+    return res.status(500).json({ success: false, message: "server failure" });
+  }
+}
 
 // get club gallery
 export const getClubGallery = async (req, res) => {

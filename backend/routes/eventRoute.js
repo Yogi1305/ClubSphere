@@ -1,5 +1,5 @@
 import express from "express"
-import { deleteEventByClub, deleteImage, eventdetails, eventRegister, getAllEventsForClub, getClubGallery, getEventAttendees, getEventbyId, registerToevent } from "../controller/eventContollers.js";
+import { deleteEventByClub, deleteImage, eventdetails, eventRegister, getAllEvent, getAllEventsForClub, getClubGallery, getEventAttendees, getEventbyId, registerToevent } from "../controller/eventContollers.js";
 import { sendtoall, sendtomembers } from "../controller/notificationController.js";
 import { isloggedin } from "../middleware/isLoggedin.js";
 import { isAdmin } from "../middleware/isAdmin.js";
@@ -10,6 +10,7 @@ const router=express.Router();
 
 router.route("/").post(isloggedin,eventRegister);
 router.route("/:eventId").get(eventdetails);
+router.route("/allevent").get(getAllEvent);
 router.route("/allevent/:club").get(getAllEventsForClub)
 router.route("/notifications/send/all").post(isloggedin,sendtoall);
 router.route("/notifications/send/members").post(isloggedin,sendtomembers);
