@@ -47,6 +47,8 @@ export const register=async(req,res)=>{
 export const login = async (req, res) => {
   try {
     const { email, passWord, pushsubscription } = req.body;
+    console.log("Login request received with email:", email);
+    console.log("passWord:", passWord); 
     console.log("push",pushsubscription.endpoint)
     // Make pushsubscription optional
     if (!passWord || !email) {
@@ -254,6 +256,8 @@ export const userdata=async(req,res)=>{
 
 export const resetpassword = async (req, res) => {
   const { email, newPassword } = req.body;
+  console.log("Reset password request received for email:", email);
+  console.log("New password:", newPassword);
 
   if (!email || !newPassword) {
     return res.status(400).json({ message: "Email and new password are required" });
