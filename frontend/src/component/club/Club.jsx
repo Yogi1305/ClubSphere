@@ -345,7 +345,9 @@ export default function ClubSpherePage() {
                   </button>
                 )}
 
-                <button
+                {
+                  (role === "ADMIN" || role === "User") && (
+                    <button
                   onClick={() => setActiveSection("showgallery")}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
                     activeSection === "showgallery"
@@ -356,6 +358,8 @@ export default function ClubSpherePage() {
                   <ImageIcon className="w-4 h-4" />
                   <span>Gallery </span>
                 </button>
+                  )
+                }
 
                 <button
                   onClick={() => setActiveSection("feedback")}

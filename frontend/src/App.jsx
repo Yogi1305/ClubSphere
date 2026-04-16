@@ -140,11 +140,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/club/:clubId",
-    element: <Club />,
+    element:<ProtectedRoute> <Club /></ProtectedRoute> ,
   },
   {
     path: "/createevent",
-    element: <Createevent />,
+    element: <ProtectedRouteAdmin><Createevent /></ProtectedRouteAdmin>,
   },
   {
     path: "/member",
