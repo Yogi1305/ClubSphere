@@ -246,6 +246,23 @@ export default function ClubSpherePage() {
     }
   };
 
+  const renderAdminOnlyLabel = (label) => (
+    <span className="flex items-center gap-2">
+      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+      <span>{label}</span>
+      <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700">
+        Admin
+      </span>
+    </span>
+  );
+
+  const adminOnlyButtonClass = (isActive) =>
+    `flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors border ${
+      isActive
+        ? "text-amber-700 bg-amber-50 border-amber-200 shadow-sm"
+        : "text-gray-700 hover:bg-amber-50 hover:border-amber-200 border-transparent"
+    }`;
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Navigation */}
@@ -299,42 +316,32 @@ export default function ClubSpherePage() {
                 {(role === "ADMIN" || role === club) && (
                   <button
                     onClick={() => setActiveSection("members")}
-                    className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
-                      activeSection === "members"
-                        ? "text-blue-600 bg-blue-50"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
+                    className={adminOnlyButtonClass(activeSection === "members")}
                   >
                     <Users className="w-4 h-4" />
-                    <span>Members</span>
+                    {renderAdminOnlyLabel("Members")}
                   </button>
                 )}
 
                 {(role === "ADMIN" || role === club) && (
                   <button
                     onClick={() => setActiveSection("gallery")}
-                    className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
-                      activeSection === "gallery"
-                        ? "text-blue-600 bg-blue-50"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
+                    className={adminOnlyButtonClass(activeSection === "gallery")}
                   >
                     <Image className="w-4 h-4" />
-                    <span> Add Gallery</span>
+                    {renderAdminOnlyLabel("Add Gallery")}
                   </button>
                 )}
 
                 {(role === "ADMIN" || role === club) && (
                   <button
                     onClick={() => setActiveSection("notifications")}
-                    className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
+                    className={adminOnlyButtonClass(
                       activeSection === "notifications"
-                        ? "text-blue-600 bg-blue-50"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
+                    )}
                   >
                     <Bell className="w-4 h-4" />
-                    <span>Notifications</span>
+                    {renderAdminOnlyLabel("Notifications")}
                   </button>
                 )}
 
@@ -365,14 +372,12 @@ export default function ClubSpherePage() {
                   (role === "ADMIN" || role === club) && (
                     <button
                   onClick={() => setActiveSection("feedbackview")}
-                  className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
+                  className={adminOnlyButtonClass(
                     activeSection === "feedbackview"
-                      ? "text-blue-600 bg-blue-50"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
+                  )}
                 >
                   < EyeIcon className="w-4 h-4" />
-                  <span>feedback </span>
+                  {renderAdminOnlyLabel("Feedback")}
                 </button>
                   )
                  
