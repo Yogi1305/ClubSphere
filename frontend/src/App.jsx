@@ -33,6 +33,7 @@ import Member from "./component/club/Member.jsx";
 import ProtectedRouteAdmin from "./hook/adminCheck";
 import ProtectedRoute from "./hook/loginCheck";
 import Demo from "./component/Demo";
+import ViewEventsPage from "./component/ViewEventsPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -162,6 +163,10 @@ const router = createBrowserRouter([
   {
     path: "/demo",
     element: <Demo />,
+  },
+  {
+    path: "/view-events-page",
+    element: <ViewEventsPage />,
   },
 ]);
 
