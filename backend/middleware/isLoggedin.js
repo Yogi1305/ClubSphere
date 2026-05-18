@@ -7,12 +7,12 @@ export const isloggedin = async (req, res, next) => {
     const token = req.cookies.token;
     
     if (!token) {
-      return res.status(400).json({ message: "Token not found" });
+      return res.status(400).json({ message: "Token not found" ,success:false});
     }
 
     const verifyToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
     if (!verifyToken || !verifyToken.userId) {
-      return res.status(401).json({ message: "Invalid token" });
+      return res.status(401).json({ message: "Invalid token" ,success:false});
     }
   // console.log("token user role",verifyToken.role);
     req.id = verifyToken.userId; // attach user ID to request
@@ -20,6 +20,6 @@ export const isloggedin = async (req, res, next) => {
     next();
   } catch (error) {
     console.log("Error in isLoggedIn middleware:", error);
-    return res.status(500).json({ message: "Authentication failed" });
+    return res.status(500).json({ message: "Authentication failed" ,success:false});
   }
 };
