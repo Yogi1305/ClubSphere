@@ -1,6 +1,6 @@
 export const ClubsData = [
   {
-    image: "https://images.unsplash.com/photo-1503437313881-503a91226419",
+    image: "https://clipart-library.com/img/1216436.jpg",
     category: "Arts",
     tagline: "Express Your Creative Soul",
     title: "Drama Club",
@@ -48,7 +48,7 @@ export const ClubsData = [
     quote: "A word after a word after a word is power.",
   },
   {
-    image: "https://images.unsplash.com/photo-1515169067865-5387ec356754",
+    image: "https://images.pexels.com/photos/274422/pexels-photo-274422.jpeg?cs=srgb&dl=pexels-pixabay-274422.jpg&fm=jpg",
     category: "Sports",
     tagline: "Play Hard, Stay Fit",
     title: "Sports Club",
@@ -64,7 +64,7 @@ export const ClubsData = [
     quote: "Champions keep playing until they get it right.",
   },
   {
-    image: "https://images.unsplash.com/photo-1484981184820-2e84ea0fc3a3",
+    image: "https://cdn.pixabay.com/photo/2023/02/16/03/43/music-player-7792956_1280.jpg",
     category: "Music",
     tagline: "Feel the Rhythm",
     title: "Music Club",

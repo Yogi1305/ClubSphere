@@ -19,6 +19,7 @@ import ClubCard from "./ClubCard";
 import { ClubsData } from '../util/constant';
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
+import Demo from "./Demo";
 
 /* ─────────────────────────────────────────
    Magnetic Cursor
@@ -998,12 +999,13 @@ const Home = () => {
                 {isLoggedIn ? (
                   <>
                     <Link to="/club/HOBBY" className="cs-btn-primary">Go to Dashboard</Link>
-                    <Link to="/clubs" className="cs-btn-secondary">Browse Clubs</Link>
+                    <button onClick={() => document.getElementById("featured-clubs").scrollIntoView({ behavior: "smooth" })}
+                     className="cs-btn-secondary">Browse Clubs</button>
                   </>
                 ) : (
                   <>
                     <Link to="/register" className="cs-btn-primary">Join Your Club Today</Link>
-                    <button className="cs-btn-secondary">Watch Demo</button>
+                    <Link to="/demo" className="cs-btn-secondary">Watch Demo</Link>
                   </>
                 )}
               </div>
@@ -1142,7 +1144,7 @@ const Home = () => {
         <Separator />
 
         {/* ═══ CLUBS CAROUSEL ═══ */}
-        <section className="cs-clubs">
+        <section id= "featured-clubs" className="cs-clubs">
           <Reveal direction="up">
             <h2 className="cs-section-title">Featured Clubs</h2>
           </Reveal>
@@ -1177,14 +1179,13 @@ const Home = () => {
               <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
                 {isLoggedIn ? (
                   <>
-                    <Link to="/clubs" className="cs-btn-primary">Browse Clubs</Link>
-                    <Link to="/events" className="cs-btn-secondary">View Events</Link>
+                    <button className="cs-btn-primary"
+                    onClick={() => document.getElementById("featured-clubs").scrollIntoView({ behavior: "smooth" })}>
+                      Browse Clubs</button>
+                    <Link to="/view-events-page" className="cs-btn-secondary">View Events</Link>
                   </>
                 ) : (
-                  <>
-                    <Link to="/register" className="cs-btn-primary">Join Your Club Today</Link>
-                    <button className="cs-btn-secondary">Learn More</button>
-                  </>
+                  <Link to="/register" className="cs-btn-primary">Join Your Club Today</Link>
                 )}
               </div>
             </div>
