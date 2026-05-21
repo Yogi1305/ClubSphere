@@ -30,6 +30,7 @@ import { useAuth } from "../../hook/Auth";
 import Feedback from "./Feedback";
 import FeedbackView from "./FeedbackView";
 const club = "HOBBY";
+const Role =["PFAC", "HOBBY", "LIT", "MEF", "PTSC", "DRAMA", "ADMIN","USER","President", "Secretary", "Joint Secretary","Treasurer", "Member"];
 export default function ClubSpherePage() {
   const [activeSection, setActiveSection] = useState("club-details");
   const { role, loading } = useAuth();
@@ -299,7 +300,7 @@ export default function ClubSpherePage() {
                   <span>Club Details</span>
                 </button>
                 {/* event */}
-                {(role === "ADMIN" || role === club || role === "USER") && (
+                {(Role.includes(role)) && (
                   <button
                     onClick={() => setActiveSection("events")}
                     className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
@@ -313,7 +314,7 @@ export default function ClubSpherePage() {
                   </button>
                 )}
 
-                {(role === "ADMIN" || role === club) && (
+                {(Role.includes(role) && role !== "USER" && role !== "Member") && (
                   <button
                     onClick={() => setActiveSection("members")}
                     className={adminOnlyButtonClass(activeSection === "members")}
@@ -323,7 +324,7 @@ export default function ClubSpherePage() {
                   </button>
                 )}
 
-                {(role === "ADMIN" || role === club) && (
+                {(Role.includes(role) && role !== "USER" && role !== "Member") && (
                   <button
                     onClick={() => setActiveSection("gallery")}
                     className={adminOnlyButtonClass(activeSection === "gallery")}
@@ -333,7 +334,7 @@ export default function ClubSpherePage() {
                   </button>
                 )}
 
-                {(role === "ADMIN" || role === club) && (
+                {(Role.includes(role) && role !== "USER" && role !== "Member") && (
                   <button
                     onClick={() => setActiveSection("notifications")}
                     className={adminOnlyButtonClass(
@@ -373,7 +374,7 @@ export default function ClubSpherePage() {
                   <span>feedback form </span>
                 </button>
                 {
-                  (role === "ADMIN" || role === club) && (
+                  (Role.includes(role) && role !== "USER" && role !== "Member") && (
                     <button
                   onClick={() => setActiveSection("feedbackview")}
                   className={adminOnlyButtonClass(
