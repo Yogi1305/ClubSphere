@@ -347,7 +347,7 @@ export default function ClubSpherePage() {
                 )}
 
                 {
-                  (role === "ADMIN" || role === "User") && (
+                  Role.includes(role)  && (
                     <button
                   onClick={() => setActiveSection("showgallery")}
                   className={`flex items-center space-x-3 w-full text-left rounded-lg px-3 py-2 transition-colors ${
