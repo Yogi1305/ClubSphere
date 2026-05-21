@@ -4,6 +4,7 @@ import PushNotification from "../model/pushnotification.js";
 import { MEMBER_ROLES } from "../utils/constant.js";
 import { sendNotification } from "../utils/pushnotication.js";
 import Feedback from "../model/feedback.js"
+import { User } from "../model/User.js";
 // to join a club
 export const joinToClub = async (req, res) => {
   try {
@@ -209,7 +210,14 @@ export const toUpgrade=async(req,res)=>{
             message: "Member not found",
           });
         member.Role = Role;
+        
+        console.log(member)
         await member.save();
+        console.log(req.id)
+        const userrole= await User.findOne({_id:member.UserId});
+        userrole.role = Role;
+        await userrole.save();  
+        console.log(userrole)
         return res.status(200).json({
           success: true,
           message: "Member role updated",
