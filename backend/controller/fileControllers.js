@@ -1,11 +1,12 @@
 import Gallery from "../model/gallery.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { ADMIN_ROLES } from "../utils/constant.js";
 
 export const addgallery = async (req, res) => {
   try {
     const { club, eventId } = req.body;
 
-    if (req.role !== "ADMIN" && req.role !== club) {
+    if (!ADMIN_ROLES.includes(req.role)) {
       return res.status(403).json({ success: false, message: "Unauthorized" });
     }
 
