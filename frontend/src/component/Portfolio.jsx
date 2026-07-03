@@ -104,10 +104,41 @@ const Portfolio = () => {
     { platform: "CodeChef", problems: "150+", streak: null, rating: "1450+ rating, 2-star", icon: TrendingUp, color: "from-blue-400 to-indigo-500" }
   ];
 
-  const experienceMetrics = [
-    { label: "Performance Boost", value: "67%", icon: Zap },
-    { label: "User Engagement", value: "25%", icon: Users },
-    { label: "Satisfaction Score", value: "30%", icon: TrendingUp }
+  const experiences = [
+    {
+      company: "BITCS",
+      role: "Software Development Engineer Intern",
+      duration: "Feb 2026 - Present",
+      location: "Remote",
+      metrics: [
+        { label: "Assessment Automation", value: "100%", icon: Zap },
+        { label: "RBAC Implementation", value: "Secure", icon: Users },
+        { label: "System Scalability", value: "High", icon: TrendingUp }
+      ],
+      achievements: [
+        "Led the end-to-end architecture of a multi-tenant hiring platform, defining domain models and API contracts.",
+        "Designed and implemented a role-based access control (RBAC) framework for HR and Interviewer roles.",
+        "Architected an assessment engine integrated into the recruitment workflow, automating test assignment.",
+        "Built and optimized backend services using NestJS, PostgreSQL, and TypeORM."
+      ]
+    },
+    {
+      company: "Nuren AI",
+      role: "Software Development Engineer Intern",
+      duration: "March 2025 - June 2025",
+      location: "Remote",
+      metrics: [
+        { label: "Performance Boost", value: "67%", icon: Zap },
+        { label: "User Engagement", value: "25%", icon: Users },
+        { label: "Satisfaction Score", value: "30%", icon: TrendingUp }
+      ],
+      achievements: [
+        "Engineered a client-side caching architecture using IndexedDB, improving application performance by 67%.",
+        "Designed and shipped a production analytics dashboard, driving a 25% increase in user engagement.",
+        "Led a platform-wide UI/UX modernization initiative, improving user satisfaction by 30%.",
+        "Refactored legacy frontend modules into reusable, maintainable component architectures."
+      ]
+    }
   ];
 
   return (
@@ -179,7 +210,7 @@ const Portfolio = () => {
 
                 <p className="text-xl text-gray-300 leading-relaxed max-w-2xl">
                   Passionate full-stack developer crafting digital experiences with modern technologies. 
-                  Currently building the future at Nuren AI with expertise in React, Node.js, and cutting-edge web technologies.
+                  Currently building the future at BITCS with expertise in NestJS, React, Node.js, and cutting-edge web technologies.
                 </p>
 
                 <div className="flex flex-wrap gap-4">
@@ -276,7 +307,7 @@ const Portfolio = () => {
                           </div>
                         </div>
                         <div className="text-center">
-                          <div className="text-sm text-purple-300 font-medium animate-pulse">Currently @ Nuren AI</div>
+                          <div className="text-sm text-purple-300 font-medium animate-pulse">Currently @ BITCS</div>
                         </div>
                       </div>
 
@@ -321,46 +352,44 @@ const Portfolio = () => {
               <p className="text-gray-400 text-xl">Building the future, one line of code at a time</p>
             </div>
 
-            <div className="relative">
-              <div className="absolute left-1/2 transform -translate-x-px h-full w-0.5 bg-gradient-to-b from-purple-500 to-pink-500"></div>
+            <div className="relative space-y-8">
+              <div className="absolute left-1/2 transform -translate-x-px h-full w-0.5 bg-gradient-to-b from-purple-500 to-pink-500 hidden lg:block"></div>
               
-              <div className="relative flex items-center justify-center">
-                <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 border border-white/10 max-w-4xl w-full">
-                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
-                    <div>
-                      <h3 className="text-3xl font-bold text-white mb-2">Software Development Engineer Intern</h3>
-                      <p className="text-2xl text-purple-400 font-semibold mb-2">Nuren AI</p>
-                      <div className="flex items-center text-gray-400">
-                        <Calendar className="w-5 h-5 mr-2" />
-                        <span>March 2025 - Present • Remote</span>
+              {experiences.map((exp, expIndex) => (
+                <div key={expIndex} className="relative flex items-center justify-center">
+                  <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 border border-white/10 max-w-4xl w-full z-10">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
+                      <div>
+                        <h3 className="text-3xl font-bold text-white mb-2">{exp.role}</h3>
+                        <p className="text-2xl text-purple-400 font-semibold mb-2">{exp.company}</p>
+                        <div className="flex items-center text-gray-400">
+                          <Calendar className="w-5 h-5 mr-2" />
+                          <span>{exp.duration} • {exp.location}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    {experienceMetrics.map((metric, index) => (
-                      <div key={index} className="bg-white/5 rounded-xl p-6 text-center border border-white/10 hover:border-purple-500/50 transition-all duration-300">
-                        <metric.icon className="w-8 h-8 mx-auto mb-3 text-purple-400" />
-                        <div className="text-3xl font-bold text-white mb-1">{metric.value}</div>
-                        <div className="text-sm text-gray-400">{metric.label}</div>
-                      </div>
-                    ))}
-                  </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                      {exp.metrics.map((metric, index) => (
+                        <div key={index} className="bg-white/5 rounded-xl p-6 text-center border border-white/10 hover:border-purple-500/50 transition-all duration-300">
+                          <metric.icon className="w-8 h-8 mx-auto mb-3 text-purple-400" />
+                          <div className="text-3xl font-bold text-white mb-1">{metric.value}</div>
+                          <div className="text-sm text-gray-400">{metric.label}</div>
+                        </div>
+                      ))}
+                    </div>
 
-                  <div className="space-y-4">
-                    {[
-                      "Engineered frontend caching system using IndexedDB, improving application performance by 67%",
-                      "Developed comprehensive analytics dashboard increasing user engagement by 25%",
-                      "Led UI/UX redesign initiative resulting in 30% improvement in user satisfaction"
-                    ].map((achievement, index) => (
-                      <div key={index} className="flex items-start space-x-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300">
-                        <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mt-3 flex-shrink-0"></div>
-                        <p className="text-gray-300 leading-relaxed">{achievement}</p>
-                      </div>
-                    ))}
+                    <div className="space-y-4">
+                      {exp.achievements.map((achievement, index) => (
+                        <div key={index} className="flex items-start space-x-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300">
+                          <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mt-3 flex-shrink-0"></div>
+                          <p className="text-gray-300 leading-relaxed">{achievement}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
